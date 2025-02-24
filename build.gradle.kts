@@ -1,19 +1,85 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
-    id("java")
+    java // TODO java launcher tasks
+    id("io.papermc.paperweight.patcher") version "2.0.0-beta.14"
 }
 
-group = "net.serlith.jellyfish"
-version = "1.0-SNAPSHOT"
+val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
 
-repositories {
-    mavenCentral()
+paperweight {
+    upstreams.paper {
+        ref = providers.gradleProperty("paperCommit")
+
+        patchFile {
+            path = "paper-server/build.gradle.kts"
+            outputFile = file("jellyfish-server/build.gradle.kts")
+            patchFile = file("jellyfish-server/build.gradle.kts.patch")
+        }
+        patchFile {
+            path = "paper-api/build.gradle.kts"
+            outputFile = file("jellyfish-api/build.gradle.kts")
+            patchFile = file("jellyfish-api/build.gradle.kts.patch")
+        }
+        patchDir("paperApi") {
+            upstreamPath = "paper-api"
+            excludes = setOf("build.gradle.kts")
+            patchesDir = file("jellyfish-api/paper-patches")
+            outputDir = file("paper-api")
+        }
+    }
 }
 
-dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+subprojects {
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
+
+    extensions.configure<JavaPluginExtension> {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    tasks.withType<JavaCompile> {
+        options.encoding = Charsets.UTF_8.name()
+        options.release = 21
+        options.isFork = true
+    }
+    tasks.withType<Javadoc> {
+        options.encoding = Charsets.UTF_8.name()
+    }
+    tasks.withType<ProcessResources> {
+        filteringCharset = Charsets.UTF_8.name()
+    }
+    tasks.withType<Test> {
+        testLogging {
+            showStackTraces = true
+            exceptionFormat = TestExceptionFormat.FULL
+            events(TestLogEvent.STANDARD_OUT)
+        }
+    }
+    tasks.withType<AbstractArchiveTask>().configureEach {
+        isPreserveFileTimestamps = false
+        isReproducibleFileOrder = true
+    }
+
+    repositories {
+        mavenCentral()
+        maven(paperMavenPublicUrl)
+        maven("https://jitpack.io")
+    }
+
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks.register("printMinecraftVersion") {
+    doLast {
+        println(providers.gradleProperty("mcVersion").get().trim())
+    }
+}
+
+tasks.register("printJellyfishVersion") {
+    doLast {
+        println(project.version)
+    }
 }
