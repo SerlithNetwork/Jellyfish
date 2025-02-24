@@ -1,42 +1,61 @@
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+# JVM crash related
+core.*
+hs_err_pid*
 
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
+# Intellij
+/.idea/*
+!/.idea/runConfigurations
 *.iml
 *.ipr
+*.iws
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### Eclipse ###
-.apt_generated
+# Eclipse
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
+.settings/
+
+# netbeans
+nbproject/
+nbactions.xml
+
+# Gradle
+!gradle-wrapper.jar
+.gradle/
+build/
+*/build/
+
+# we use maven!
+build.xml
+
+# Maven
+log/
+target/
+dependency-reduced-pom.xml
+
+# various other potential build files
+build/
 bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+dist/
+manifest.mf
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-### Mac OS ###
+# Mac
+.DS_Store/
 .DS_Store
+
+# vim
+.*.sw[a-p]
+
+# Linux temp files
+*~
+
+# other stuff
+/run
+
+/jellyfish-server/build.gradle.kts
+/jellyfish-server/src/minecraft
+/paper-server
+/jellyfish-api/build.gradle.kts
+/paper-api
+*.jar
+test-plugin.settings.gradle.kts

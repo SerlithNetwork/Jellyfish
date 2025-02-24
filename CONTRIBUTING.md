@@ -1,16 +1,16 @@
-Contributing to Purpur
+Contributing to Jellyfish
 ==========================
-Purpur is happy you're willing to contribute to our projects. We are usually
+Jellyfish is happy you're willing to contribute to our projects. We are usually
 very lenient with all submitted PRs, but there are still some guidelines you
 can follow to make the approval process go more smoothly.
 
 ## Use a Personal Fork and not an Organization
 
-Purpur will routinely modify your PR, whether it's a quick rebase or to take care
+Jellyfish will routinely modify your PR, whether it's a quick rebase or to take care
 of any minor nitpicks we might have. Often, it's better for us to solve these
 problems for you than make you go back and forth trying to fix them yourself.
 
-Unfortunately, if you use an organization for your PR, it prevents Purpur from
+Unfortunately, if you use an organization for your PR, it prevents Jellyfish from
 modifying it. To avoid this, please do not use repositories on organizations
 for PRs.
 
@@ -23,7 +23,7 @@ you will most likely use this for WSL), `homebrew` (macOS / Linux), and more:
 - `git` (package `git` everywhere);
 - A Java 21 or later JDK (packages vary, use Google/DuckDuckGo/etc.).
     - [Adoptium](https://adoptium.net/) has builds for most operating systems.
-    - Purpur requires JDK 21 to build, however, makes use of Gradle's
+    - Jellyfish requires JDK 21 to build, however, makes use of Gradle's
       [Toolchains](https://docs.gradle.org/current/userguide/toolchains.html)
       feature to allow building with only JRE 11 or later installed. (Gradle will
       automatically provision JDK 21 for compilation if it cannot find an existing
@@ -45,7 +45,7 @@ javac 21.0.5
 
 ## Understanding Patches
 
-Unlike the Purpur API and its implementation, modifications to Paper and Minecraft source files
+Unlike the Jellyfish API and its implementation, modifications to Paper and Minecraft source files
 are done through patches. These patches/extensions are split into three different sets of two
 categories, which are formatted like so:
 
@@ -132,7 +132,7 @@ edit it using `git rebase`.
       learn, enter `:q!` and press enter. Before redoing this step, do
       `export EDITOR=nano` for an easier editor to use.
 1. Replace `pick` with `edit` for the commit/patch you want to modify (in this
-   case the very first commit, `purpur File Patches`), and
+   case the very first commit, `jellyfish File Patches`), and
    "save" the changes;
 1. Make the changes you want to make to the patch;
 1. Run `git add .` to add your changes;
@@ -144,7 +144,7 @@ edit it using `git rebase`.
 
 Feature patches are exclusively used for large-scale changes that are hard to
 track and maintain and that can be optionally dropped, such as the more involved
-optimizations we have. This makes it easier to update Purpur during Minecraft updates,
+optimizations we have. This makes it easier to update Jellyfish during Minecraft updates,
 since we can temporarily drop these patches and reapply them later.
 
 There is only a very small chance that you will have to use this system, but adding
@@ -155,7 +155,7 @@ such patches is very simple:
 1. Run `git commit` with the desired patch message;
 1. Run `./gradlew rebuild[project]FeaturePatches` in the root directory.
 
-Your commit will be converted into a patch that you can then PR into Purpur.
+Your commit will be converted into a patch that you can then PR into Jellyfish.
 
 > ❗ Please note that if you have some specific implementation detail you'd like
 > to document, you should do so in the patch message *or* in comments.
@@ -203,7 +203,7 @@ fixup method.
 ## Rebasing PRs
 
 Steps to rebase a PR to include the latest changes from `main`.  
-These steps assume the `origin` remote is your fork of this repository and `upstream` is the official PurpurMC repository.
+These steps assume the `origin` remote is your fork of this repository and `upstream` is the official Serlith Network repository.
 
 1. Fetch the latest changes from upstream's main: `git fetch upstream`.
 1. Checkout your feature/fix branch and rebase on main: `git switch patch-branch && git rebase upstream/main`.
@@ -221,7 +221,7 @@ These steps assume the `origin` remote is your fork of this repository and `upst
 We'll accept changes that make sense. You should be able to justify their
 existence, along with any maintenance costs that come with them. Using
 [obfuscation helpers](#obfuscation-helpers) aids in the maintenance costs.
-Remember that these changes will affect everyone who runs Purpur, not just you
+Remember that these changes will affect everyone who runs Jellyfish, not just you
 and your server.
 
 While we will fix minor formatting issues, you should stick to the guide below
@@ -234,31 +234,31 @@ API and API-implementation contain a lot of these too, but they are no longer
 required.
 
 - You need to add a comment with a short and identifiable description of the patch:
-  `// Purpur start - <COMMIT DESCRIPTION>`
+  `// Jellyfish start - <COMMIT DESCRIPTION>`
     - The comments should generally be about the reason the change was made, what
       it was before, or what the change is.
     - After the general commit description, you can add additional information either
       after a `;` or in the next line.
-- Multi-line changes start with `// Purpur start - <COMMIT DESCRIPTION>` and end
-  with `// Purpur end - <COMMIT DESCRIPTION>`.
-- One-line changes should have `// Purpur - <COMMIT DESCRIPTION>` at the end of the line.
+- Multi-line changes start with `// Jellyfish start - <COMMIT DESCRIPTION>` and end
+  with `// Jellyfish end - <COMMIT DESCRIPTION>`.
+- One-line changes should have `// Jellyfish - <COMMIT DESCRIPTION>` at the end of the line.
 
 > [!NOTE]
 > These comments are incredibly important to be able to keep track of changes
 > across files and to remember what they are for, even a decade into the future.
 
-Here's an example of how to mark changes by Purpur:
+Here's an example of how to mark changes by Jellyfish:
 
 ```java
-entity.getWorld().dontBeStupid(); // Purpur - Move away from beStupid()
+entity.getWorld().dontBeStupid(); // Jellyfish - Move away from beStupid()
 entity.getFriends().forEach(Entity::explode);
 entity.updateFriends();
 
-// Purpur start - Use plugin-set spawn
+// Jellyfish start - Use plugin-set spawn
 // entity.getWorld().explode(entity.getWorld().getSpawn());
 Location spawnLocation = ((CraftWorld) entity.getWorld()).getSpawnLocation();
 entity.getWorld().explode(new BlockPosition(spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ()));
-// Purpur end - Use plugin-set spawn
+// Jellyfish end - Use plugin-set spawn
 ```
 
 We generally follow the usual Java style (aka. Oracle style), or what is programmed
@@ -284,7 +284,7 @@ import net.minecraft.server.MinecraftServer;
 // don't add import here, use FQN like below
 
 public class SomeVanillaClass {
-    public final org.bukkit.Location newLocation; // Purpur - add location
+    public final org.bukkit.Location newLocation; // Jellyfish - add location
 }
 ```
 
@@ -301,15 +301,15 @@ will be replaced later.
 
 ## Access Transformers
 Sometimes, Vanilla code already contains a field, method, or type you want to access
-but the visibility is too low (e.g. a private field in an entity class). Purpur can use access transformers
-to change the visibility or remove the final modifier from fields, methods, and classes. Inside the `build-data/purpur.at`
+but the visibility is too low (e.g. a private field in an entity class). Jellyfish can use access transformers
+to change the visibility or remove the final modifier from fields, methods, and classes. Inside the `build-data/jellyfish.at`
 file, you can add ATs that are applied when you `./gradlew applyPatches`. You can read about the format of ATs
 [here](https://mcforge.readthedocs.io/en/latest/advanced/accesstransformers/#access-modifiers).
 
 <!--
 ## Patch Notes
 
-When submitting feature patches to Purpur, we may ask you to add notes to the patch
+When submitting feature patches to Jellyfish, we may ask you to add notes to the patch
 header. While we do not require it for all changes, you should add patch notes
 when the changes you're making are technical, complex, or require an explanation
 of some kind. It is very likely that your patch will remain long after we've all
@@ -363,16 +363,16 @@ index a92bf8967..d0ab87d0f 100644
 
 While rarely needed, obfuscation helpers are sometimes useful when it comes
 to unmapped local variables, or poorly named method parameters. In an effort
-to make future updates easier on ourselves, Purpur tries to use obfuscation
+to make future updates easier on ourselves, Jellyfish tries to use obfuscation
 helpers wherever it makes sense. The purpose of these helpers is to make the
 code more readable and maintainable. These helpers should be made easy to
 inline by the JVM wherever possible.
 
 An example of an obfuscation helper for a local variable:
 ```java
-double d0 = entity.getX(); final double fromX = d0; // Purpur - OBFHELPER
+double d0 = entity.getX(); final double fromX = d0; // Jellyfish - OBFHELPER
 // ...   
-this.someMethod(fromX); // Purpur
+this.someMethod(fromX); // Jellyfish
 ```
 
 While they may not always be done in exactly the same way, the general goal is
@@ -382,12 +382,12 @@ what fits best in your situation.
 ## Configuration files
 
 To use a configurable value in your patch, add a new entry in either the
-`PurpurConfig` or `PurpurWorldConfig` classes. Use `PurpurConfig` if a value
+`JellyfishConfig` or `JellyfishWorldConfig` classes. Use `JellyfishConfig` if a value
 must remain the same throughout all worlds, or the latter if it can change
 between worlds. World-specific configuration options are preferred whenever
 possible.
 
-### PurpurConfig example
+### JellyfishConfig example
 
 ```java
 public static boolean saveEmptyScoreboardTeams = false;
@@ -403,17 +403,17 @@ is important to the way the configuration generation system works. To access
 this value, reference it as you would any other static value:
 
 ```java
-if (!PurpurConfig.saveEmptyScoreboardTeams) {
+if (!JellyfishConfig.saveEmptyScoreboardTeams) {
 ```
 
 It is often preferred that you use the fully qualified name for the
 configuration class when accessing it, like so:
-`org.purpurmc.purpur.PurpurConfig.valueHere`.  
-If this is not done, a developer for Purpur might fix that for you before
+`net.serlith.jellyfish.JellyfishConfig.valueHere`.  
+If this is not done, a developer for Jellyfish might fix that for you before
 merging, but it's always nice if you make it a habit where you only need 1-2
 lines changed.
 
-### PurpurWorldConfig example
+### JellyfishWorldConfig example
 
 ```java
 public boolean useInhabitedTime = true;
@@ -429,28 +429,28 @@ To access this value, you'll need an instance of the `net.minecraft.world.level.
 object:
 
 ```java
-return this.level.purpurConfig.useInhabitedTime ? this.inhabitedTime : 0;
+return this.level.jellyfishConfig.useInhabitedTime ? this.inhabitedTime : 0;
 ```
 
 ## Testing API changes
 
-### Using the Purpur Test Plugin
+### Using the Jellyfish Test Plugin
 
-The Purpur project has a `test-plugin` module for easily testing out API changes
+The Jellyfish project has a `test-plugin` module for easily testing out API changes
 and additions. To use the test plugin, enable it in `test-plugin.settings.gradle.kts`,
 which will be generated after running Gradle at least once. After this, you can edit
 the test plugin, and run a server with the plugin using `./gradlew runDev` (or any
-of the other Purpur run tasks).
+of the other Jellyfish run tasks).
 
 ### Publishing to Maven local (use in external plugins)
 
-To build and install the Purpur APIs and Server to your local Maven repository, do the following:
+To build and install the Jellyfish APIs and Server to your local Maven repository, do the following:
 
 - Run `./gradlew publishToMavenLocal` in the base directory.
 
 If you use Gradle to build your plugin:
 - Add `mavenLocal()` as a repository. Gradle checks repositories in the order they are declared,
-  so if you also have the Purpur repository added, put the local repository above Purpur's.
+  so if you also have the Jellyfish repository added, put the local repository above Jellyfish's.
 - Make sure to remove `mavenLocal()` when you are done testing, see the [Gradle docs](https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:case-for-maven-local)
   for more details.
 
