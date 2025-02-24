@@ -1,0 +1,24 @@
+--- a/net/minecraft/server/Main.java
++++ b/net/minecraft/server/Main.java
+@@ -153,6 +_,21 @@
+                 return;
+             }
+ 
++            // Jellyfish start - Cool banner, we just like ascii arts
++            LOGGER.info("");
++            LOGGER.info("                                            ⠀⠀⠀⠀⡴⠂⢩⡉⠉⠉⡖⢄");
++            LOGGER.info("     ___      _ _        __ _     _         ⠀⠀⠀⢸⠪⠄⠀⠀⠀⠀⠐⠂⢧");
++            LOGGER.info("    |_  |    | | |      / _(_)   | |        ⠀⠀⠀⠙⢳⣢⢬⣁⠀⠛⠀⠂⡞");
++            LOGGER.info("      | | ___| | |_   _| |_ _ ___| |__      ⠀⣀⡤⢔⠟⣌⠷⠡⢽⢭⠝⠭⠁");
++            LOGGER.info("      | |/ _ \\ | | | | |  _| / __| '_ \\     ⡸⣡⠴⡫⢺⠏⡇⢰⠸⠘⡄");
++            LOGGER.info("  /\\__/ /  __/ | | |_| | | | \\__ \\ | | |    ⡽⠁⢸⠀⢸⡀⢣⠀⢣⠱⡈⢦");
++            LOGGER.info("  \\____/ \\___|_|_|\\__, |_| |_|___/_| |_|    ⡇⠀⠘⣆⠀⢣⡀⣇⠈⡇⢳⠀⢣");
++            LOGGER.info("                   __/ |                    ⠰⠀⠀⠘⢆⠀⠑⢸⢀⠃⠈⡇⢸");
++            LOGGER.info("                  |___/                     ⠀⠀⠀⠀⠈⠣⠀⢸⠀⠀⢠⠇");
++            LOGGER.info("                                            ⠀⠀⠀⠀⠀⠀⢠⠃⠀⠔⠁");
++            LOGGER.info("");
++            // Jellyfish end - Cool banner, we just like ascii arts
++
+             // Paper start - Detect headless JRE
+             String awtException = io.papermc.paper.util.ServerEnvironment.awtDependencyCheck();
+             if (awtException != null) {
