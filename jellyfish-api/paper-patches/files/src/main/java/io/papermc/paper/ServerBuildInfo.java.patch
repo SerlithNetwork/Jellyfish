@@ -1,17 +1,10 @@
 --- a/src/main/java/io/papermc/paper/ServerBuildInfo.java
 +++ b/src/main/java/io/papermc/paper/ServerBuildInfo.java
-@@ -14,10 +_,12 @@
- @NullMarked
- @ApiStatus.NonExtendable
- public interface ServerBuildInfo {
-+    // Jellyfish start - Rebrand
-     /**
--     * The brand id for Paper.
-+     * The brand id for Jellyfish.
+@@ -18,6 +_,7 @@
+      * The brand id for Paper.
       */
--    Key BRAND_PAPER_ID = Key.key("papermc", "paper");
-+    Key BRAND_PAPER_ID = Key.key("jellyfish", "jellyfish");
-+    // Jellyfish end - Rebrand
+     Key BRAND_PAPER_ID = Key.key("papermc", "paper");
++    Key BRAND_JELLYFISH_ID = Key.key("serlith", "jellyfish"); // Jellyfish - Rebrand
  
      /**
       * Gets the {@code ServerBuildInfo}.

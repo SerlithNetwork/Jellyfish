@@ -5,7 +5,8 @@
 </a>
 
 ## 🪼 Jellyfish 🪼
-Jellyfish is a [Paper](https://github.com/PaperMC/Paper)/[Pufferfish](https://github.com/pufferfish-gg/Pufferfish/) fork designed for server lobbies.
+Jellyfish is a [Paper](https://github.com/PaperMC/Paper)/[Pufferfish](https://github.com/pufferfish-gg/Pufferfish/) fork designed for **Network Lobbies**. \
+This fork may introduce breaking changes for either SMPs or Minigame backends.
 
 </div>
 
