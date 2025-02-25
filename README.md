@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://serlith.net">
-  <img src="assets/jellyfish_logo.svg" alt="Jellyfish" width="512">
+  <img src="assets/jellyfish_logo.svg" alt="Jellyfish" width="400">
 </a>
 
 ## 🪼 Jellyfish 🪼
