@@ -5,7 +5,7 @@
 </a>
 
 ## 🪼 Jellyfish 🪼
-Jellyfish is a [Paper](https://github.com/PaperMC/Paper) fork implementing patches from [Pufferfish](https://github.com/pufferfish-gg/Pufferfish/).
+Jellyfish is a [Paper](https://github.com/PaperMC/Paper)/[Pufferfish](https://github.com/pufferfish-gg/Pufferfish/) fork designed for server lobbies.
 
 </div>
 
@@ -41,6 +41,9 @@ will be placed under `jellyfish-api/build/libs` and `jellyfish-server/build/libs
 
 To compile a server-ready purpurclip jar, run `./gradlew createMojmapBundlerJar`.
 To install the `jellyfish-api` and `purpur` dependencies to your local Maven repo, run `./gradlew publishToMavenLocal`. The compiled purpurclip jar will be in `jellyfish-server/build/libs`.
+
+# Support
+This project is designed for Serlith Network, so support is currently not guaranteed until we can find someone to properly maintain the project.
 
 # Credits:
 
