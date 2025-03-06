@@ -1,11 +1,51 @@
 --- a/net/minecraft/server/dedicated/DedicatedServerProperties.java
 +++ b/net/minecraft/server/dedicated/DedicatedServerProperties.java
-@@ -69,7 +_,7 @@
+@@ -49,16 +_,16 @@
+     public final boolean onlineMode = this.get("online-mode", true);
+     public final boolean preventProxyConnections = this.get("prevent-proxy-connections", false);
+     public final String serverIp = this.get("server-ip", "");
+-    public final boolean pvp = this.get("pvp", true);
++    public final boolean pvp = this.get("pvp", false);
+     public final boolean allowFlight = this.get("allow-flight", false);
+-    public final String motd = this.get("motd", "A Minecraft Server");
++    public final String motd = this.get("motd", "A Minecraft Lobby");
+     public final String bugReportLink = this.get("bug-report-link", "");
+     public final boolean forceGameMode = this.get("force-gamemode", false);
+     public final boolean enforceWhitelist = this.get("enforce-whitelist", false);
+     public final Difficulty difficulty = this.get(
+         "difficulty", dispatchNumberOrString(Difficulty::byId, Difficulty::byName), Difficulty::getKey, Difficulty.EASY
+     );
+-    public final GameType gamemode = this.get("gamemode", dispatchNumberOrString(GameType::byId, GameType::byName), GameType::getName, GameType.SURVIVAL);
++    public final GameType gamemode = this.get("gamemode", dispatchNumberOrString(GameType::byId, GameType::byName), GameType::getName, GameType.ADVENTURE);
+     public final String levelName = this.get("level-name", "world");
+     public final int serverPort = this.get("server-port", 25565);
+     @Nullable
+@@ -69,8 +_,8 @@
      public final int rconPort = this.get("rcon.port", 25575);
      public final String rconPassword = this.get("rcon.password", "");
      public final boolean hardcore = this.get("hardcore", false);
 -    public final boolean allowNether = this.get("allow-nether", true);
+-    public final boolean spawnMonsters = this.get("spawn-monsters", true);
 +    public final boolean allowNether = this.get("allow-nether", false); // Jellyfish - Disable dimensions by default
-     public final boolean spawnMonsters = this.get("spawn-monsters", true);
++    public final boolean spawnMonsters = this.get("spawn-monsters", false);
      public final boolean useNativeTransport = this.get("use-native-transport", true);
      public final boolean enableCommandBlock = this.get("enable-command-block", false);
+     public final int spawnProtection = this.get("spawn-protection", 16);
+@@ -99,7 +_,7 @@
+     public final Settings<DedicatedServerProperties>.MutableValue<Integer> playerIdleTimeout = this.getMutable("player-idle-timeout", 0);
+     public final Settings<DedicatedServerProperties>.MutableValue<Boolean> whiteList = this.getMutable("white-list", false);
+     public final boolean enforceSecureProfile = this.get("enforce-secure-profile", true);
+-    public final boolean logIPs = this.get("log-ips", true);
++    public final boolean logIPs = this.get("log-ips", false);
+     public int pauseWhenEmptySeconds = this.get("pause-when-empty-seconds", -1); // Paper - disable tick sleeping by default 
+     private final DedicatedServerProperties.WorldDimensionData worldDimensionData;
+     public final WorldOptions worldOptions;
+@@ -111,7 +_,7 @@
+         super(properties, optionset);
+         // CraftBukkit end
+         String string = this.get("level-seed", "");
+-        boolean flag = this.get("generate-structures", true);
++        boolean flag = this.get("generate-structures", false);
+         long l = WorldOptions.parseSeed(string).orElse(WorldOptions.randomSeed());
+         this.worldOptions = new WorldOptions(l, flag, false);
+         this.worldDimensionData = new DedicatedServerProperties.WorldDimensionData(

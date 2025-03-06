@@ -5,4 +5,4 @@
      icanhasbukkit:
        - "version $1-"
 +    tps:
-+      - spark:spark tps
++      - spark tps
