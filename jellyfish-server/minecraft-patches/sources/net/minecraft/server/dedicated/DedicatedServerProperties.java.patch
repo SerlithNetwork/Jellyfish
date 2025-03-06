@@ -1,0 +1,11 @@
+--- a/net/minecraft/server/dedicated/DedicatedServerProperties.java
++++ b/net/minecraft/server/dedicated/DedicatedServerProperties.java
+@@ -69,7 +_,7 @@
+     public final int rconPort = this.get("rcon.port", 25575);
+     public final String rconPassword = this.get("rcon.password", "");
+     public final boolean hardcore = this.get("hardcore", false);
+-    public final boolean allowNether = this.get("allow-nether", true);
++    public final boolean allowNether = this.get("allow-nether", false); // Jellyfish - Disable dimensions by default
+     public final boolean spawnMonsters = this.get("spawn-monsters", true);
+     public final boolean useNativeTransport = this.get("use-native-transport", true);
+     public final boolean enableCommandBlock = this.get("enable-command-block", false);
