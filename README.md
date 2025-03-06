@@ -6,9 +6,37 @@
 
 ## 🪼 Jellyfish 🪼
 Jellyfish is a [Paper](https://github.com/PaperMC/Paper)/[Pufferfish](https://github.com/pufferfish-gg/Pufferfish/) fork designed for **Network Lobbies**. \
-This fork may introduce breaking changes for either SMPs or Minigame backends.
+**This fork _WILL_ introduce breaking changes, it is only recommended for Lobbies, not for SMP or Minigames.**
 
 </div>
+
+## Use case
+Jellyfish was designed for lobbies, as such is not intended to work as a standalone server software and should always be running behind a proxy. \
+As it is based on Paper, it allows using already existing plugins for Spigot/Paper. \
+If you have the time and resources to develop/port your existing software to another platform, an even better alternative to this project would be [Minestom](https://minestom.net/).
+
+<div align="center">
+<img src="assets/jellyfish_architecture.png" alt="architecture" width="500">
+</div>
+
+## Ideas
+Since most of the features in a Paper server can already be disabled via config files, so the core ideas behind Jellyfish are:
+1. Provide a proper default config
+2. Save some extra performance by optionally disabling more features that are not always going to be use
+3. Reduce the jar size by **completely removing** features that are definitely not going to be used
+4. Probably a couple of features that make easier to handle legacy players
+
+Since this project is not meant to be constantly updated to the latest minor/major release, another advantage of changing the default config files is to facilitate migration to other forks if an up-to-date version is needed.
+
+Some examples of the difference between features that can be disabled and features that will be removed.
+
+| Example Feature           | Expected action     | Reason                                          |
+|---------------------------|---------------------|-------------------------------------------------|
+| Block breaking            | Disabled by default | Most lobbies don't need block breaking          |
+| Mobs spawning with AI     | Disabled by default | Most plugins that spawn mobs don't use their AI |
+| Hunger and Health ticking | Disabled by default | Most lobbies don't use/need this mechanic       |
+| Terrain generation        | Removed             | Lobbies use void worlds                         |
+| Natural mob spawning      | Removed             | Lobbies don't need mobs spawning around         |
 
 ## License
 All patches are licensed under the MIT license.
@@ -49,6 +77,6 @@ This project is designed for Serlith Network, so support is currently not guaran
 # Credits:
 
 1. PaperMC Team
-2. Pufferfish Team
-3. PurpurMC Team, even if this is not a direct Purpur fork, we do use their project setup and a couple patches.
+2. Pufferfish Team, even if this is not a direct Pufferfish fork, we will use patches that make sense to use in a lobby.
+3. PurpurMC Team, even if this is not a direct Purpur fork, we do use their paperweight project setup.
 
