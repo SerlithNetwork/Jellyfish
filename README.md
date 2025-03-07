@@ -79,8 +79,8 @@ Use the command `./gradlew build` to build the API and server. Compiled JARs
 will be placed under `jellyfish-api/build/libs` and `jellyfish-server/build/libs`.
 **These JARs are not used to start a server.**
 
-To compile a server-ready purpurclip jar, run `./gradlew createMojmapBundlerJar`.
-To install the `jellyfish-api` and `purpur` dependencies to your local Maven repo, run `./gradlew publishToMavenLocal`. The compiled purpurclip jar will be in `jellyfish-server/build/libs`.
+To compile a server-ready paperclip jar, run `./gradlew createMojmapBundlerJar`.
+To install the `jellyfish-api` and `jellyfish` dependencies to your local Maven repo, run `./gradlew publishToMavenLocal`. The compiled paperclip jar will be in `jellyfish-server/build/libs`.
 
 # Support
 This project is designed for Serlith Network, so support is currently not guaranteed until we can find someone to properly maintain the project.
