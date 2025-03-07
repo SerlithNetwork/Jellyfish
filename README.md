@@ -22,9 +22,9 @@ If you have the time and resources to develop/port your existing software to ano
 ## Ideas
 Since most of the features in a Paper server can already be disabled via config files, the core ideas behind Jellyfish are:
 1. Provide a proper default config
-2. Save some extra performance by optionally disabling more features that are not always going to be use
+2. Save some extra performance by allowing to toggle more features that are not always going to be use and can't be toggled in Paper (if any)
 3. Reduce the jar size by **completely removing** features that are definitely not going to be used
-4. Probably a couple of features that make easier to handle legacy players
+4. Probably add a couple of features that make easier to handle legacy players
 
 Since this project is not meant to be constantly updated to the latest minor/major release, another advantage of changing the default config files is to facilitate migration to other forks if an up-to-date version is needed.
 
