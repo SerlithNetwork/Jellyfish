@@ -20,7 +20,7 @@ If you have the time and resources to develop/port your existing software to ano
 </div>
 
 ## Ideas
-Since most of the features in a Paper server can already be disabled via config files, so the core ideas behind Jellyfish are:
+Since most of the features in a Paper server can already be disabled via config files, the core ideas behind Jellyfish are:
 1. Provide a proper default config
 2. Save some extra performance by optionally disabling more features that are not always going to be use
 3. Reduce the jar size by **completely removing** features that are definitely not going to be used
