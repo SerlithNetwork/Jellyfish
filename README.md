@@ -38,6 +38,17 @@ Some examples of the difference between features that can be disabled and featur
 | Terrain generation        | Removed             | Lobbies use void worlds                         |
 | Natural mob spawning      | Removed             | Lobbies don't need mobs spawning around         |
 
+## TODO
+1. Remove terrain generation logic
+2. Remove nether and end dimension generation logic
+3. Remove global attack cooldown (For ~1.8 players)
+4. Modify void height (For <1.16 players)
+5. Toggle mob AI by default
+6. Toggle health and hunger consumption
+7. Toggle block breaking
+
+Features will slowly be removed/added as my time allows
+
 ## License
 All patches are licensed under the MIT license.
 

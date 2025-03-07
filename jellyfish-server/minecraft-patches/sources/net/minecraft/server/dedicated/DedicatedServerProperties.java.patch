@@ -1,13 +1,22 @@
 --- a/net/minecraft/server/dedicated/DedicatedServerProperties.java
 +++ b/net/minecraft/server/dedicated/DedicatedServerProperties.java
+@@ -2,6 +_,7 @@
+ 
+ import com.google.common.base.Splitter;
+ import com.google.common.base.Strings;
++import com.google.gson.JsonArray;
+ import com.google.gson.JsonElement;
+ import com.google.gson.JsonObject;
+ import com.mojang.logging.LogUtils;
 @@ -49,16 +_,16 @@
      public final boolean onlineMode = this.get("online-mode", true);
      public final boolean preventProxyConnections = this.get("prevent-proxy-connections", false);
      public final String serverIp = this.get("server-ip", "");
 -    public final boolean pvp = this.get("pvp", true);
-+    public final boolean pvp = this.get("pvp", false);
-     public final boolean allowFlight = this.get("allow-flight", false);
+-    public final boolean allowFlight = this.get("allow-flight", false);
 -    public final String motd = this.get("motd", "A Minecraft Server");
++    public final boolean pvp = this.get("pvp", false);
++    public final boolean allowFlight = this.get("allow-flight", true);
 +    public final String motd = this.get("motd", "A Minecraft Lobby");
      public final String bugReportLink = this.get("bug-report-link", "");
      public final boolean forceGameMode = this.get("force-gamemode", false);
@@ -40,7 +49,7 @@
      public int pauseWhenEmptySeconds = this.get("pause-when-empty-seconds", -1); // Paper - disable tick sleeping by default 
      private final DedicatedServerProperties.WorldDimensionData worldDimensionData;
      public final WorldOptions worldOptions;
-@@ -111,7 +_,7 @@
+@@ -111,13 +_,25 @@
          super(properties, optionset);
          // CraftBukkit end
          String string = this.get("level-seed", "");
@@ -48,4 +57,24 @@
 +        boolean flag = this.get("generate-structures", false);
          long l = WorldOptions.parseSeed(string).orElse(WorldOptions.randomSeed());
          this.worldOptions = new WorldOptions(l, flag, false);
++
++        // Jellyfish start - Void world generation
++        JsonObject layer = new JsonObject();
++        layer.addProperty("block", "minecraft:air");
++        layer.addProperty("height", 1);
++        JsonArray layers = new JsonArray();
++        layers.add(layer);
++        JsonObject generator = new JsonObject();
++        generator.addProperty("biome", "minecraft:the_void");
++        generator.add("layers", layers);
          this.worldDimensionData = new DedicatedServerProperties.WorldDimensionData(
+-            this.get("generator-settings", property -> GsonHelper.parse(!property.isEmpty() ? property : "{}"), new JsonObject()),
+-            this.get("level-type", property -> property.toLowerCase(Locale.ROOT), WorldPresets.NORMAL.location().toString())
++            this.get("generator-settings", property -> GsonHelper.parse(!property.isEmpty() ? property : "{}"), generator),
++            this.get("level-type", property -> property.toLowerCase(Locale.ROOT), WorldPresets.FLAT.location().toString())
+         );
++        // Jellyfish end - Void world generation
++
+         this.serverResourcePackInfo = getServerPackInfo(
+             this.get("resource-pack-id", ""),
+             this.get("resource-pack", ""),

@@ -1,12 +1,14 @@
 package net.serlith.jellyfish;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.serlith.jellyfish.command.JellyfishCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+@SuppressWarnings("unused")
 public class JellyfishConfig {
 
     private static final List<String> HEADER = List.of(
@@ -96,6 +99,57 @@ public class JellyfishConfig {
     private static void set(String path, Object obj) {
         config.addDefault(path, obj);
         config.set(path, obj);
+    }
+
+    private static String getString(String path, String def) {
+        config.addDefault(path, def);
+        return config.getString(path, config.getString(path));
+    }
+
+    private static boolean getBoolean(String path, boolean def) {
+        config.addDefault(path, def);
+        return config.getBoolean(path, config.getBoolean(path));
+    }
+
+    private static double getDouble(String path, double def) {
+        config.addDefault(path, def);
+        return config.getDouble(path, config.getDouble(path));
+    }
+
+    private static int getInt(String path, int def) {
+        config.addDefault(path, def);
+        return config.getInt(path, config.getInt(path));
+    }
+
+    private static <T> List<?> getList(String path, T def) {
+        config.addDefault(path, def);
+        return config.getList(path, config.getList(path));
+    }
+
+    static Map<String, Object> getMap(String path, Map<String, Object> def) {
+        if (def != null && config.getConfigurationSection(path) == null) {
+            config.addDefault(path, def);
+            return def;
+        }
+        return toMap(config.getConfigurationSection(path));
+    }
+
+    private static Map<String, Object> toMap(ConfigurationSection section) {
+        ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                Object obj = section.get(key);
+                if (obj != null) {
+                    builder.put(key, obj instanceof ConfigurationSection val ? toMap(val) : obj);
+                }
+            }
+        }
+        return builder.build();
+    }
+
+    public static boolean flyOnJoin = true;
+    private static void development() {
+        flyOnJoin = getBoolean("development.fly-on-join", flyOnJoin);
     }
 
 }
