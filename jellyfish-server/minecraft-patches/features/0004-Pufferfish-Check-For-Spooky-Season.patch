@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Biquaternions <biquaternions@serlith.net>
 Date: Wed, 19 Mar 2025 01:18:39 -0500
-Subject: [PATCH] Pufferfish Check for spooky season
+Subject: [PATCH] Pufferfish Check For Spooky Season
 
 
 diff --git a/net/minecraft/world/entity/ambient/Bat.java b/net/minecraft/world/entity/ambient/Bat.java

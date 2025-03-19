@@ -154,9 +154,11 @@ public class JellyfishConfig {
 
     public static int maxProjectileLoadsPerTick = 10;
     public static int maxProjectileLoadsPerProjectile = 10;
+    public static boolean enableBooks = false;
     private static void pufferfish() {
         maxProjectileLoadsPerTick = getInt("pufferfish.projectiles.max-loads-per-tick", maxProjectileLoadsPerTick);
         maxProjectileLoadsPerProjectile = getInt("pufferfish.projectiles.max-loads-per-projectile", maxProjectileLoadsPerProjectile);
+        enableBooks = getBoolean("pufferfish.books.enable", enableBooks);
     }
 
 }
