@@ -152,4 +152,11 @@ public class JellyfishConfig {
         flyOnJoin = getBoolean("development.fly-on-join", flyOnJoin);
     }
 
+    public static int maxProjectileLoadsPerTick = 10;
+    public static int maxProjectileLoadsPerProjectile = 10;
+    private static void pufferfish() {
+        maxProjectileLoadsPerTick = getInt("pufferfish.projectiles.max-loads-per-tick", maxProjectileLoadsPerTick);
+        maxProjectileLoadsPerProjectile = getInt("pufferfish.projectiles.max-loads-per-projectile", maxProjectileLoadsPerProjectile);
+    }
+
 }
