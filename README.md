@@ -10,6 +10,13 @@ Jellyfish is a [Paper](https://github.com/PaperMC/Paper)/[Pufferfish](https://gi
 
 </div>
 
+<div align="center">
+
+### This project is in very EARLY stages of development, no builds will be provided.
+### If you use it anyway feedback will be appreciated.
+
+</div>
+
 ## Use case
 Jellyfish was designed for lobbies, as such is not intended to work as a standalone server software and should always be running behind a proxy. \
 As it is based on Paper, it allows using already existing plugins for Spigot/Paper. \

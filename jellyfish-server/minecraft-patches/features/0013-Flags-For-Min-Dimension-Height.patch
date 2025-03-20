@@ -1,0 +1,64 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 20 Mar 2025 12:15:13 -0500
+Subject: [PATCH] Flags For Min Dimension Height
+
+
+diff --git a/net/minecraft/data/worldgen/DimensionTypes.java b/net/minecraft/data/worldgen/DimensionTypes.java
+index 1356ae93cca0a9e16112f61b599eec7d2ea7efd7..6cc5f2ddcc4a8167b7390e3ab89d919b7c117b13 100644
+--- a/net/minecraft/data/worldgen/DimensionTypes.java
++++ b/net/minecraft/data/worldgen/DimensionTypes.java
+@@ -9,6 +9,17 @@ import net.minecraft.world.level.dimension.DimensionType;
+ 
+ public class DimensionTypes {
+     public static void bootstrap(BootstrapContext<DimensionType> context) {
++        // Jellyfish start - Min world height flag
++        int minOverworld = -64, minNether = 0, minEnd = 0, minCaves = -64;
++        try {
++            minOverworld = Integer.parseInt(System.getProperty("overworld.min.y", "-64"));
++            minNether = Integer.parseInt(System.getProperty("nether.min.y", "0"));
++            minEnd = Integer.parseInt(System.getProperty("end.min.y", "0"));
++            minCaves = Integer.parseInt(System.getProperty("caves.min.y", "-64"));
++        } catch (NumberFormatException e) {
++            throw new RuntimeException(e);
++        }
++        // Jellyfish end - Min world height flag
+         context.register(
+             BuiltinDimensionTypes.OVERWORLD,
+             new DimensionType(
+@@ -20,7 +31,7 @@ public class DimensionTypes {
+                 1.0,
+                 true,
+                 false,
+-                -64,
++                minOverworld, // Jellyfish - Min world height flag
+                 384,
+                 384,
+                 BlockTags.INFINIBURN_OVERWORLD,
+@@ -40,7 +51,7 @@ public class DimensionTypes {
+                 8.0,
+                 false,
+                 true,
+-                0,
++                minNether, // Jellyfish - Min world height flag
+                 256,
+                 128,
+                 BlockTags.INFINIBURN_NETHER,
+@@ -60,7 +71,7 @@ public class DimensionTypes {
+                 1.0,
+                 false,
+                 false,
+-                0,
++                minEnd, // Jellyfish - Min world height flag
+                 256,
+                 256,
+                 BlockTags.INFINIBURN_END,
+@@ -80,7 +91,7 @@ public class DimensionTypes {
+                 1.0,
+                 true,
+                 false,
+-                -64,
++                minCaves, // Jellyfish - Min world height flag
+                 384,
+                 384,
+                 BlockTags.INFINIBURN_OVERWORLD,

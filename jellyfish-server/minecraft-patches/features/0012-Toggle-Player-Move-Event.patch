@@ -1,0 +1,26 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 20 Mar 2025 10:50:27 -0500
+Subject: [PATCH] Toggle Player Move Event
+
+
+diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 48a9abe4d852e1bb5bd1e77748d15743a5a1e5a0..3266ab5d8c8bdc36921d290110c3ef2b1b911836 100644
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -605,6 +605,7 @@ public class ServerGamePacketListenerImpl
+                     return;
+                 }
+ 
++                if (!net.serlith.jellyfish.JellyfishConfig.disablePlayerMoveEvent) {
+                 // CraftBukkit start - fire PlayerMoveEvent
+                 org.bukkit.entity.Player player = this.getCraftPlayer();
+                 if (!this.hasMoved) {
+@@ -655,6 +656,7 @@ public class ServerGamePacketListenerImpl
+                     }
+                 }
+                 // CraftBukkit end
++                }
+ 
+                 this.player.serverLevel().getChunkSource().move(this.player);
+                 if (!rootVehicle.isSpectator() && rootVehicle.isAffectedByBlocks()) rootVehicle.recordMovementThroughBlocks(new Vec3(x, y, z), rootVehicle.position());
