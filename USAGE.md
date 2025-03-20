@@ -48,3 +48,6 @@ should always be higher than `0` and lower than `256`, etc.
 # Example startup script, the flag before the -jar
 java -Xms2G -Xmx2G -Doverworld.min.y=0 -jar jellyfish.jar
 ```
+
+You can safely use this flags alongside [Aikar's Flags](https://docs.papermc.io/paper/aikars-flags), just be sure to keep
+the flag somewhere before the `-jar`.

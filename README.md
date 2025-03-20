@@ -20,11 +20,15 @@ Jellyfish is a [Paper](https://github.com/PaperMC/Paper)/[Pufferfish](https://gi
 ## Use case
 Jellyfish was designed for lobbies, as such is not intended to work as a standalone server software and should always be running behind a proxy. \
 As it is based on Paper, it allows using already existing plugins for Spigot/Paper. \
-If you have the time and resources to develop/port your existing software to another platform, an even better alternative to this project would be [Minestom](https://minestom.net/).
+If you have the time and resources to develop/port your existing software to another platform, an even better alternative to this project would be [Minestom](https://minestom.net/). \
+If you only want to hold players as an afk limbo zone with no map, you can give [NanoLimbo](https://github.com/Nan1t/NanoLimbo) a look.
 
 <div align="center">
 <img src="assets/jellyfish_architecture.png" alt="architecture" width="500">
 </div>
+
+## Usage
+For Jellyfish config file `jellyfish.yml`, startup flags and API development, check [USAGE.md](USAGE.md).
 
 ## Ideas
 Since most of the features in a Paper server can already be disabled via config files, the core ideas behind Jellyfish are:
