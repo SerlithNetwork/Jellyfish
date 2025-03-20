@@ -166,4 +166,9 @@ public class JellyfishConfig {
         globalSpawnProtection = getBoolean("protection.global-spawn-protection", globalSpawnProtection);
     }
 
+    public static boolean noTickMobAI = true;
+    private static void optimization() {
+        noTickMobAI = getBoolean("optimization.no-tick-mob-ai", noTickMobAI);
+    }
+
 }

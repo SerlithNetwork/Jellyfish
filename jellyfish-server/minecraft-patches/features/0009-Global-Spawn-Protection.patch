@@ -5,16 +5,18 @@ Subject: [PATCH] Global Spawn Protection
 
 
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index c7dcc4ea8763d5b83347550e554c58e8591cb1a4..03fa3ade624c3f97005a9514830019c79d21c67b 100644
+index c7dcc4ea8763d5b83347550e554c58e8591cb1a4..6f752bf42a0ac9f386f841c510fb8d3f03cb949c 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -549,6 +549,9 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -549,6 +549,11 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
  
      @Override
      public boolean isUnderSpawnProtection(ServerLevel level, BlockPos pos, Player player) {
++        // Jellyfish start - Global spawn protection
 +        if (net.serlith.jellyfish.JellyfishConfig.globalSpawnProtection) {
 +            return !this.getPlayerList().isOp(player.getGameProfile());
 +        }
++        // Jellyfish end - Global spawn protection
          if (level.dimension() != Level.OVERWORLD) {
              return false;
          } else if (this.getPlayerList().getOps().isEmpty()) {
