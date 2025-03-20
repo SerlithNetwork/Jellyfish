@@ -41,7 +41,7 @@ For this reason, we added some flags to customize world height at startup.
 
 These will depend on the dimension your lobby is created ~~who builds a lobby in the nether or end?~~
 and should be used responsibly. \
-For example, `Doverworld.min.y` should always be higher than `-64` and lower than `384`, `nether.min.y` 
+For example, `overworld.min.y` should always be higher than `-64` and lower than `384`, `nether.min.y` 
 should always be higher than `0` and lower than `256`, etc.
 
 ```shell

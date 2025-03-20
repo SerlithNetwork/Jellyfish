@@ -28,6 +28,19 @@
          }
      }
  }
+@@ -150,6 +_,12 @@
+     }
+ }
+ 
++// Pufferfish start - SIMD Utilities
++tasks.compileJava {
++    options.compilerArgs.add("--add-modules=jdk.incubator.vector")
++}
++// Pufferfish end - SIMD Utilities
++
+ tasks.jar {
+     from(generateApiVersioningFile.map { it.outputs.files.singleFile }) {
+         into("META-INF/maven/${project.group}/${project.name}")
 @@ -168,8 +_,10 @@
  val services = objects.newInstance<Services>()
  
@@ -40,6 +53,14 @@
      options.use()
      options.isDocFilesSubDirs = true
      options.links(
+@@ -191,6 +_,7 @@
+         "https://javadoc.io/doc/org.apache.maven.resolver/maven-resolver-api/1.7.3",
+     )
+     options.tags("apiNote:a:API Note:")
++    options.addStringOption("-add-modules", "jdk.incubator.vector") // Pufferfish
+ 
+     inputs.files(apiAndDocs).ignoreEmptyDirectories().withPropertyName(apiAndDocs.name + "-configuration")
+     val apiAndDocsElements = apiAndDocs.elements
 @@ -202,11 +_,11 @@
      }
  

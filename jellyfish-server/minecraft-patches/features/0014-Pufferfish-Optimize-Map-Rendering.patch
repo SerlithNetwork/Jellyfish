@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 20 Mar 2025 14:00:55 -0500
+Subject: [PATCH] Pufferfish Optimize Map Rendering
+
+
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 6f752bf42a0ac9f386f841c510fb8d3f03cb949c..815ff36cfc2cffe9e1a0af987c8d5c9faee8c2fe 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -235,6 +235,26 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics(); // Paper - start metrics
+         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // Paper - load version history now
+ 
++        // Pufferfish start - Attempt to detect vectorization
++        try {
++            gg.pufferfish.pufferfish.simd.SIMDDetection.isEnabled = gg.pufferfish.pufferfish.simd.SIMDDetection.canEnable(LOGGER);
++            gg.pufferfish.pufferfish.simd.SIMDDetection.versionLimited = gg.pufferfish.pufferfish.simd.SIMDDetection.getJavaVersion() < 17 || gg.pufferfish.pufferfish.simd.SIMDDetection.getJavaVersion() > 24;
++        } catch (NoClassDefFoundError | Exception ignored) {
++            ignored.printStackTrace();
++        }
++
++        if (gg.pufferfish.pufferfish.simd.SIMDDetection.isEnabled) {
++            LOGGER.info("SIMD operations detected as functional. Will replace some operations with faster versions.");
++        } else if (gg.pufferfish.pufferfish.simd.SIMDDetection.versionLimited) {
++            LOGGER.warn("Will not enable SIMD! These optimizations are only safely supported on Java 17-24.");
++        } else {
++            LOGGER.warn("SIMD operations are available for your server, but are not configured!");
++            LOGGER.warn("To enable additional optimizations, add \"--add-modules=jdk.incubator.vector\" to your startup flags, BEFORE the \"-jar\".");
++            LOGGER.warn("If you have already added this flag, then SIMD operations are not supported on your JVM or CPU.");
++            LOGGER.warn("Debug: Java: " + System.getProperty("java.version") + ", test run: " + gg.pufferfish.pufferfish.simd.SIMDDetection.testRun);
++        }
++        // Pufferfish end - Attempt to detect vectorization
++
+         this.setPvpAllowed(properties.pvp);
+         this.setFlightAllowed(properties.allowFlight);
+         this.setMotd(properties.motd);

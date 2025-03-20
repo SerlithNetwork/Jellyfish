@@ -79,3 +79,16 @@
              "Build-Number" to (build ?: ""),
              "Build-Time" to buildTime.toString(),
              "Git-Branch" to gitBranch,
+@@ -220,6 +_,12 @@
+ tasks.check {
+     dependsOn(scanJar)
+ }
++
++// Pufferfish start - SIMD Utilities
++tasks.compileJava {
++    options.compilerArgs.add("--add-modules=jdk.incubator.vector")
++}
++// Pufferfish end - SIMD Utilities
+ 
+ // Use TCA for console improvements
+ tasks.jar {
