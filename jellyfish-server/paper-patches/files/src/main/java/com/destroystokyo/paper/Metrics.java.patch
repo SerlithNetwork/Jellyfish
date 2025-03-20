@@ -9,7 +9,7 @@
  
                  metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
                      String minecraftVersion = Bukkit.getVersion();
-@@ -601,7 +_,7 @@
+@@ -601,16 +_,16 @@
                  }));
  
                  metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
@@ -18,7 +18,9 @@
                  final String paperVersion;
                  final String implVersion = org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion();
                  if (implVersion != null) {
-@@ -610,7 +_,7 @@
+                     final String buildOrHash = implVersion.substring(implVersion.lastIndexOf('-') + 1);
+-                    paperVersion = "git-Paper-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash);
++                    paperVersion = "git-Jellyfish-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash); // Jellyfish - Jellyfish metrics
                  } else {
                      paperVersion = "unknown";
                  }

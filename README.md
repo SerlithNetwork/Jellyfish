@@ -28,7 +28,7 @@ If you only want to hold players as an afk limbo zone with no map, you can give 
 </div>
 
 ## Usage
-For Jellyfish config file `jellyfish.yml`, startup flags and API development, check [USAGE.md](USAGE.md).
+For Jellyfish config file `jellyfish.yml`, startup flags and development API, check [USAGE.md](USAGE.md).
 
 ## Ideas
 Since most of the features in a Paper server can already be disabled via config files, the core ideas behind Jellyfish are:
