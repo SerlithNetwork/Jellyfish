@@ -171,4 +171,22 @@ public class JellyfishConfig {
         noTickMobAI = getBoolean("optimization.no-tick-mob-ai", noTickMobAI);
     }
 
+    public static int dimensionOverworldMinHeight = 0;
+    public static int dimensionNetherMinHeight = 0;
+    public static int dimensionEndMinHeight = 0;
+    public static int dimensionOverworldCavesMinHeight = 0;
+    private static void customization() {
+        dimensionOverworldMinHeight = getInt("dimension.overworld-min-height", dimensionOverworldMinHeight);
+        dimensionNetherMinHeight = getInt("dimension.nether-min-height", dimensionNetherMinHeight);
+        dimensionEndMinHeight = getInt("dimension.end-min-height", dimensionEndMinHeight);
+        dimensionOverworldCavesMinHeight = getInt("dimension.overworld-caves-min-height", dimensionOverworldCavesMinHeight);
+    }
+
+    public static boolean disablePlayerMoveEvent = false;
+    public static boolean disablePlayerBelowWorldEvent = false;
+    private static void events() {
+        disablePlayerMoveEvent = getBoolean("events.disable-player-move", disablePlayerMoveEvent);
+        disablePlayerBelowWorldEvent = getBoolean("events.disable-player-below-world", disablePlayerBelowWorldEvent);
+    }
+
 }
