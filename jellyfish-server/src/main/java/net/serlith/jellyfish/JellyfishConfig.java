@@ -161,4 +161,9 @@ public class JellyfishConfig {
         enableBooks = getBoolean("pufferfish.books.enable", enableBooks);
     }
 
+    public static boolean globalSpawnProtection = false;
+    private static void protection() {
+        globalSpawnProtection = getBoolean("protection.global-spawn-protection", globalSpawnProtection);
+    }
+
 }

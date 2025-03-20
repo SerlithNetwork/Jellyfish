@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Wed, 19 Mar 2025 22:52:32 -0500
+Subject: [PATCH] Global Spawn Protection
+
+
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index c7dcc4ea8763d5b83347550e554c58e8591cb1a4..03fa3ade624c3f97005a9514830019c79d21c67b 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -549,6 +549,9 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+ 
+     @Override
+     public boolean isUnderSpawnProtection(ServerLevel level, BlockPos pos, Player player) {
++        if (net.serlith.jellyfish.JellyfishConfig.globalSpawnProtection) {
++            return !this.getPlayerList().isOp(player.getGameProfile());
++        }
+         if (level.dimension() != Level.OVERWORLD) {
+             return false;
+         } else if (this.getPlayerList().getOps().isEmpty()) {
