@@ -92,12 +92,15 @@ public class JellyfishConfig extends StaticConfig {
 
             @Comment({
                 "Keeping it at 0 helps pairing 1.8 with modern versions",
-                "Min height, players below this limit will be considered \"in the void\""
+                "Min height, players below this limit will be considered \"in the void\", has to be a multiple of 16"
             })
             public static int MIN_HEIGHT = -64;
 
-            @Comment("Max world height, keep it below 384")
-            public static int MAX_HEIGHT = 256;
+            @Comment("Max world actual height, keep it below 384, has to be a multiple of 16")
+            public static int MAX_HEIGHT = 384;
+
+            @Comment("Max world height, keep it below max-height")
+            public static int MAX_HEIGHT_LOGICAL = 384;
 
             @Comment("Default minimum ambient light")
             public static float AMBIENT_LIGHT = 0.1F;
@@ -119,11 +122,14 @@ public class JellyfishConfig extends StaticConfig {
         @Comment("Nether dimension configurations")
         public static class NETHER {
 
-            @Comment("Min height, players below this limit will be considered \"in the void\"")
+            @Comment("Min height, players below this limit will be considered \"in the void\", has to be a multiple of 16")
             public static int MIN_HEIGHT = 0;
 
-            @Comment("Max world height, keep it below 256")
+            @Comment("Max world actual height, keep it below 256, has to be a multiple of 16")
             public static int MAX_HEIGHT = 256;
+
+            @Comment("Max world height, keep it below max-height")
+            public static int MAX_HEIGHT_LOGICAL = 128;
 
             @Comment("Default minimum ambient light")
             public static float AMBIENT_LIGHT = 0.1F;
@@ -145,11 +151,14 @@ public class JellyfishConfig extends StaticConfig {
         @Comment("The end dimension configurations")
         public static class THE_END {
 
-            @Comment("Min height, players below this limit will be considered \"in the void\"")
+            @Comment("Min height, players below this limit will be considered \"in the void\", has to be a multiple of 16")
             public static int MIN_HEIGHT = 0;
 
-            @Comment("Max world height, keep it below 256")
+            @Comment("Max world actual height, keep it below 256, has to be a multiple of 16")
             public static int MAX_HEIGHT = 256;
+
+            @Comment("Max world height, keep it below max-height")
+            public static int MAX_HEIGHT_LOGICAL = 256;
 
             @Comment("Default minimum ambient light")
             public static float AMBIENT_LIGHT = 0.1F;
@@ -171,11 +180,14 @@ public class JellyfishConfig extends StaticConfig {
         @Comment("Overworld Caves configurations, same as overworld, but with ceiling")
         public static class OVERWORLD_CAVES {
 
-            @Comment("Min height, players below this limit will be considered \"in the void\"")
+            @Comment("Min height, players below this limit will be considered \"in the void\", has to be a multiple of 16")
             public static int MIN_HEIGHT = -64;
 
-            @Comment("Max world height, keep it below 384")
-            public static int MAX_HEIGHT = 256;
+            @Comment("Max world actual height, keep it below 384, has to be a multiple of 16")
+            public static int MAX_HEIGHT = 384;
+
+            @Comment("Max world logical height, keep it below max-height")
+            public static int MAX_HEIGHT_LOGICAL = 384;
 
             @Comment("Default minimum ambient light")
             public static float AMBIENT_LIGHT = 0.1F;
@@ -193,6 +205,15 @@ public class JellyfishConfig extends StaticConfig {
             public static boolean RESPAWN_ANCHOR_WORKS = true;
 
         }
+
+    }
+
+    @Comment("")
+    public static class PLAYERS {
+
+        public static boolean TAKE_DAMAGE = false;
+
+        public static boolean GET_HUNGRY = false;
 
     }
 

@@ -5,7 +5,7 @@ Subject: [PATCH] Jellyfish Configurable Dimensions
 
 
 diff --git a/net/minecraft/data/worldgen/DimensionTypes.java b/net/minecraft/data/worldgen/DimensionTypes.java
-index 1356ae93cca0a9e16112f61b599eec7d2ea7efd7..8b751b21443f94095855515766eb4894cd9a1acb 100644
+index 1356ae93cca0a9e16112f61b599eec7d2ea7efd7..ba4618716fed0493df187dffc99e29e8df39bc1b 100644
 --- a/net/minecraft/data/worldgen/DimensionTypes.java
 +++ b/net/minecraft/data/worldgen/DimensionTypes.java
 @@ -15,18 +15,18 @@ public class DimensionTypes {
@@ -20,11 +20,12 @@ index 1356ae93cca0a9e16112f61b599eec7d2ea7efd7..8b751b21443f94095855515766eb4894
 -                false,
 -                -64,
 -                384,
+-                384,
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.BED_WORKS, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.RESPAWN_ANCHOR_WORKS, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.MIN_HEIGHT, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.MAX_HEIGHT, // Jellyfish - Dimensions configurable
-                 384,
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.MAX_HEIGHT_LOGICAL, // Jellyfish - Dimensions configurable
                  BlockTags.INFINIBURN_OVERWORLD,
                  BuiltinDimensionTypes.OVERWORLD_EFFECTS,
 -                0.0F,
@@ -46,11 +47,12 @@ index 1356ae93cca0a9e16112f61b599eec7d2ea7efd7..8b751b21443f94095855515766eb4894
 -                true,
 -                0,
 -                256,
+-                128,
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.BED_WORKS, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.RESPAWN_ANCHOR_WORKS, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.MIN_HEIGHT, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.MAX_HEIGHT, // Jellyfish - Dimensions configurable
-                 128,
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.MAX_HEIGHT_LOGICAL, // Jellyfish - Dimensions configurable
                  BlockTags.INFINIBURN_NETHER,
                  BuiltinDimensionTypes.NETHER_EFFECTS,
 -                0.1F,
@@ -72,11 +74,12 @@ index 1356ae93cca0a9e16112f61b599eec7d2ea7efd7..8b751b21443f94095855515766eb4894
 -                false,
 -                0,
 -                256,
+-                256,
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.BED_WORKS, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.RESPAWN_ANCHOR_WORKS, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.MIN_HEIGHT, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.MAX_HEIGHT, // Jellyfish - Dimensions configurable
-                 256,
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.MAX_HEIGHT_LOGICAL, // Jellyfish - Dimensions configurable
                  BlockTags.INFINIBURN_END,
                  BuiltinDimensionTypes.END_EFFECTS,
 -                0.0F,
@@ -97,18 +100,18 @@ index 1356ae93cca0a9e16112f61b599eec7d2ea7efd7..8b751b21443f94095855515766eb4894
 -                true,
 -                false,
 -                -64,
+-                384,
+-                384,
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.BED_WORKS, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.RESPAWN_ANCHOR_WORKS, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.MIN_HEIGHT, // Jellyfish - Dimensions configurable
 +                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.MAX_HEIGHT, // Jellyfish - Dimensions configurable
-                 384,
--                384,
--                BlockTags.INFINIBURN_OVERWORLD,
-+                BlockTags.INFINIBURN_OVERWORLD, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.MAX_HEIGHT_LOGICAL, // Jellyfish - Dimensions configurable
+                 BlockTags.INFINIBURN_OVERWORLD,
                  BuiltinDimensionTypes.OVERWORLD_EFFECTS,
 -                0.0F,
 -                new DimensionType.MonsterSettings(false, true, UniformInt.of(0, 7), 0)
-+                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.AMBIENT_LIGHT,
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.AMBIENT_LIGHT, // Jellyfish - Dimensions configurable
 +                new DimensionType.MonsterSettings(net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.PIGLIN_SAFE, false, UniformInt.of(0, 7), 0) // Jellyfish - Dimensions configurable
              )
          );
