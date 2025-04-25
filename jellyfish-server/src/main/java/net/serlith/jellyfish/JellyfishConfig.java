@@ -37,7 +37,10 @@ public class JellyfishConfig extends StaticConfig {
     })
     public static class DEVELOPMENT {
 
-        @Comment("Should players be able to fly when they join")
+        @Comment({
+            "Should players be able to fly when they join",
+            "Be sure to toggle off allow-flight in server.properties as well"
+        })
         public static boolean FLY_ON_JOIN = true;
 
     }
@@ -91,7 +94,7 @@ public class JellyfishConfig extends StaticConfig {
                 "Keeping it at 0 helps pairing 1.8 with modern versions",
                 "Min height, players below this limit will be considered \"in the void\""
             })
-            public static int MIN_HEIGHT = 0;
+            public static int MIN_HEIGHT = -64;
 
             @Comment("Max world height, keep it below 384")
             public static int MAX_HEIGHT = 256;
@@ -193,6 +196,7 @@ public class JellyfishConfig extends StaticConfig {
 
     }
 
+    @Comment("Take control of some of the events in your server")
     public static class EVENTS {
 
         @Comment("Events to disable, this will change/break plugin behavior")
@@ -202,6 +206,79 @@ public class JellyfishConfig extends StaticConfig {
             public static boolean PLAYER_MOVE_EVENT = false;
 
             public static boolean PLAYER_BELOW_WORLD_EVENT = false;
+
+        }
+
+    }
+
+    @Comment({
+        "Download, cache and load Via plugins automatically",
+        "Make sure to toggle this off if you have early access builds (https://github.com/sponsors/kennytv)"
+    })
+    public static class VIA {
+
+        @Comment({
+            "Plugin hosting service, in case one goes offline",
+            "Possible values: HANGAR, MODRINTH"
+        })
+        public static Provider PROVIDER = Provider.HANGAR;
+
+        @Ignore
+        public enum Provider { HANGAR, MODRINTH };
+        @Ignore
+        public enum Channel { ALPHA, BETA, SNAPSHOT, RELEASE };
+
+        @Comment("ViaVersion: Allow players to join using newer versions of Minecraft")
+        public static class VIA_VERSION {
+            public static boolean ENABLED = false;
+
+            @Comment({
+                "Recommended value: RELEASE",
+                "Possible values: ALPHA, BETA, SNAPSHOT, RELEASE",
+                "Modrinth uses BETA while hangar uses SNAPSHOT"
+            })
+            public static Channel CHANNEL = Channel.RELEASE;
+
+            @Comment("Recommended value: latest")
+            public static String VERSION = "latest";
+
+        }
+
+        @Comment({
+            "Depends on ViaVersion",
+            "ViaBackwards: Allow players to join using older versions of Minecraft"
+        })
+        public static class VIA_BACKWARDS {
+            public static boolean ENABLED = false;
+
+            @Comment({
+                "Recommended value: RELEASE",
+                "Possible values: ALPHA, BETA, SNAPSHOT, RELEASE",
+                "Modrinth uses BETA while hangar uses SNAPSHOT"
+            })
+            public static Channel CHANNEL = Channel.RELEASE;
+
+            @Comment("Recommended value: latest")
+            public static String VERSION = "latest";
+
+        }
+
+        @Comment({
+            "Depends on ViaVersion and ViaBackwards",
+            "ViaRewind: Allow players to join using now-legacy versions of Minecraft like 1.8 or 1.7"
+        })
+        public static class VIA_REWIND {
+            public static boolean ENABLED = false;
+
+            @Comment({
+                "Recommended value: RELEASE",
+                "Possible values: ALPHA, BETA, SNAPSHOT, RELEASE",
+                "Modrinth uses BETA while hangar uses SNAPSHOT"
+            })
+            public static Channel CHANNEL = Channel.RELEASE;
+
+            @Comment("Recommended value: latest")
+            public static String VERSION = "latest";
 
         }
 

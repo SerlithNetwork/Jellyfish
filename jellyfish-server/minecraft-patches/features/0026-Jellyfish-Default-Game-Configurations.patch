@@ -16,7 +16,7 @@ index f6518e29f805018c72222f5aaa7b662071665b65..aef9c9f488ab0e7bc19221433e6feb18
 -    public final boolean allowFlight = this.get("allow-flight", false);
 -    public final String motd = this.get("motd", "A Minecraft Server");
 +    public final boolean pvp = this.get("pvp", false); // Jellyfish - Default Configs
-+    public final boolean allowFlight = this.get("allow-flight", false);  // Jellyfish - Default Configs
++    public final boolean allowFlight = this.get("allow-flight", true);  // Jellyfish - Default Configs
 +    public final String motd = this.get("motd", "A Minecraft Lobby"); // Jellyfish - Default Configs
      public final String bugReportLink = this.get("bug-report-link", "");
      public final boolean forceGameMode = this.get("force-gamemode", false);

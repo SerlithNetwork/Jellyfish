@@ -5,7 +5,7 @@ Subject: [PATCH] Jellyfish Rebrand
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
-index 6abc57669e87f7f98f3b76af3c0e50825fea6eb1..c18c32a9f9e3d1eb8dbcea382e8c83ba126304e0 100644
+index 6abc57669e87f7f98f3b76af3c0e50825fea6eb1..52ae5ef94dacc0e93e3e1f9b07aea930e08b6a6a 100644
 --- a/src/main/java/com/destroystokyo/paper/Metrics.java
 +++ b/src/main/java/com/destroystokyo/paper/Metrics.java
 @@ -593,7 +593,7 @@ public class Metrics {
@@ -17,7 +17,7 @@ index 6abc57669e87f7f98f3b76af3c0e50825fea6eb1..c18c32a9f9e3d1eb8dbcea382e8c83ba
  
                  metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
                      String minecraftVersion = Bukkit.getVersion();
-@@ -601,16 +601,16 @@ public class Metrics {
+@@ -602,16 +602,16 @@ public class Metrics {
                  }));
  
                  metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));

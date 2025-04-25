@@ -27,27 +27,3 @@ already exists in other server software, and we'll implement it here with their 
 ## Purpur: PlayerAFKEvent
 Class: `org.purpurmc.purpur.event.PlayerAFKEvent` \
 Triggers when the player goes AFK.
-
-# 👟 Startup flags
-During development, since dimension height is loaded very early in the startup chain, 
-we couldn't find and appropriate way to customize it in the config files without forcing
-them to load very early as well. \
-For this reason, we added some flags to customize world height at startup.
-
-* `-Doverworld.min.y`
-* `-Dnether.min.y`
-* `-Dend.min.y`
-* `-Dcaves.min.y`
-
-These will depend on the dimension your lobby is created ~~who builds a lobby in the nether or end?~~
-and should be used responsibly. \
-For example, `overworld.min.y` should always be higher than `-64` and lower than `384`, `nether.min.y` 
-should always be higher than `0` and lower than `256`, etc.
-
-```shell
-# Example startup script, the flag before the -jar
-java -Xms2G -Xmx2G -Doverworld.min.y=0 -jar jellyfish.jar
-```
-
-You can safely use this flags alongside [Aikar's Flags](https://docs.papermc.io/paper/aikars-flags), just be sure to keep
-the flag somewhere before the `-jar`.
