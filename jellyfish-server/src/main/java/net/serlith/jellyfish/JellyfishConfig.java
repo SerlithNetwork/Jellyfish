@@ -1,192 +1,233 @@
 package net.serlith.jellyfish;
 
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
+import net.j4c0b3y.api.config.ConfigHandler;
+import net.j4c0b3y.api.config.StaticConfig;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.serlith.jellyfish.command.JellyfishCommand;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
+import net.minecraft.world.entity.EntityType;
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 
+@StaticConfig.Header({
+    "Main configuration file for Jellyfish.",
+    "There are a couple of useful configurations for a Network Lobby.",
+    "Some optional configurations can re-enable some features for compatibility."
+})
 @SuppressWarnings("unused")
-public class JellyfishConfig {
+public class JellyfishConfig extends StaticConfig {
 
-    private static final List<String> HEADER = List.of(
-        "Main configuration file for Jellyfish.",
-        "There are a couple of useful configurations for a Network Lobby.",
-        "Some optional configurations can re-enable some features for compatibility."
-    );
+    @Ignore
+    public static ConfigHandler HANDLER = new ConfigHandler();
 
-    private static File CONFIG_FILE;
-    public static YamlConfiguration config;
+    @Ignore
+    public static JellyfishConfig INSTANCE;
 
-    public static int version;
-    static boolean verbose;
+    public JellyfishConfig() {
+        super(new File("jellyfish.yml"), HANDLER);
+        INSTANCE = this;
+    }
 
-    private static Map<String, Command> commands;
+    public static class INFO {
+        public static String VERSION = "1.0";
+    }
 
-    @SuppressWarnings("deprecation")
-    public static void init(File configFile) {
-        CONFIG_FILE = configFile;
-        config = new YamlConfiguration();
+    @Comment({
+        "** DEVELOPMENT FEATURES **",
+        "BE SURE TO DISABLE THEM ONCE IN PRODUCTION"
+    })
+    public static class DEVELOPMENT {
 
-        try {
-            config.load(CONFIG_FILE);
-        } catch (IOException ignore) {
-        } catch (InvalidConfigurationException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not load jellyfish.yml, please correct your syntax errors", e);
-            throw Throwables.propagate(e);
+        @Comment("Should players be able to fly when they join")
+        public static boolean FLY_ON_JOIN = true;
+
+    }
+
+    @Comment("Async features to save some ticks on the main thread")
+    public static class ASYNC {
+
+        public static class CHUNK_SENDING {
+            public static boolean ENABLED = true;
+
+            public static int THREADS = 1;
+
+            public static int QUEUE_SIZE = 0;
+
         }
 
-        config.options().setHeader(HEADER);
-        config.options().copyDefaults(true);
-        verbose = config.getBoolean("verbose", false);
-
-        commands = new HashMap<>();
-        commands.put("jellyfish", new JellyfishCommand("jellyfish"));
-
-        version = config.getInt("config-version", 1);
-        set("config-version", 1);
-
-        readConfig(JellyfishConfig.class, null);
-
-        Block.BLOCK_STATE_REGISTRY.forEach(BlockBehaviour.BlockStateBase::initCache);
     }
 
-    public static void registerCommands() {
-        for (Map.Entry<String, Command> entry: commands.entrySet()) {
-            MinecraftServer.getServer().server.getCommandMap().register(entry.getKey(), "Jellyfish", entry.getValue());
-        }
-    }
+    @Comment("")
+    public static class TICKING {
 
-    @SuppressWarnings("deprecation")
-    protected static void readConfig(Class<?> clazz, Object inst) {
-        for (Method method : clazz.getDeclaredMethods()) {
-            if (Modifier.isPrivate(method.getModifiers())) {
-                if (method.getParameterTypes().length == 0 && method.getReturnType() == Void.TYPE) {
-                    try {
-                        method.setAccessible(true);
-                        method.invoke(inst);
-                    } catch (InvocationTargetException e) {
-                        throw Throwables.propagate(e.getCause());
-                    } catch (Exception e) {
-                        Bukkit.getLogger().log(Level.SEVERE, "Could not invoke method " + method.getName(), e);
-                    }
-                }
-            }
+        public static class ENTITIES {
+            public static List<String> NO_TICK = List.of(
+                "minecraft:item_display",
+                "minecraft:block_display",
+                "minecraft:text_display"
+                );
         }
 
-        try {
-            config.save(CONFIG_FILE);
-        } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not save jellyfish config", e);
+        public static class TILE_ENTITIES {}
+
+        public static class BLOCKS {}
+
+    }
+
+    @Comment("Features that prevent players from interacting with the world")
+    public static class SECURITY {
+
+        @Comment("The whole world will have spawn protection")
+        public static boolean GLOBAL_SPAWN_PROTECTION = true;
+
+    }
+
+    @Comment("Dimension-related configurations")
+    public static class DIMENSIONS {
+
+        @Comment("Overworld dimension configurations")
+        public static class OVERWORLD {
+
+            @Comment({
+                "Keeping it at 0 helps pairing 1.8 with modern versions",
+                "Min height, players below this limit will be considered \"in the void\""
+            })
+            public static int MIN_HEIGHT = 0;
+
+            @Comment("Max world height, keep it below 384")
+            public static int MAX_HEIGHT = 256;
+
+            @Comment("Default minimum ambient light")
+            public static float AMBIENT_LIGHT = 0.1F;
+
+            @Comment("Should be able to place water")
+            public static boolean PLACE_WATER = true;
+
+            @Comment("Should piglins wiggle until eventually being zombified")
+            public static boolean PIGLIN_SAFE = true;
+
+            @Comment("Should beds attempt to trigger an explosion")
+            public static boolean BED_WORKS = true;
+
+            @Comment("Should respawn anchors attempt to trigger an explosion")
+            public static boolean RESPAWN_ANCHOR_WORKS = true;
+
         }
-    }
 
-    private static void set(String path, Object obj) {
-        config.addDefault(path, obj);
-        config.set(path, obj);
-    }
+        @Comment("Nether dimension configurations")
+        public static class NETHER {
 
-    private static String getString(String path, String def) {
-        config.addDefault(path, def);
-        return config.getString(path, config.getString(path));
-    }
+            @Comment("Min height, players below this limit will be considered \"in the void\"")
+            public static int MIN_HEIGHT = 0;
 
-    private static boolean getBoolean(String path, boolean def) {
-        config.addDefault(path, def);
-        return config.getBoolean(path, config.getBoolean(path));
-    }
+            @Comment("Max world height, keep it below 256")
+            public static int MAX_HEIGHT = 256;
 
-    private static double getDouble(String path, double def) {
-        config.addDefault(path, def);
-        return config.getDouble(path, config.getDouble(path));
-    }
+            @Comment("Default minimum ambient light")
+            public static float AMBIENT_LIGHT = 0.1F;
 
-    private static int getInt(String path, int def) {
-        config.addDefault(path, def);
-        return config.getInt(path, config.getInt(path));
-    }
+            @Comment("Should be able to place water")
+            public static boolean PLACE_WATER = false;
 
-    private static <T> List<?> getList(String path, T def) {
-        config.addDefault(path, def);
-        return config.getList(path, config.getList(path));
-    }
+            @Comment("Should piglins wiggle until eventually being zombified")
+            public static boolean PIGLIN_SAFE = true;
 
-    static Map<String, Object> getMap(String path, Map<String, Object> def) {
-        if (def != null && config.getConfigurationSection(path) == null) {
-            config.addDefault(path, def);
-            return def;
+            @Comment("Should beds attempt to trigger an explosion")
+            public static boolean BED_WORKS = true;
+
+            @Comment("Should respawn anchors attempt to trigger an explosion")
+            public static boolean RESPAWN_ANCHOR_WORKS = true;
+
         }
-        return toMap(config.getConfigurationSection(path));
-    }
 
-    private static Map<String, Object> toMap(ConfigurationSection section) {
-        ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
-        if (section != null) {
-            for (String key : section.getKeys(false)) {
-                Object obj = section.get(key);
-                if (obj != null) {
-                    builder.put(key, obj instanceof ConfigurationSection val ? toMap(val) : obj);
-                }
-            }
+        @Comment("The end dimension configurations")
+        public static class THE_END {
+
+            @Comment("Min height, players below this limit will be considered \"in the void\"")
+            public static int MIN_HEIGHT = 0;
+
+            @Comment("Max world height, keep it below 256")
+            public static int MAX_HEIGHT = 256;
+
+            @Comment("Default minimum ambient light")
+            public static float AMBIENT_LIGHT = 0.1F;
+
+            @Comment("Should be able to place water")
+            public static boolean PLACE_WATER = true;
+
+            @Comment("Should piglins wiggle until eventually being zombified")
+            public static boolean PIGLIN_SAFE = true;
+
+            @Comment("Should beds attempt to trigger an explosion")
+            public static boolean BED_WORKS = true;
+
+            @Comment("Should respawn anchors attempt to trigger an explosion")
+            public static boolean RESPAWN_ANCHOR_WORKS = true;
+
         }
-        return builder.build();
+
+        @Comment("Overworld Caves configurations, same as overworld, but with ceiling")
+        public static class OVERWORLD_CAVES {
+
+            @Comment("Min height, players below this limit will be considered \"in the void\"")
+            public static int MIN_HEIGHT = -64;
+
+            @Comment("Max world height, keep it below 384")
+            public static int MAX_HEIGHT = 256;
+
+            @Comment("Default minimum ambient light")
+            public static float AMBIENT_LIGHT = 0.1F;
+
+            @Comment("Should be able to place water")
+            public static boolean PLACE_WATER = true;
+
+            @Comment("Should piglins wiggle until eventually being zombified")
+            public static boolean PIGLIN_SAFE = true;
+
+            @Comment("Should beds attempt to trigger an explosion")
+            public static boolean BED_WORKS = true;
+
+            @Comment("Should respawn anchors attempt to trigger an explosion")
+            public static boolean RESPAWN_ANCHOR_WORKS = true;
+
+        }
+
     }
 
-    public static boolean flyOnJoin = true;
-    private static void development() {
-        flyOnJoin = getBoolean("development.fly-on-join", flyOnJoin);
+    public static class EVENTS {
+
+        @Comment("Events to disable, this will change/break plugin behavior")
+        public static class DISABLE {
+
+            @Comment("Will not trigger neither the event or the pre-post calculations to make it work")
+            public static boolean PLAYER_MOVE_EVENT = false;
+
+            public static boolean PLAYER_BELOW_WORLD_EVENT = false;
+
+        }
+
     }
 
-    public static int maxProjectileLoadsPerTick = 10;
-    public static int maxProjectileLoadsPerProjectile = 10;
-    public static boolean enableBooks = false;
-    private static void pufferfish() {
-        maxProjectileLoadsPerTick = getInt("pufferfish.projectiles.max-loads-per-tick", maxProjectileLoadsPerTick);
-        maxProjectileLoadsPerProjectile = getInt("pufferfish.projectiles.max-loads-per-projectile", maxProjectileLoadsPerProjectile);
-        enableBooks = getBoolean("pufferfish.books.enable", enableBooks);
+    @Override
+    public void load() {
+        super.load();
+        if (initialized) init();
     }
 
-    public static boolean globalSpawnProtection = false;
-    private static void protection() {
-        globalSpawnProtection = getBoolean("protection.global-spawn-protection", globalSpawnProtection);
-    }
+    @Ignore
+    private static boolean initialized = false;
+    public static void init() {
 
-    public static boolean noTickMobAI = true;
-    private static void optimization() {
-        noTickMobAI = getBoolean("optimization.no-tick-mob-ai", noTickMobAI);
-    }
+        BuiltInRegistries.ENTITY_TYPE.forEach(e -> {
+            e.noTick = false;
+        });
 
-    public static int dimensionOverworldMinHeight = 0;
-    public static int dimensionNetherMinHeight = 0;
-    public static int dimensionEndMinHeight = 0;
-    public static int dimensionOverworldCavesMinHeight = 0;
-    private static void customization() {
-        dimensionOverworldMinHeight = getInt("dimension.overworld-min-height", dimensionOverworldMinHeight);
-        dimensionNetherMinHeight = getInt("dimension.nether-min-height", dimensionNetherMinHeight);
-        dimensionEndMinHeight = getInt("dimension.end-min-height", dimensionEndMinHeight);
-        dimensionOverworldCavesMinHeight = getInt("dimension.overworld-caves-min-height", dimensionOverworldCavesMinHeight);
-    }
+        TICKING.ENTITIES.NO_TICK.forEach(s -> {
+            EntityType.byString(s).ifPresentOrElse(e -> {
+                e.noTick = true;
+            }, () -> MinecraftServer.LOGGER.warn("Unknown entity \"{}\" will tick", s));
+        });
 
-    public static boolean disablePlayerMoveEvent = false;
-    public static boolean disablePlayerBelowWorldEvent = false;
-    private static void events() {
-        disablePlayerMoveEvent = getBoolean("events.disable-player-move", disablePlayerMoveEvent);
-        disablePlayerBelowWorldEvent = getBoolean("events.disable-player-below-world", disablePlayerBelowWorldEvent);
+        initialized = true;
     }
 
 }

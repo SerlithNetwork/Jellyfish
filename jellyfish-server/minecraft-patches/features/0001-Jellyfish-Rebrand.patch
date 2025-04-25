@@ -1,0 +1,75 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 20 Mar 2025 22:46:25 -0500
+Subject: [PATCH] Jellyfish Rebrand
+
+
+diff --git a/net/minecraft/CrashReport.java b/net/minecraft/CrashReport.java
+index 3e0e88afcf010d9a3d46e48bca5cbdf98fe97544..bfde5b9e36cec91f3a83dab0f2a13694166f71fe 100644
+--- a/net/minecraft/CrashReport.java
++++ b/net/minecraft/CrashReport.java
+@@ -30,6 +30,7 @@ public class CrashReport {
+     private boolean trackingStackTrace = true;
+     private StackTraceElement[] uncategorizedStackTrace = new StackTraceElement[0];
+     private final SystemReport systemReport = new SystemReport();
++    private final List<String> extraInfo = List.of("", "DO NOT REPORT THIS TO PAPER! REPORT THIS TO JELLYFISH!", ""); // Jellyfish - Rebrand
+ 
+     public CrashReport(String title, Throwable exception) {
+         io.papermc.paper.util.StacktraceDeobfuscator.INSTANCE.deobfuscateThrowable(exception); // Paper
+@@ -130,7 +131,7 @@ public class CrashReport {
+     }
+ 
+     public String getFriendlyReport(ReportType type) {
+-        return this.getFriendlyReport(type, List.of());
++        return this.getFriendlyReport(type, this.extraInfo); // Jellyfish - Rebrand
+     }
+ 
+     @Nullable
+@@ -161,7 +162,7 @@ public class CrashReport {
+     }
+ 
+     public boolean saveToFile(Path path, ReportType type) {
+-        return this.saveToFile(path, type, List.of());
++        return this.saveToFile(path, type, this.extraInfo); // Jellyfish - Rebrand
+     }
+ 
+     public SystemReport getSystemReport() {
+diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
+index 9c9b601a3f903bebb0dd1bda0e24745587229727..26b82449334ec6eebc256cd2b9b4be565e8a5264 100644
+--- a/net/minecraft/server/Main.java
++++ b/net/minecraft/server/Main.java
+@@ -153,6 +153,21 @@ public class Main {
+                 return;
+             }
+ 
++            // Jellyfish start - Cool banner, we just like ascii arts
++            LOGGER.info("");
++            LOGGER.info("                                            ⠀⠀⠀⠀⡴⠂⢩⡉⠉⠉⡖⢄");
++            LOGGER.info("     ___      _ _        __ _     _         ⠀⠀⠀⢸⠪⠄⠀⠀⠀⠀⠐⠂⢧");
++            LOGGER.info("    |_  |    | | |      / _(_)   | |        ⠀⠀⠀⠙⢳⣢⢬⣁⠀⠛⠀⠂⡞");
++            LOGGER.info("      | | ___| | |_   _| |_ _ ___| |__      ⠀⣀⡤⢔⠟⣌⠷⠡⢽⢭⠝⠭⠁");
++            LOGGER.info("      | |/ _ \\ | | | | |  _| / __| '_ \\     ⡸⣡⠴⡫⢺⠏⡇⢰⠸⠘⡄");
++            LOGGER.info("  /\\__/ /  __/ | | |_| | | | \\__ \\ | | |    ⡽⠁⢸⠀⢸⡀⢣⠀⢣⠱⡈⢦");
++            LOGGER.info("  \\____/ \\___|_|_|\\__, |_| |_|___/_| |_|    ⡇⠀⠘⣆⠀⢣⡀⣇⠈⡇⢳⠀⢣");
++            LOGGER.info("                   __/ |                    ⠰⠀⠀⠘⢆⠀⠑⢸⢀⠃⠈⡇⢸");
++            LOGGER.info("                  |___/                     ⠀⠀⠀⠀⠈⠣⠀⢸⠀⠀⢠⠇");
++            LOGGER.info("                                            ⠀⠀⠀⠀⠀⠀⢠⠃⠀⠔⠁");
++            LOGGER.info("");
++            // Jellyfish end - Cool banner, we just like ascii arts
++
+             // Paper start - Detect headless JRE
+             String awtException = io.papermc.paper.util.ServerEnvironment.awtDependencyCheck();
+             if (awtException != null) {
+diff --git a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
+index 384f2cd090d6d23bd1308d6e82c24338f2bf55d1..684545aea9f3ae8b568c8c9ecc2aa2fe9ec92856 100644
+--- a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
++++ b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
+@@ -308,7 +308,7 @@ public class RegionFileStorage implements AutoCloseable, ca.spottedleaf.moonrise
+ 
+     // Paper start
+     private static void printOversizedLog(String msg, Path file, int x, int z) {
+-        org.apache.logging.log4j.LogManager.getLogger().fatal(msg + " (" + file.toString().replaceAll(".+[\\\\/]", "") + " - " + x + "," + z + ") Go clean it up to remove this message. /minecraft:tp " + (x<<4)+" 128 "+(z<<4) + " - DO NOT REPORT THIS TO PAPER - You may ask for help on Discord, but do not file an issue. These error messages can not be removed.");
++        org.apache.logging.log4j.LogManager.getLogger().fatal(msg + " (" + file.toString().replaceAll(".+[\\\\/]", "") + " - " + x + "," + z + ") Go clean it up to remove this message. /minecraft:tp " + (x<<4)+" 128 "+(z<<4) + " - DO NOT REPORT THIS TO JELLYFISH - You may ask for help on Discord, but do not file an issue. These error messages can not be removed."); // Jellyfish - Rebrand
+     }
+ 
+     private static CompoundTag readOversizedChunk(RegionFile regionfile, ChunkPos chunkCoordinate) throws IOException {

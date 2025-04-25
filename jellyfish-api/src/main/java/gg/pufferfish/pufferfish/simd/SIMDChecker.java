@@ -1,9 +1,10 @@
 package gg.pufferfish.pufferfish.simd;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jdk.incubator.vector.FloatVector;
 import jdk.incubator.vector.IntVector;
 import jdk.incubator.vector.VectorSpecies;
-import org.slf4j.Logger;
 
 /**
  * Basically, java is annoying and we have to push this out to its own class.
@@ -14,7 +15,7 @@ public class SIMDChecker {
     @Deprecated
     public static boolean canEnable(Logger logger) {
         try {
-            if (SIMDDetection.getJavaVersion() < 17 || SIMDDetection.getJavaVersion() > 21) {
+            if (SIMDDetection.getJavaVersion() < 17 || SIMDDetection.getJavaVersion() > 24) {
                 return false;
             } else {
                 SIMDDetection.testRun = true;
@@ -22,11 +23,11 @@ public class SIMDChecker {
                 VectorSpecies<Integer> ISPEC = IntVector.SPECIES_PREFERRED;
                 VectorSpecies<Float> FSPEC = FloatVector.SPECIES_PREFERRED;
 
-                logger.info("Max SIMD vector size on this system is {} bits (int)", ISPEC.vectorBitSize());
-                logger.info("Max SIMD vector size on this system is {} bits (float)", FSPEC.vectorBitSize());
+                logger.log(Level.INFO, "Max SIMD vector size on this system is " + ISPEC.vectorBitSize() + " bits (int)");
+                logger.log(Level.INFO, "Max SIMD vector size on this system is " + FSPEC.vectorBitSize() + " bits (float)");
 
                 if (ISPEC.elementSize() < 2 || FSPEC.elementSize() < 2) {
-                    logger.warn("SIMD is not properly supported on this system!");
+                    logger.log(Level.WARNING, "SIMD is not properly supported on this system!");
                     return false;
                 }
 

@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Fri, 21 Mar 2025 12:41:24 -0500
+Subject: [PATCH] Pufferfish Throttle Goal Selector On Inactive Ticking
+
+
+diff --git a/net/minecraft/world/entity/Mob.java b/net/minecraft/world/entity/Mob.java
+index b5342b5dd4d820d38b0afca9ba17f43596383327..25bcb0bf7370c698f7702e5cb5e9cc02ba118ac6 100644
+--- a/net/minecraft/world/entity/Mob.java
++++ b/net/minecraft/world/entity/Mob.java
+@@ -203,11 +203,13 @@ public abstract class Mob extends LivingEntity implements EquipmentUser, Leashab
+         return this.lookControl;
+     }
+ 
++    int _pufferfish_inactiveTickDisableCounter = 0; // Pufferfish - throttle inactive goal selector ticking
+     // Paper start
+     @Override
+     public void inactiveTick() {
+         super.inactiveTick();
+-        if (this.goalSelector.inactiveTick(this.activatedPriority, true)) { // Pufferfish - pass activated priority
++        boolean isThrottled = gg.pufferfish.pufferfish.PufferfishConfig.INACTIVE_GOAL_SELECTOR_THROTTLE && _pufferfish_inactiveTickDisableCounter++ % 20 != 0; // Pufferfish - throttle inactive goal selector ticking
++        if (this.goalSelector.inactiveTick(this.activatedPriority, true) && !isThrottled) { // Pufferfish - pass activated priroity // Pufferfish - throttle inactive goal selector ticking
+             this.goalSelector.tick();
+         }
+         if (this.targetSelector.inactiveTick(this.activatedPriority, true)) { // Pufferfish - pass activated priority

@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 20 Mar 2025 23:27:10 -0500
+Subject: [PATCH] Pufferfish Expose findClass For Profiler
+
+
+diff --git a/src/main/java/org/bukkit/plugin/java/PluginClassLoader.java b/src/main/java/org/bukkit/plugin/java/PluginClassLoader.java
+index 7e4f7cb2afbc145e532285c793573ad107bc3033..9d9b6000be0946b8e150065913f343b91fd99919 100644
+--- a/src/main/java/org/bukkit/plugin/java/PluginClassLoader.java
++++ b/src/main/java/org/bukkit/plugin/java/PluginClassLoader.java
+@@ -197,6 +197,7 @@ public final class PluginClassLoader extends URLClassLoader implements io.paperm
+         throw new ClassNotFoundException(name);
+     }
+ 
++    public boolean _airplane_hasClass(@NotNull String name) { return this.classes.containsKey(name); } // Pufferfish - Expose findClass
+     @Override
+     protected Class<?> findClass(String name) throws ClassNotFoundException {
+         if (name.startsWith("org.bukkit.") || name.startsWith("net.minecraft.")) {

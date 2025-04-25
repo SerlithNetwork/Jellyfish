@@ -1,8 +1,10 @@
 --- a/src/main/resources/configurations/commands.yml
 +++ b/src/main/resources/configurations/commands.yml
-@@ -14,3 +_,5 @@
+@@ -13,3 +_,7 @@
  aliases:
      icanhasbukkit:
        - "version $1-"
 +    tps:
-+      - spark tps
++      - "spark tps"
++    ping:
++      - "spark ping"

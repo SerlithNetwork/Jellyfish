@@ -28,12 +28,6 @@ already exists in other server software, and we'll implement it here with their 
 Class: `org.purpurmc.purpur.event.PlayerAFKEvent` \
 Triggers when the player goes AFK.
 
-# 📄 Kotlin Support
-You can add a `kotlin: <version>` field in `paper-plugin.yml` as a shortcut to download your Kotlin library
-using [Paper's PluginLoader](https://docs.papermc.io/paper/dev/getting-started/paper-plugins#loaders) to download Kotlin
-or shading it into the jar. \
-Probably only useful if your plugin is Jellyfish exclusive, otherwise you can ignore it.
-
 # 👟 Startup flags
 During development, since dimension height is loaded very early in the startup chain, 
 we couldn't find and appropriate way to customize it in the config files without forcing

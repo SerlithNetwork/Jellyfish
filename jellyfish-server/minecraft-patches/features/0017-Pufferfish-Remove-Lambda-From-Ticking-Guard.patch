@@ -1,0 +1,54 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Fri, 21 Mar 2025 12:37:08 -0500
+Subject: [PATCH] Pufferfish Remove Lambda From Ticking Guard
+
+
+diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
+index f5d905ec4bcd5f7f6103be31e155e76da51821a2..cc4e54b7198acec4c3ce09e1b6fa9efcd89c54e1 100644
+--- a/net/minecraft/server/level/ServerLevel.java
++++ b/net/minecraft/server/level/ServerLevel.java
+@@ -805,7 +805,19 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+                                     }
+ 
+                                     profilerFiller.push("tick");
+-                                    this.guardEntityTick(this::tickNonPassenger, entity);
++                                    // Pufferfish start - copied from this.guardEntityTick
++                                    try {
++                                        this.tickNonPassenger(entity); // Pufferfish - changed
++                                    } catch (Throwable throwable) {
++                                        // Paper start - Prevent tile entity and entity crashes
++                                        final String msg = String.format("Entity threw exception at %s:%s,%s,%s", entity.level().getWorld().getName(), entity.getX(), entity.getY(), entity.getZ());
++                                        MinecraftServer.LOGGER.error(msg, throwable);
++                                        getCraftServer().getPluginManager().callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerInternalException(msg, throwable)));
++                                        entity.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.DISCARD);
++                                        // Paper end
++                                    }
++                                    this.moonrise$midTickTasks(); // Paper - rewrite chunk system
++                                    // Pufferfish end
+                                     profilerFiller.pop();
+                                 }
+                             }
+diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
+index 013ed7dbe2309f562f63e66203179a90566e8115..2e54cbf126a89ea7dfd26dcbb8c1f13769ecd230 100644
+--- a/net/minecraft/world/level/Level.java
++++ b/net/minecraft/world/level/Level.java
+@@ -1481,15 +1481,15 @@ public abstract class Level implements LevelAccessor, UUIDLookup<Entity>, AutoCl
+     public <T extends Entity> void guardEntityTick(Consumer<T> consumerEntity, T entity) {
+         try {
+             consumerEntity.accept(entity);
+-        } catch (Throwable var6) {
++        } catch (Throwable var6) { // Pufferfish - diff on change ServerLevel.tick
+             // Paper start - Prevent block entity and entity crashes
+             final String msg = String.format("Entity threw exception at %s:%s,%s,%s", entity.level().getWorld().getName(), entity.getX(), entity.getY(), entity.getZ());
+             MinecraftServer.LOGGER.error(msg, var6);
+             getCraftServer().getPluginManager().callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerInternalException(msg, var6))); // Paper - ServerExceptionEvent
+-            entity.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.DISCARD);
++            entity.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.DISCARD); // Pufferfish - diff on change ServerLevel.tick
+             // Paper end - Prevent block entity and entity crashes
+         }
+-        this.moonrise$midTickTasks(); // Paper - rewrite chunk system
++        this.moonrise$midTickTasks(); // Paper - rewrite chunk system // Pufferfish - diff on change ServerLevel.tick
+     }
+ 
+     // Paper start - Option to prevent armor stands from doing entity lookups

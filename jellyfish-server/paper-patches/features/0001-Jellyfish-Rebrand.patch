@@ -1,0 +1,179 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 20 Mar 2025 22:29:19 -0500
+Subject: [PATCH] Jellyfish Rebrand
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
+index 6abc57669e87f7f98f3b76af3c0e50825fea6eb1..c18c32a9f9e3d1eb8dbcea382e8c83ba126304e0 100644
+--- a/src/main/java/com/destroystokyo/paper/Metrics.java
++++ b/src/main/java/com/destroystokyo/paper/Metrics.java
+@@ -593,7 +593,7 @@ public class Metrics {
+             boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
+             // Only start Metrics, if it's enabled in the config
+             if (config.getBoolean("enabled", true)) {
+-                Metrics metrics = new Metrics("Paper", serverUUID, logFailedRequests, Bukkit.getLogger());
++                Metrics metrics = new Metrics("Jellyfish", serverUUID, logFailedRequests, Bukkit.getLogger()); // Jellyfish - Rebrand
+ 
+                 metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
+                     String minecraftVersion = Bukkit.getVersion();
+@@ -601,16 +601,16 @@ public class Metrics {
+                 }));
+ 
+                 metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+-                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : "offline"));
++                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> io.papermc.paper.configuration.GlobalConfiguration.get().proxies.isProxyOnlineMode() ? "online" : "offline")); // Jellyfish - Lobby online mode should depend on the proxy
+                 final String paperVersion;
+                 final String implVersion = org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion();
+                 if (implVersion != null) {
+                     final String buildOrHash = implVersion.substring(implVersion.lastIndexOf('-') + 1);
+-                    paperVersion = "git-Paper-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash);
++                    paperVersion = "git-Jellyfish-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash); // Jellyfish - Rebrand
+                 } else {
+                     paperVersion = "unknown";
+                 }
+-                metrics.addCustomChart(new Metrics.SimplePie("paper_version", () -> paperVersion));
++                metrics.addCustomChart(new Metrics.SimplePie("jellyfish_version", () -> paperVersion)); // Jellyfish - Rebrand
+ 
+                 metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+                     Map<String, Map<String, Integer>> map = new HashMap<>();
+diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+index bad941054349efe53756d6ab53ba7f6872de8e6f..0a27afdee9eab19834fdd98a0967e8544f1dc4fb 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
++++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+@@ -35,7 +35,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+     private static final Logger LOGGER = LogUtils.getClassLogger();
+     private static final int DISTANCE_ERROR = -1;
+     private static final int DISTANCE_UNKNOWN = -2;
+-    private static final String DOWNLOAD_PAGE = "https://papermc.io/downloads/paper";
++    private static final String DOWNLOAD_PAGE = "https://github.com/SerlithNetwork/Jellyfish"; // Jellyfish - Rebrand
+ 
+     @Override
+     public long getCacheTime() {
+@@ -49,7 +49,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+         if (build.buildNumber().isEmpty() && build.gitCommit().isEmpty()) {
+             updateMessage = text("You are running a development version without access to version information", color(0xFF5300));
+         } else {
+-            updateMessage = getUpdateStatusMessage("PaperMC/Paper", build);
++            updateMessage = getUpdateStatusMessage("SerlithNetwork/Jellyfish", build); // Jellyfish - Rebrand
+         }
+         final @Nullable Component history = this.getHistory();
+ 
+diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
+index 6ee39b534b8d992655bc0cef3c299d12cbae0034..c2ff87769659d9134309ad318b8db92bd07b2bc3 100644
+--- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
++++ b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
+@@ -20,7 +20,7 @@ public final class PaperConsole extends SimpleTerminalConsole {
+     @Override
+     protected LineReader buildReader(LineReaderBuilder builder) {
+         builder
+-                .appName("Paper")
++                .appName("Jellyfish") // Jellyfish - Rebrand
+                 .variable(LineReader.HISTORY_FILE, java.nio.file.Paths.get(".console_history"))
+                 .completer(new ConsoleCommandCompleter(this.server))
+                 .option(LineReader.Option.COMPLETE_IN_WORD, true);
+diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+index 790bad0494454ca12ee152e3de6da3da634d9b20..5e9c0be61f64f719d6153d253da1e62f04041a15 100644
+--- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
++++ b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+@@ -31,6 +31,7 @@ public record ServerBuildInfoImpl(
+     private static final String ATTRIBUTE_GIT_COMMIT = "Git-Commit";
+ 
+     private static final String BRAND_PAPER_NAME = "Paper";
++    private static final String BRAND_JELLYFISH_NAME = "Jellyfish"; // Jellyfish - Rebrand
+ 
+     private static final String BUILD_DEV = "DEV";
+ 
+@@ -42,9 +43,9 @@ public record ServerBuildInfoImpl(
+         this(
+             getManifestAttribute(manifest, ATTRIBUTE_BRAND_ID)
+                 .map(Key::key)
+-                .orElse(BRAND_PAPER_ID),
++                .orElse(BRAND_JELLYFISH_ID), // Jellyfish - Rebrand
+             getManifestAttribute(manifest, ATTRIBUTE_BRAND_NAME)
+-                .orElse(BRAND_PAPER_NAME),
++                .orElse(BRAND_JELLYFISH_NAME), // Jellyfish - Rebrand
+             SharedConstants.getCurrentVersion().getId(),
+             SharedConstants.getCurrentVersion().getName(),
+             getManifestAttribute(manifest, ATTRIBUTE_BUILD_NUMBER)
+diff --git a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
+index 1354ccfbf525e5e64483ac5f443cc2325ba63850..b023790f8ad99ba1dcb97ebf0b4e0c979f37a02c 100644
+--- a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
++++ b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
+@@ -491,7 +491,7 @@ public class CraftScheduler implements BukkitScheduler {
+                 this.parsePending();
+             } else {
+                 // this.debugTail = this.debugTail.setNext(new CraftAsyncDebugger(this.currentTick + CraftScheduler.RECENT_TICKS, task.getOwner(), task.getTaskClass())); // Paper
+-                task.getOwner().getLogger().log(Level.SEVERE, "Unexpected Async Task in the Sync Scheduler. Report this to Paper"); // Paper
++                task.getOwner().getLogger().log(Level.SEVERE, "Unexpected Async Task in the Sync Scheduler. Report this to Jellyfish"); // Paper // Jellyfish - Rebrand
+                 // We don't need to parse pending
+                 // (async tasks must live with race-conditions if they attempt to cancel between these few lines of code)
+             }
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 774556a62eb240da42e84db4502e2ed43495be17..3ec6a25525955bdc7d209d5ba0b652d47411ad31 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/io.papermc.paper/paper-api/pom.properties");
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/net.serlith.jellyfish/jellyfish-api/pom.properties"); // Jellyfish - Rebrand
+         Properties properties = new Properties();
+ 
+         if (stream != null) {
+diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
+index 471941a5bf691d4c31b2eb5ef4a11dc91499f674..691c2bccb3b781457cdd748892ae6602196be1a0 100644
+--- a/src/main/java/org/spigotmc/WatchdogThread.java
++++ b/src/main/java/org/spigotmc/WatchdogThread.java
+@@ -25,7 +25,7 @@ public class WatchdogThread extends ca.spottedleaf.moonrise.common.util.TickThre
+     private volatile boolean stopping;
+ 
+     private WatchdogThread(long timeoutTime, boolean restart) {
+-        super("Paper Watchdog Thread");
++        super("Jellyfish Watchdog Thread"); // Jellyfish - Rebrand
+         this.timeoutTime = timeoutTime;
+         this.restart = restart;
+         this.earlyWarningEvery = Math.min(GlobalConfiguration.get().watchdog.earlyWarningEvery, timeoutTime);
+@@ -75,14 +75,14 @@ public class WatchdogThread extends ca.spottedleaf.moonrise.common.util.TickThre
+                 this.lastEarlyWarning = currentTime;
+                 if (isLongTimeout) {
+                     logger.log(Level.SEVERE, "------------------------------");
+-                    logger.log(Level.SEVERE, "The server has stopped responding! This is (probably) not a Paper bug."); // Paper
++                    logger.log(Level.SEVERE, "The server has stopped responding! This is (probably) not a Jellyfish bug."); // Paper // Jellyfish - Rebrand
+                     logger.log(Level.SEVERE, "If you see a plugin in the Server thread dump below, then please report it to that author");
+                     logger.log(Level.SEVERE, "\t *Especially* if it looks like HTTP or MySQL operations are occurring");
+                     logger.log(Level.SEVERE, "If you see a world save or edit, then it means you did far more than your server can handle at once");
+                     logger.log(Level.SEVERE, "\t If this is the case, consider increasing timeout-time in spigot.yml but note that this will replace the crash with LARGE lag spikes");
+-                    logger.log(Level.SEVERE, "If you are unsure or still think this is a Paper bug, please report this to https://github.com/PaperMC/Paper/issues");
++                    logger.log(Level.SEVERE, "If you are unsure or still think this is a Paper bug, please report this to https://github.com/SerlithNetwork/Jellyfish/issues"); // Jellyfish - Rebrand
+                     logger.log(Level.SEVERE, "Be sure to include ALL relevant console errors and Minecraft crash reports");
+-                    logger.log(Level.SEVERE, "Paper version: " + Bukkit.getServer().getVersion());
++                    logger.log(Level.SEVERE, "Jellyfish version: " + Bukkit.getServer().getVersion()); // Jellyfish - Rebrand
+ 
+                     if (net.minecraft.world.level.Level.lastPhysicsProblem != null) {
+                         logger.log(Level.SEVERE, "------------------------------");
+@@ -102,12 +102,12 @@ public class WatchdogThread extends ca.spottedleaf.moonrise.common.util.TickThre
+                     }
+                     // Paper end
+                 } else {
+-                    logger.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PAPER - THIS IS NOT A BUG OR A CRASH  - " + Bukkit.getServer().getVersion() + " ---");
++                    logger.log(Level.SEVERE, "--- DO NOT REPORT THIS TO JELLYFISH - THIS IS NOT A BUG OR A CRASH  - " + Bukkit.getServer().getVersion() + " ---"); // Jellyfish - Rebrand
+                     logger.log(Level.SEVERE, "The server has not responded for " + (currentTime - lastTick) / 1000 + " seconds! Creating thread dump");
+                 }
+                 // Paper end - Different message for short timeout
+                 logger.log(Level.SEVERE, "------------------------------");
+-                logger.log(Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Paper!):"); // Paper
++                logger.log(Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Jellyfish!):"); // Paper // Jellyfish - Rebrand
+                 FeatureHooks.dumpAllChunkLoadInfo(MinecraftServer.getServer(), isLongTimeout); // Paper - log detailed tick information
+                 WatchdogThread.dumpThread(ManagementFactory.getThreadMXBean().getThreadInfo(MinecraftServer.getServer().serverThread.getId(), Integer.MAX_VALUE), logger);
+                 logger.log(Level.SEVERE, "------------------------------");
+@@ -120,7 +120,7 @@ public class WatchdogThread extends ca.spottedleaf.moonrise.common.util.TickThre
+                         WatchdogThread.dumpThread(thread, logger);
+                     }
+                 } else {
+-                    logger.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PAPER - THIS IS NOT A BUG OR A CRASH ---");
++                    logger.log(Level.SEVERE, "--- DO NOT REPORT THIS TO JELLYFISH - THIS IS NOT A BUG OR A CRASH ---"); // Jellyfish - Rebrand
+                 }
+ 
+                 logger.log(Level.SEVERE, "------------------------------");

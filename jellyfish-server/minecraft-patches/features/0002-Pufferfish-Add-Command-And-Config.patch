@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Sat, 19 Apr 2025 19:46:02 -0500
+Subject: [PATCH] Pufferfish Add Command And Config
+
+
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 31e02f50edd46220dac81500dbb273f1ccdbe0b9..a8cf3e2ab5dec0e76b3ba394a905dd6f01e1b75c 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -185,6 +185,11 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics(); // Paper - start metrics
+         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // Paper - load version history now
+ 
++        // Pufferfish start - Config and command
++        new gg.pufferfish.pufferfish.PufferfishConfig().load();
++        gg.pufferfish.pufferfish.PufferfishCommand.init();
++        // Pufferfish end - Config and command
++
+         this.setPvpAllowed(properties.pvp);
+         this.setFlightAllowed(properties.allowFlight);
+         this.setMotd(properties.motd);

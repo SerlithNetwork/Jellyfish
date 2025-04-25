@@ -1,7 +1,7 @@
 --- a/src/main/resources/configurations/bukkit.yml
 +++ b/src/main/resources/configurations/bukkit.yml
-@@ -12,7 +_,7 @@
- 
+@@ -10,7 +_,7 @@
+ # Website: https://papermc.io/
  
  settings:
 -    allow-end: true
@@ -9,7 +9,7 @@
      warn-on-overload: true
      permissions-file: permissions.yml
      update-folder: update
-@@ -20,17 +_,17 @@
+@@ -18,17 +_,17 @@
      connection-throttle: 4000
      query-plugins: true
      deprecated-verbose: default

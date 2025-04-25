@@ -20,6 +20,12 @@ if (!file(".git").exists()) {
          In order to build Jellyfish from source you must clone
          the Jellyfish repository using Git, not download a code
          zip from GitHub.
+         
+         Built Jellyfish jars are available for download at
+         https://github.com/SerlithNetwork/Jellyfish
+         
+         See https://github.com/SerlithNetwork/Jellyfish/blob/HEAD/CONTRIBUTING.md
+         for further information on building and modifying Jellyfish.
         ===================================================
     """.trimIndent()
     error(errorText)

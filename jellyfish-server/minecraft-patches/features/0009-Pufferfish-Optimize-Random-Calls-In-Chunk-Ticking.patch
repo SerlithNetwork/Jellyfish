@@ -1,0 +1,50 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Sat, 19 Apr 2025 20:31:00 -0500
+Subject: [PATCH] Pufferfish Optimize Random Calls In Chunk Ticking
+
+
+diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
+index 3c8a1fe9831d6cf9e622e3ac2aede4e5c657c18f..1b6f09227208c91467f22f5b03ad46886dc7882b 100644
+--- a/net/minecraft/server/level/ServerLevel.java
++++ b/net/minecraft/server/level/ServerLevel.java
+@@ -939,7 +939,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+         int minBlockZ = pos.getMinBlockZ();
+         ProfilerFiller profilerFiller = Profiler.get();
+         profilerFiller.push("thunder");
+-        if (!this.paperConfig().environment.disableThunder && isRaining && this.isThundering() && this.spigotConfig.thunderChance > 0 && this.random.nextInt(this.spigotConfig.thunderChance) == 0) { // Spigot // Paper - Option to disable thunder
++        if (!this.paperConfig().environment.disableThunder && isRaining && this.isThundering() && this.spigotConfig.thunderChance > 0 && /*simpleRandom.nextInt(this.spigotConfig.thunderChance) == 0*/ chunk.shouldDoLightning(this.simpleRandom)) { // Spigot // Paper - Option to disable thunder // Paper - optimise random ticking // Pufferfish - replace random with shouldDoLightning
+             BlockPos blockPos = this.findLightningTargetAround(this.getBlockRandomPos(minBlockX, 0, minBlockZ, 15));
+             if (this.isRainingAt(blockPos)) {
+                 DifficultyInstance currentDifficultyAt = this.getCurrentDifficultyAt(blockPos);
+diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
+index 5d3fc807221392d378fec283bfdefb8747fb8376..4d2fbd2ca523c11a4d74520602ab475ea25c866d 100644
+--- a/net/minecraft/world/level/chunk/LevelChunk.java
++++ b/net/minecraft/world/level/chunk/LevelChunk.java
+@@ -128,6 +128,18 @@ public class LevelChunk extends ChunkAccess implements ca.spottedleaf.moonrise.p
+     }
+     // Paper end - get block chunk optimisation
+ 
++    // Pufferfish start - instead of using a random every time the chunk is ticked, define when lightning strikes preemptively
++    private int lightningTick;
++    // shouldDoLightning compiles down to 29 bytes, which with the default of 35 byte inlining should guarantee an inline
++    public final boolean shouldDoLightning(net.minecraft.util.RandomSource random) {
++        if (this.lightningTick-- <= 0) {
++            this.lightningTick = random.nextInt(this.level.spigotConfig.thunderChance) << 1;
++            return true;
++        }
++        return false;
++    }
++    // Pufferfish end
++
+     public LevelChunk(Level level, ChunkPos pos) {
+         this(level, pos, UpgradeData.EMPTY, new LevelChunkTicks<>(), new LevelChunkTicks<>(), 0L, null, null, null);
+     }
+@@ -164,6 +176,7 @@ public class LevelChunk extends ChunkAccess implements ca.spottedleaf.moonrise.p
+         this.debug = !empty && this.level.isDebug();
+         this.defaultBlockState = empty ? VOID_AIR_BLOCKSTATE : AIR_BLOCKSTATE;
+         // Paper end - get block chunk optimisation
++        this.lightningTick = new java.util.Random().nextInt(100000) << 1; // Pufferfish - initialize lightning tick
+     }
+ 
+     public LevelChunk(ServerLevel level, ProtoChunk chunk, @Nullable LevelChunk.PostLoadProcessor postLoad) {

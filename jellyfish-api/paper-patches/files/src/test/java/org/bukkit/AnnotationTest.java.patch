@@ -1,0 +1,16 @@
+--- a/src/test/java/org/bukkit/AnnotationTest.java
++++ b/src/test/java/org/bukkit/AnnotationTest.java
+@@ -57,8 +_,12 @@
+         "co/aikar/timings/TimingHistory$2$1$2",
+         "co/aikar/timings/TimingHistory$3",
+         "co/aikar/timings/TimingHistory$4",
+-        "co/aikar/timings/TimingHistoryEntry$1"
++        "co/aikar/timings/TimingHistoryEntry$1",
+         // Paper end
++        // Pufferfish start
++        "gg/pufferfish/pufferfish/sentry/SentryContext",
++        "gg/pufferfish/pufferfish/sentry/SentryContext$State"
++        // Pufferfish end
+     };
+ 
+     @Test

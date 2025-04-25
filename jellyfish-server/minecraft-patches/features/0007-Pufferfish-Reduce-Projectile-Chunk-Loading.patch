@@ -1,0 +1,47 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Fri, 21 Mar 2025 11:04:54 -0500
+Subject: [PATCH] Pufferfish Reduce Projectile Chunk Loading
+
+
+diff --git a/net/minecraft/world/entity/projectile/Projectile.java b/net/minecraft/world/entity/projectile/Projectile.java
+index 4487c03183d20a187d391dd124abb7b926508b5b..3dd6d165f7678c08f03b8d1758f7882fc666480c 100644
+--- a/net/minecraft/world/entity/projectile/Projectile.java
++++ b/net/minecraft/world/entity/projectile/Projectile.java
+@@ -53,6 +53,36 @@ public abstract class Projectile extends Entity implements TraceableEntity {
+         super(entityType, level);
+     }
+ 
++    // Pufferfish start - Reduce Projectile Chunk Loading
++    private static int loadedThisTick = 0;
++    private static int loadedTick;
++
++    private int loadedLifetime = 0;
++    @Override
++    public void setPos(double x, double y, double z) {
++        int currentTick = net.minecraft.server.MinecraftServer.currentTick;
++        if (loadedTick != currentTick) {
++            loadedTick = currentTick;
++            loadedThisTick = 0;
++        }
++        int previousX = Mth.floor(this.getX()) >> 4, previousZ = Mth.floor(this.getZ()) >> 4;
++        int newX = Mth.floor(x) >> 4, newZ = Mth.floor(z) >> 4;
++        if (previousX != newX || previousZ != newZ) {
++            boolean isLoaded = ((net.minecraft.server.level.ServerChunkCache) this.level().getChunkSource()).getChunkAtIfLoadedImmediately(newX, newZ) != null;
++            if (!isLoaded) {
++                if (Projectile.loadedThisTick > gg.pufferfish.pufferfish.PufferfishConfig.PROJECTILE.MAX_LOADS_PER_TICK) {
++                    if (++this.loadedLifetime > gg.pufferfish.pufferfish.PufferfishConfig.PROJECTILE.MAX_LOADS_PER_PROJECTILE) {
++                        this.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.DESPAWN);
++                    }
++                    return;
++                }
++                Projectile.loadedThisTick++;
++            }
++        }
++        super.setPos(x, y, z);
++    }
++    // Pufferfish end - Reduce Projectile Chunk Loading
++
+     public void setOwner(@Nullable Entity owner) {
+         if (owner != null) {
+             this.ownerUUID = owner.getUUID();

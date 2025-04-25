@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 24 Apr 2025 18:22:51 -0500
+Subject: [PATCH] Jellyfish Toggle Fly On Join
+
+
+diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
+index 6e22aedd36add8e39a82248193f324b36dfa27b5..771e19f698a91e1d0edbc1f233ea97d92c491ecf 100644
+--- a/net/minecraft/server/players/PlayerList.java
++++ b/net/minecraft/server/players/PlayerList.java
+@@ -327,6 +327,13 @@ public abstract class PlayerList {
+         // Ensure that player inventory is populated with its viewer
+         player.containerMenu.transferTo(player.containerMenu, bukkitPlayer);
+ 
++        // Jellyfish start - Enable flight during development
++        if (net.serlith.jellyfish.JellyfishConfig.DEVELOPMENT.FLY_ON_JOIN) {
++            player.getAbilities().flying = true;
++            player.onUpdateAbilities();
++        }
++        // Jellyfish end - Enable flight during development
++
+         org.bukkit.event.player.PlayerJoinEvent playerJoinEvent = new org.bukkit.event.player.PlayerJoinEvent(bukkitPlayer, io.papermc.paper.adventure.PaperAdventure.asAdventure(mutableComponent)); // Paper - Adventure
+         this.cserver.getPluginManager().callEvent(playerJoinEvent);
+ 

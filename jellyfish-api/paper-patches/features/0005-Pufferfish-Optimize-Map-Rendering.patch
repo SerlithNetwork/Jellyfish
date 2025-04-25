@@ -1,0 +1,35 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Sat, 19 Apr 2025 18:18:04 -0500
+Subject: [PATCH] Pufferfish Optimize Map Rendering
+
+
+diff --git a/src/main/java/org/bukkit/map/MapPalette.java b/src/main/java/org/bukkit/map/MapPalette.java
+index fc9728342de7605da69813fb44b008c1343124c0..f7b32cf722e398753704de6a600d619b9b690a45 100644
+--- a/src/main/java/org/bukkit/map/MapPalette.java
++++ b/src/main/java/org/bukkit/map/MapPalette.java
+@@ -35,7 +35,7 @@ public final class MapPalette {
+     }
+ 
+     @NotNull
+-    static final Color[] colors = {
++    public static final Color[] colors = {
+         // Start generate - MapPalette#colors
+         // @GeneratedFrom 1.21.5
+         new Color(0x00000000, true),
+@@ -395,9 +395,15 @@ public final class MapPalette {
+         temp.getRGB(0, 0, temp.getWidth(), temp.getHeight(), pixels, 0, temp.getWidth());
+ 
+         byte[] result = new byte[temp.getWidth() * temp.getHeight()];
++        // Pufferfish start - Optimize Map Rendering
++        if (gg.pufferfish.pufferfish.simd.SIMDDetection.isEnabled){
++            gg.pufferfish.pufferfish.simd.VectorMapPalette.matchColorVectorized(pixels, result);
++        } else {
+         for (int i = 0; i < pixels.length; i++) {
+             result[i] = matchColor(new Color(pixels[i], true));
+         }
++        }
++        // Pufferfish end - Optimize Map Rendering
+         return result;
+     }
+ 

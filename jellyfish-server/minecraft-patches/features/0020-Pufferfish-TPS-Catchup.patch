@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Fri, 21 Mar 2025 12:44:49 -0500
+Subject: [PATCH] Pufferfish TPS Catchup
+
+
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index 46f59441a6b04c630b2d856a1da90ca26bbf8797..92e6d6bd6e6a126527598a52c62d51c9eb320da5 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -1259,6 +1259,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                     profilerFiller.popPush("nextTickWait");
+                     this.mayHaveDelayedTasks = true;
+                     this.delayedTasksMaxNextTickTimeNanos = Math.max(Util.getNanos() + l, this.nextTickTimeNanos);
++                    // Pufferfish start - tps catchup
++                    if (!gg.pufferfish.pufferfish.PufferfishConfig.TPS_CATCHUP) {
++                        this.nextTickTimeNanos = currentTime + l;
++                        this.delayedTasksMaxNextTickTimeNanos = nextTickTimeNanos;
++                    }
++                    // Pufferfish end
+                     this.startMeasuringTaskExecutionTime();
+                     this.waitUntilNextTick();
+                     this.finishMeasuringTaskExecutionTime();

@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 24 Apr 2025 19:37:16 -0500
+Subject: [PATCH] Jellyfish Global Spawn Protection
+
+
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index 92e6d6bd6e6a126527598a52c62d51c9eb320da5..8291a12eb458148ca0b172b0e62e53776d4d4bb3 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -2086,7 +2086,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+     }
+ 
+     public boolean isUnderSpawnProtection(ServerLevel level, BlockPos pos, Player player) {
+-        return false;
++        return true; // Jellyfish - Global spawn protection
+     }
+ 
+     public boolean repliesToStatus() {
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index bfbbec83372a758ba3472fb1a891d6c85714f75d..a4653ae3ca51c4ea9b5ff4eac77aaf84839f0d5c 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -510,6 +510,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+ 
+     @Override
+     public boolean isUnderSpawnProtection(ServerLevel level, BlockPos pos, Player player) {
++        if (net.serlith.jellyfish.JellyfishConfig.SECURITY.GLOBAL_SPAWN_PROTECTION) return !this.getPlayerList().isOp(player.getGameProfile()); // Jellyfish - Global spawn protection
+         if (level.dimension() != Level.OVERWORLD) {
+             return false;
+         } else if (this.getPlayerList().getOps().isEmpty()) {

@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     java // TODO java launcher tasks
-    id("io.papermc.paperweight.patcher") version "2.0.0-beta.14"
+    id("io.papermc.paperweight.patcher") version "2.0.0-beta.16"
 }
 
 val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
@@ -45,6 +45,7 @@ subprojects {
         options.encoding = Charsets.UTF_8.name()
         options.release = 21
         options.isFork = true
+        options.compilerArgs.addAll(listOf("-Xlint:-deprecation", "-Xlint:-removal"))
     }
     tasks.withType<Javadoc> {
         options.encoding = Charsets.UTF_8.name()
@@ -66,10 +67,11 @@ subprojects {
 
     repositories {
         mavenCentral()
+        mavenLocal()
         maven(paperMavenPublicUrl)
         maven("https://jitpack.io")
+        maven("https://repo.j4c0b3y.net/public/")
     }
-
 }
 
 tasks.register("printMinecraftVersion") {
