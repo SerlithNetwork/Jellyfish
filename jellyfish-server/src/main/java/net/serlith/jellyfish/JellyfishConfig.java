@@ -83,6 +83,20 @@ public class JellyfishConfig extends StaticConfig {
 
     }
 
+    @Comment("Enables caching some results")
+    public static class CACHES {
+
+        @Comment("Useful for plugins that decorate with heads (blocks or tablist)")
+        public static class PLAYER_PROFILE {
+            public static boolean ENABLED = true;
+
+            @Comment("Minutes before expiring the cache")
+            public static long TIMEOUT = 360L;
+
+        }
+
+    }
+
     @Comment("Dimension-related configurations")
     public static class DIMENSIONS {
 
@@ -226,73 +240,6 @@ public class JellyfishConfig extends StaticConfig {
             public static boolean PLAYER_MOVE_EVENT = false;
 
             public static boolean PLAYER_BELOW_WORLD_EVENT = false;
-
-        }
-
-    }
-
-    @Comment({
-        "Download, cache and load Via plugins automatically",
-        "Make sure to toggle this off if you have early access builds (https://github.com/sponsors/kennytv)"
-    })
-    public static class VIA {
-
-        @Comment({
-            "Plugin hosting service, in case one goes offline",
-            "Possible values: HANGAR, MODRINTH"
-        })
-        public static Provider PROVIDER = Provider.HANGAR;
-        @Ignore
-        public enum Provider { HANGAR, MODRINTH };
-
-        @Comment({
-            "Recommended value: RELEASE",
-            "Possible values: ALPHA, BETA, SNAPSHOT, RELEASE",
-            "Modrinth uses BETA while hangar uses SNAPSHOT"
-        })
-        public static Channel CHANNEL = Channel.RELEASE;
-        @Ignore
-        public enum Channel { ALPHA, BETA, SNAPSHOT, RELEASE };
-
-        @Comment({
-            "What to do if reading the local version fails", // Will this be used?
-            "DOWNLOAD: Download ViaVersion again",
-            "IGNORE: Continue without Via"
-        })
-        public static FailPolicy FAIL_POLICY = FailPolicy.DOWNLOAD;
-        @Ignore
-        public enum FailPolicy { DOWNLOAD, IGNORE };
-
-        @Comment("ViaVersion: Allow players to join using newer versions of Minecraft")
-        public static class VIA_VERSION {
-            public static boolean ENABLED = false;
-
-            @Comment("Recommended value: latest")
-            public static String VERSION = "latest";
-
-        }
-
-        @Comment({
-            "Depends on ViaVersion",
-            "ViaBackwards: Allow players to join using older versions of Minecraft"
-        })
-        public static class VIA_BACKWARDS {
-            public static boolean ENABLED = false;
-
-            @Comment("Recommended value: latest")
-            public static String VERSION = "latest";
-
-        }
-
-        @Comment({
-            "Depends on ViaVersion and ViaBackwards",
-            "ViaRewind: Allow players to join using now-legacy versions of Minecraft like 1.8 or 1.7"
-        })
-        public static class VIA_REWIND {
-            public static boolean ENABLED = false;
-
-            @Comment("Recommended value: latest")
-            public static String VERSION = "latest";
 
         }
 
