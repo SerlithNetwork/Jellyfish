@@ -26,6 +26,9 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      - name: Change Gradle permissions
+        run: chmod +x ./gradlew
+
       - name: Configure Git
         run: git config --global user.email "no-reply@github.com" && git config --global user.name "Github Actions"
 
