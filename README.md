@@ -99,6 +99,6 @@ This project is designed for Serlith Network, so support is currently not guaran
 # Credits:
 
 1. PaperMC Team
-2. Pufferfish Team, even if this is not a direct Pufferfish fork, we will use patches that make sense to use in a lobby.
+2. Pufferfish Host
 3. PurpurMC Team, even if this is not a direct Purpur fork, we do use their paperweight project setup.
 

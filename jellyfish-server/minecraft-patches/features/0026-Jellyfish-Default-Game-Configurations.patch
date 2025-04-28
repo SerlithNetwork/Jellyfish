@@ -5,7 +5,7 @@ Subject: [PATCH] Jellyfish Default Game Configurations
 
 
 diff --git a/net/minecraft/server/dedicated/DedicatedServerProperties.java b/net/minecraft/server/dedicated/DedicatedServerProperties.java
-index f6518e29f805018c72222f5aaa7b662071665b65..aef9c9f488ab0e7bc19221433e6feb181a69dfc1 100644
+index f6518e29f805018c72222f5aaa7b662071665b65..4de9268d68d8827e4a6d8fc3a44a3f9421544bf8 100644
 --- a/net/minecraft/server/dedicated/DedicatedServerProperties.java
 +++ b/net/minecraft/server/dedicated/DedicatedServerProperties.java
 @@ -49,16 +49,16 @@ public class DedicatedServerProperties extends Settings<DedicatedServerPropertie
@@ -13,10 +13,9 @@ index f6518e29f805018c72222f5aaa7b662071665b65..aef9c9f488ab0e7bc19221433e6feb18
      public final boolean preventProxyConnections = this.get("prevent-proxy-connections", false);
      public final String serverIp = this.get("server-ip", "");
 -    public final boolean pvp = this.get("pvp", true);
--    public final boolean allowFlight = this.get("allow-flight", false);
--    public final String motd = this.get("motd", "A Minecraft Server");
 +    public final boolean pvp = this.get("pvp", false); // Jellyfish - Default Configs
-+    public final boolean allowFlight = this.get("allow-flight", true);  // Jellyfish - Default Configs
+     public final boolean allowFlight = this.get("allow-flight", false);
+-    public final String motd = this.get("motd", "A Minecraft Server");
 +    public final String motd = this.get("motd", "A Minecraft Lobby"); // Jellyfish - Default Configs
      public final String bugReportLink = this.get("bug-report-link", "");
      public final boolean forceGameMode = this.get("force-gamemode", false);

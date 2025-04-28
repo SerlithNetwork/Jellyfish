@@ -4,8 +4,21 @@ Date: Thu, 24 Apr 2025 18:22:51 -0500
 Subject: [PATCH] Jellyfish Toggle Fly On Join
 
 
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 83a9e1eb842a955bd10475cbb19b4d613b7a56b9..c7d8e884d571a233b693276321d32539364705d8 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -196,7 +196,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         // Jellyfish end - Jellyfish config and command
+ 
+         this.setPvpAllowed(properties.pvp);
+-        this.setFlightAllowed(properties.allowFlight);
++        this.setFlightAllowed(properties.allowFlight || net.serlith.jellyfish.JellyfishConfig.DEVELOPMENT.FLY_ON_JOIN); // Jellyfish - Fly on Join
+         this.setMotd(properties.motd);
+         super.setPlayerIdleTimeout(properties.playerIdleTimeout.get());
+         this.setEnforceWhitelist(properties.enforceWhitelist);
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 6e22aedd36add8e39a82248193f324b36dfa27b5..771e19f698a91e1d0edbc1f233ea97d92c491ecf 100644
+index f057e682ccd378f11710dc2e7129cba95788bb18..97d7f645b3d4d82062965837c8199f87b7f3aa25 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -327,6 +327,13 @@ public abstract class PlayerList {

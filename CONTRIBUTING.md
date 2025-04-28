@@ -203,7 +203,7 @@ fixup method.
 ## Rebasing PRs
 
 Steps to rebase a PR to include the latest changes from `main`.  
-These steps assume the `origin` remote is your fork of this repository and `upstream` is the official Serlith Network repository.
+These steps assume the `origin` remote is your fork of this repository and `upstream` is the official Jellyfish repository.
 
 1. Fetch the latest changes from upstream's main: `git fetch upstream`.
 1. Checkout your feature/fix branch and rebase on main: `git switch patch-branch && git rebase upstream/main`.
@@ -382,28 +382,25 @@ what fits best in your situation.
 ## Configuration files
 
 To use a configurable value in your patch, add a new entry in either the
-`JellyfishConfig` or `JellyfishWorldConfig` classes. Use `JellyfishConfig` if a value
-must remain the same throughout all worlds, or the latter if it can change
-between worlds. World-specific configuration options are preferred whenever
-possible.
+`JellyfishConfig` class.
 
 ### JellyfishConfig example
 
 ```java
-public static boolean saveEmptyScoreboardTeams = false;
-private static void saveEmptyScoreboardTeams() {
-    // This is called automatically!
-    // The name also doesn't matter.
-    saveEmptyScoreboardTeams = getBoolean("settings.save-empty-scoreboard-teams", false);
+public static class SETTINGS {
+    
+    // This will be translated into settings.save-empty-scoreboards-team: false
+    @Comment("Saves empty scoreboards")
+    public static boolean SAVE_EMPTY_SCOREBOARDS_TEAM = false;
+    
 }
 ```
 
-Notice that the field is always public, but the setter is always private. This
-is important to the way the configuration generation system works. To access
-this value, reference it as you would any other static value:
+Notice that the field is always public.
+To access this value, reference it as you would any other static value:
 
 ```java
-if (!JellyfishConfig.saveEmptyScoreboardTeams) {
+if (!JellyfishConfig.SETTINGS.SAVE_EMPTY_SCOREBOARDS_TEAM) {
 ```
 
 It is often preferred that you use the fully qualified name for the
@@ -413,34 +410,7 @@ If this is not done, a developer for Jellyfish might fix that for you before
 merging, but it's always nice if you make it a habit where you only need 1-2
 lines changed.
 
-### JellyfishWorldConfig example
-
-```java
-public boolean useInhabitedTime = true;
-private void useInhabitedTime() {
-    // This is called automatically!
-    // The name also doesn't matter.
-    useInhabitedTime = getBoolean("use-chunk-inhabited-timer", true);
-}
-```
-
-Again, notice that the field is always public, but the setter is always private.
-To access this value, you'll need an instance of the `net.minecraft.world.level.Level`
-object:
-
-```java
-return this.level.jellyfishConfig.useInhabitedTime ? this.inhabitedTime : 0;
-```
-
 ## Testing API changes
-
-### Using the Jellyfish Test Plugin
-
-The Jellyfish project has a `test-plugin` module for easily testing out API changes
-and additions. To use the test plugin, enable it in `test-plugin.settings.gradle.kts`,
-which will be generated after running Gradle at least once. After this, you can edit
-the test plugin, and run a server with the plugin using `./gradlew runDev` (or any
-of the other Jellyfish run tasks).
 
 ### Publishing to Maven local (use in external plugins)
 

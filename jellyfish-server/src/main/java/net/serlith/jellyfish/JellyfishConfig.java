@@ -37,10 +37,7 @@ public class JellyfishConfig extends StaticConfig {
     })
     public static class DEVELOPMENT {
 
-        @Comment({
-            "Should players be able to fly when they join",
-            "Be sure to toggle off allow-flight in server.properties as well"
-        })
+        @Comment("Should players be able to fly when they join")
         public static boolean FLY_ON_JOIN = true;
 
     }
@@ -54,6 +51,8 @@ public class JellyfishConfig extends StaticConfig {
             public static int THREADS = 1;
 
             public static int QUEUE_SIZE = 0;
+
+            public static int KEEPALIVE = 60;
 
         }
 
@@ -243,22 +242,30 @@ public class JellyfishConfig extends StaticConfig {
             "Possible values: HANGAR, MODRINTH"
         })
         public static Provider PROVIDER = Provider.HANGAR;
-
         @Ignore
         public enum Provider { HANGAR, MODRINTH };
+
+        @Comment({
+            "Recommended value: RELEASE",
+            "Possible values: ALPHA, BETA, SNAPSHOT, RELEASE",
+            "Modrinth uses BETA while hangar uses SNAPSHOT"
+        })
+        public static Channel CHANNEL = Channel.RELEASE;
         @Ignore
         public enum Channel { ALPHA, BETA, SNAPSHOT, RELEASE };
+
+        @Comment({
+            "What to do if reading the local version fails", // Will this be used?
+            "DOWNLOAD: Download ViaVersion again",
+            "IGNORE: Continue without Via"
+        })
+        public static FailPolicy FAIL_POLICY = FailPolicy.DOWNLOAD;
+        @Ignore
+        public enum FailPolicy { DOWNLOAD, IGNORE };
 
         @Comment("ViaVersion: Allow players to join using newer versions of Minecraft")
         public static class VIA_VERSION {
             public static boolean ENABLED = false;
-
-            @Comment({
-                "Recommended value: RELEASE",
-                "Possible values: ALPHA, BETA, SNAPSHOT, RELEASE",
-                "Modrinth uses BETA while hangar uses SNAPSHOT"
-            })
-            public static Channel CHANNEL = Channel.RELEASE;
 
             @Comment("Recommended value: latest")
             public static String VERSION = "latest";
@@ -272,13 +279,6 @@ public class JellyfishConfig extends StaticConfig {
         public static class VIA_BACKWARDS {
             public static boolean ENABLED = false;
 
-            @Comment({
-                "Recommended value: RELEASE",
-                "Possible values: ALPHA, BETA, SNAPSHOT, RELEASE",
-                "Modrinth uses BETA while hangar uses SNAPSHOT"
-            })
-            public static Channel CHANNEL = Channel.RELEASE;
-
             @Comment("Recommended value: latest")
             public static String VERSION = "latest";
 
@@ -290,13 +290,6 @@ public class JellyfishConfig extends StaticConfig {
         })
         public static class VIA_REWIND {
             public static boolean ENABLED = false;
-
-            @Comment({
-                "Recommended value: RELEASE",
-                "Possible values: ALPHA, BETA, SNAPSHOT, RELEASE",
-                "Modrinth uses BETA while hangar uses SNAPSHOT"
-            })
-            public static Channel CHANNEL = Channel.RELEASE;
 
             @Comment("Recommended value: latest")
             public static String VERSION = "latest";

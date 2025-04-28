@@ -5,28 +5,61 @@ on:
   push:
     branches:
       - "ver/**"
+      - "main"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.commits[0].message, '[ci-skip]')"
+    if: "!contains(github.event.commits[0].message, '[ci skip]')"
+    permissions:
+      contents: write
+    env:
+      BUILD_NUMBER: ${{ github.run_number }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
           cache: 'gradle'
+
       - uses: gradle/actions/setup-gradle@v4
+
       - name: Configure Git
         run: git config --global user.email "no-reply@github.com" && git config --global user.name "Github Actions"
+
       - name: Apply Patches
         run: ./gradlew applyAllPatches --no-daemon --stacktrace
-      - name: Build
-        run: ./gradlew build --no-daemon --stacktrace
-      - name: Rebuild on Failure
-        if: ${{ failure() }}
+
+      - name: Create MojmapPaperclipJar
+        run: ./gradlew createMojmapPaperclipJar --no-daemon --stacktrace
+
+      - name: Rename JARs
+        if: "contains(github.event.commits[0].message, '[release]')"
         run: |
-          ./gradlew clean cleanCache --refresh-dependencies
-          ./gradlew applyAllPatches --no-daemon --stacktrace 
-          ./gradlew build --no-daemon --stacktrace
+          mv jellyfish-server/build/libs/jellyfish-paperclip-1.21.5-R0.1-SNAPSHOT-mojmap.jar ./jellyfish-paperclip-1.21.5-R0.1-b${{ env.BUILD_NUMBER }}-mojmap.jar
+          mv jellyfish-api/build/libs/jellyfish-api-1.21.5-R0.1-SNAPSHOT.jar ./jellyfish-api-1.21.5-R0.1-b${{ env.BUILD_NUMBER }}.jar
+
+      - name: Upload Jellyfish as build artifact
+        if: "contains(github.event.commits[0].message, '[release]')"
+        uses: actions/upload-artifact@main
+        with:
+          name: Jellyfish 1.21.5
+          path: |
+            ./jellyfish-paperclip-1.21.5-R0.1-b${{ env.BUILD_NUMBER }}-mojmap.jar
+            ./jellyfish-api-1.21.5-R0.1-b${{ env.BUILD_NUMBER }}.jar
+
+      - name: Release Jellyfish
+        if: "contains(github.event.commits[0].message, '[release]')"
+        uses: softprops/action-gh-release@master
+        with:
+          name: "Jellyfish 1.21.5 build ${{ env.BUILD_NUMBER }}"
+          tag_name: "ver-1.21.5-b${{ env.BUILD_NUMBER }}"
+          files: |
+            ./jellyfish-paperclip-1.21.5-R0.1-b${{ env.BUILD_NUMBER }}-mojmap.jar
+            ./jellyfish-api-1.21.5-R0.1-b${{ env.BUILD_NUMBER }}.jar
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          target_commitish: "${{ github.sha }}"
+          draft: false
+          prerelease: false
