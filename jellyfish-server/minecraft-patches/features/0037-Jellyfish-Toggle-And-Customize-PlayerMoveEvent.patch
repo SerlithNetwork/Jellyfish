@@ -1,0 +1,53 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Mon, 28 Apr 2025 23:57:23 -0500
+Subject: [PATCH] Jellyfish Toggle And Customize PlayerMoveEvent
+
+
+diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 8e73baba1f5fb8da6d4e363da269cb3efb5b9f8a..27d25917b0575278ccd93346e44e40f318d470d9 100644
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -601,6 +601,7 @@ public class ServerGamePacketListenerImpl
+                 }
+ 
+                 // CraftBukkit start - fire PlayerMoveEvent
++                if (!net.serlith.jellyfish.JellyfishConfig.EVENTS.DISABLE.PLAYER_MOVE_EVENT) { // Jellyfish - Toggle PlayerMoveEvent
+                 org.bukkit.entity.Player player = this.getCraftPlayer();
+                 if (!this.hasMoved) {
+                     this.lastPosX = prevX;
+@@ -617,7 +618,7 @@ public class ServerGamePacketListenerImpl
+                 double delta = Mth.square(this.lastPosX - to.getX()) + Mth.square(this.lastPosY - to.getY()) + Mth.square(this.lastPosZ - to.getZ());
+                 float deltaAngle = Math.abs(this.lastYaw - to.getYaw()) + Math.abs(this.lastPitch - to.getPitch());
+ 
+-                if ((delta > 1f / 256 || deltaAngle > 10f) && !this.player.isImmobile()) {
++                if ((delta > net.serlith.jellyfish.JellyfishConfig.EVENTS.CUSTOMIZATIONS.PLAYER_MOVE_EVENT.MOVE_DELTA || deltaAngle > net.serlith.jellyfish.JellyfishConfig.EVENTS.CUSTOMIZATIONS.PLAYER_MOVE_EVENT.ANGLE_DELTA) && !this.player.isImmobile()) { // Jellyfish - Customize PlayerMoveEvent
+                     this.lastPosX = to.getX();
+                     this.lastPosY = to.getY();
+                     this.lastPosZ = to.getZ();
+@@ -649,6 +650,7 @@ public class ServerGamePacketListenerImpl
+                         return;
+                     }
+                 }
++                } // Jellyfish - Toggle PlayerMoveEvent
+                 // CraftBukkit end
+ 
+                 this.player.serverLevel().getChunkSource().move(this.player);
+@@ -1553,7 +1555,7 @@ public class ServerGamePacketListenerImpl
+                                         teleportBack = false;
+                                     }
+                                 }
+-                                if (!teleportBack) {
++                                if (!net.serlith.jellyfish.JellyfishConfig.EVENTS.DISABLE.PLAYER_MOVE_EVENT && !teleportBack) { // Jellyfish - Toggle PlayerMoveEvent
+                                     // Paper end - Add fail move event
+                                     // CraftBukkit start - fire PlayerMoveEvent
+                                     // Reset to old location first
+@@ -1589,7 +1591,7 @@ public class ServerGamePacketListenerImpl
+                                     double delta = Mth.square(this.lastPosX - to.getX()) + Mth.square(this.lastPosY - to.getY()) + Mth.square(this.lastPosZ - to.getZ());
+                                     float deltaAngle = Math.abs(this.lastYaw - to.getYaw()) + Math.abs(this.lastPitch - to.getPitch());
+ 
+-                                    if ((delta > 1f / 256 || deltaAngle > 10f) && !this.player.isImmobile()) {
++                                    if ((delta > net.serlith.jellyfish.JellyfishConfig.EVENTS.CUSTOMIZATIONS.PLAYER_MOVE_EVENT.MOVE_DELTA || deltaAngle > net.serlith.jellyfish.JellyfishConfig.EVENTS.CUSTOMIZATIONS.PLAYER_MOVE_EVENT.ANGLE_DELTA) && !this.player.isImmobile()) { // Jellyfish - Customize PlayerMoveEvent
+                                         this.lastPosX = to.getX();
+                                         this.lastPosY = to.getY();
+                                         this.lastPosZ = to.getZ();

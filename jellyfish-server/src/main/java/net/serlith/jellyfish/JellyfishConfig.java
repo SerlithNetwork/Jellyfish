@@ -5,6 +5,7 @@ import net.j4c0b3y.api.config.StaticConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import java.io.File;
 import java.util.List;
 
@@ -45,33 +46,92 @@ public class JellyfishConfig extends StaticConfig {
     @Comment("Async features to save some ticks on the main thread")
     public static class ASYNC {
 
+        @Comment({
+            "Builds chunk packet and sends chunks off the main thread",
+            "Not mandatory to use, even at high player-counts, but can be useful for huge lobbies"
+        })
         public static class CHUNK_SENDING {
             public static boolean ENABLED = true;
 
+            @Comment("Threads dedicated to send chunks")
             public static int THREADS = 1;
 
+            @Comment("Amount of chunk sending tasks that can be scheduled, if 0 will default to threads * 512")
             public static int QUEUE_SIZE = 0;
 
-            public static int KEEPALIVE = 60;
+            @Comment("Time in seconds to wait for a task to end")
+            public static int KEEPALIVE = 8;
 
         }
 
     }
 
-    @Comment("")
+    @Comment("Ticking-related behaviors for the server")
     public static class TICKING {
 
+        @Comment("Entity ticking")
         public static class ENTITIES {
-            public static List<String> NO_TICK = List.of(
-                "minecraft:item_display",
-                "minecraft:block_display",
-                "minecraft:text_display"
-                );
+
+            @Comment("Entities allowed to tick")
+            public static List<String> ALLOW_TICKING = List.of(
+                "minecraft:arrow",
+                "minecraft:spectral_arrow",
+                "minecraft:trident",
+                "minecraft:wind_charge",
+                "minecraft:wither_skull",
+                "minecraft:fishing_bobber",
+                "minecraft:fireball",
+                "minecraft:small_fireball",
+                "minecraft:dragon_fireball",
+                "minecraft:snowball",
+                "minecraft:egg",
+                "minecraft:leash_knot",
+                "minecraft:lightning_bolt",
+                "minecraft:splash_potion",
+                "minecraft:lingering_potion"
+            );
+
         }
 
-        public static class TILE_ENTITIES {}
+        @Comment("Tile Entity ticking")
+        public static class TILE_ENTITIES {
 
-        public static class BLOCKS {}
+            @Comment("FIXME: Tile entities allowed to tick")
+            public static List<String> ALLOW_TICKING = List.of(
+                "minecraft:sign",
+                "minecraft:hanging_sign"
+            );
+
+        }
+
+        @Comment("Block ticking")
+        public static class BLOCKS {
+
+            @Comment("Farmland will stay moisten and will not dry out")
+            public static boolean KEEP_FARMLAND_MOISTEN = true;
+
+            @Comment("Sugar cane can be placed anywhere, on top of any block")
+            public static boolean PREVENT_SUGAR_CANE_BREAK = true;
+
+            @Comment("Leaves will not decay")
+            public static boolean PREVENT_LEAVES_DECAY = true;
+
+            @Comment("Grass/Mycelium will not tick at all")
+            public static boolean PREVENT_GRASS_TICKS = true;
+
+            @Comment("Snow layers will never melt")
+            public static boolean PREVENT_SNOW_MELT = true;
+
+            @Comment("Ice will never melt")
+            public static boolean PREVENT_ICE_MELT = true;
+
+            @Comment("Water/Lava will not spread")
+            public static boolean PREVENT_LIQUID_SPREAD = false;
+
+            @Comment("Hoppers will not push/pull items from/to the world")
+            public static boolean PREVENT_HOPPER_TICKS = true;
+
+        }
 
     }
 
@@ -221,12 +281,70 @@ public class JellyfishConfig extends StaticConfig {
 
     }
 
-    @Comment("")
+    @Comment("Player-related configurations, toggling some off will not trigger their events")
     public static class PLAYERS {
 
+        @Comment("Toggle players getting damaged by any source")
         public static boolean TAKE_DAMAGE = false;
 
+        @Comment("Toggle players hungry")
         public static boolean GET_HUNGRY = false;
+
+        @Comment("FIXME: Toggle players losing oxygen bubbles underwater")
+        public static boolean DROWN = false;
+
+        @Comment("Toggle players getting armor points (doesn't work visually)")
+        public static boolean GET_ARMOR = false;
+
+        @Comment("Toggle players getting experience and leveling up")
+        public static boolean GAIN_EXPERIENCE = false;
+
+        @Comment("Toggle advancement criterion triggers")
+        public static boolean TRIGGER_ADVANCEMENTS = false;
+
+        @Comment("FIXME: Toggle players being pushed by fluids, might flag anticheats (why ac in a lobby?)")
+        public static boolean BE_DRAGGED_BY_FLUIDS = true;
+
+    }
+
+    @Comment("FIXME?: Prevents sending particle packets, but are still visible client-side?")
+    public static class PARTICLES {
+
+        @Comment("Toggle block particles when falling from a great distance")
+        public static boolean FALL_IMPACT = false;
+
+        @Comment("Toggle damage particles when attacking something")
+        public static boolean DEAL_DAMAGE = false;
+
+        @Comment("Toggle splash particles when falling into water")
+        public static boolean WATER_SPLASH = false;
+
+        @Comment("Toggle bubble column particles")
+        public static boolean WATER_BUBBLES = false;
+
+        @Comment("Toggle honey dripping particles from hives")
+        public static boolean DRIPPING_HONEY = false;
+
+        @Comment("FIXME: Toggle water dripping particles from blocks")
+        public static boolean DRIPPING_WATER = false;
+
+        @Comment("FIXME: Toggle lava dripping particles from blocks")
+        public static boolean DRIPPING_LAVA = false;
+
+        @Comment("Toggle water/lava particles dripping from dripstone")
+        public static boolean DRIPSTONE_DRIPPING = false;
+
+        @Comment("Toggle falling leaves particles")
+        public static boolean FALLING_LEAVES = true;
+
+        @Comment("Toggle water dripping particles from sponges")
+        public static boolean WET_SPONGE = false;
+
+        @Comment("Toggle water dripping particles from leaves")
+        public static boolean WET_LEAVES = false;
+
+        @Comment("Toggle underwater ambient particles")
+        public static boolean UNDERWATER = false;
 
     }
 
@@ -239,7 +357,24 @@ public class JellyfishConfig extends StaticConfig {
             @Comment("Will not trigger neither the event or the pre-post calculations to make it work")
             public static boolean PLAYER_MOVE_EVENT = false;
 
+            @Comment("Will not trigger our own PlayerBelowWorldEvent")
             public static boolean PLAYER_BELOW_WORLD_EVENT = false;
+
+        }
+
+        @Comment("Customize some existing events")
+        public static class CUSTOMIZATIONS {
+
+            @Comment("Change some deltas to make it less/more likely to trigger PlayerMoveEvent")
+            public static class PLAYER_MOVE_EVENT {
+
+                @Comment("How much the player have to move before triggering the event")
+                public static float MOVE_DELTA = 1f / 256;
+
+                @Comment("How much the player have to rotate their camera before triggering the event")
+                public static float ANGLE_DELTA = 10f;
+
+            }
 
         }
 
@@ -255,15 +390,20 @@ public class JellyfishConfig extends StaticConfig {
     private static boolean initialized = false;
     public static void init() {
 
+        List<EntityType<?>> blacklisted = List.of(EntityType.PLAYER, EntityType.FIREWORK_ROCKET, EntityType.ITEM);
         BuiltInRegistries.ENTITY_TYPE.forEach(e -> {
-            e.noTick = false;
+            if (!blacklisted.contains(e)) e.noTick = true;
         });
+        TICKING.ENTITIES.ALLOW_TICKING.forEach(s -> EntityType.byString(s).ifPresentOrElse(
+            e -> e.noTick = false,
+            () -> MinecraftServer.LOGGER.warn("Unknown entity \"{}\" will not tick", s))
+        );
 
-        TICKING.ENTITIES.NO_TICK.forEach(s -> {
-            EntityType.byString(s).ifPresentOrElse(e -> {
-                e.noTick = true;
-            }, () -> MinecraftServer.LOGGER.warn("Unknown entity \"{}\" will tick", s));
-        });
+        BuiltInRegistries.BLOCK_ENTITY_TYPE.forEach(e -> e.noTick = true);
+        TICKING.TILE_ENTITIES.ALLOW_TICKING.forEach(s -> BlockEntityType.byString(s).ifPresentOrElse(
+            e -> e.noTick = false,
+            () -> MinecraftServer.LOGGER.warn("Unknown tile entity \"{}\" will not tick", s))
+        );
 
         initialized = true;
     }

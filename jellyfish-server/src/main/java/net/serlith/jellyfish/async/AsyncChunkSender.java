@@ -20,11 +20,12 @@ public class AsyncChunkSender implements IAsyncExecutor {
         JellyfishConfig.ASYNC.CHUNK_SENDING.THREADS,
         JellyfishConfig.ASYNC.CHUNK_SENDING.KEEPALIVE,
         TimeUnit.SECONDS,
-        new LinkedBlockingQueue<>(JellyfishConfig.ASYNC.CHUNK_SENDING.QUEUE_SIZE <= 0 ? JellyfishConfig.ASYNC.CHUNK_SENDING.THREADS * 256 : JellyfishConfig.ASYNC.CHUNK_SENDING.QUEUE_SIZE),
+        new LinkedBlockingQueue<>(JellyfishConfig.ASYNC.CHUNK_SENDING.QUEUE_SIZE <= 0 ? JellyfishConfig.ASYNC.CHUNK_SENDING.THREADS * 512 : JellyfishConfig.ASYNC.CHUNK_SENDING.QUEUE_SIZE),
         new ThreadFactoryBuilder()
             .setNameFormat("Jellyfish Async Chunk Sender Thread - %d")
             .setPriority(Thread.MIN_PRIORITY)
-            .build()
+            .build(),
+        new ThreadPoolExecutor.CallerRunsPolicy()
     );
 
     @Override

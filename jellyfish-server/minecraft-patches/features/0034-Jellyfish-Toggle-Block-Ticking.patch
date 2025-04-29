@@ -1,0 +1,134 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Mon, 28 Apr 2025 20:28:46 -0500
+Subject: [PATCH] Jellyfish Toggle Block Ticking
+
+
+diff --git a/net/minecraft/world/level/block/FarmBlock.java b/net/minecraft/world/level/block/FarmBlock.java
+index a31ac95237515b874f59941ec24c74e2c357b3d8..6c0000671073411545e93a4bfc10285554bce7b4 100644
+--- a/net/minecraft/world/level/block/FarmBlock.java
++++ b/net/minecraft/world/level/block/FarmBlock.java
+@@ -41,7 +41,7 @@ public class FarmBlock extends Block {
+ 
+     protected FarmBlock(BlockBehaviour.Properties properties) {
+         super(properties);
+-        this.registerDefaultState(this.stateDefinition.any().setValue(MOISTURE, 0));
++        this.registerDefaultState(this.stateDefinition.any().setValue(MOISTURE, net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.KEEP_FARMLAND_MOISTEN ? MAX_MOISTURE : 0)); // Jellyfish - Keep farmland moisten
+     }
+ 
+     @Override
+@@ -87,6 +87,7 @@ public class FarmBlock extends Block {
+ 
+     @Override
+     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.KEEP_FARMLAND_MOISTEN) return; // Jellyfish - Keep farmland moisten
+         if (!state.canSurvive(level, pos)) {
+             turnToDirt(null, state, level, pos);
+         }
+@@ -94,6 +95,7 @@ public class FarmBlock extends Block {
+ 
+     @Override
+     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.KEEP_FARMLAND_MOISTEN) return; // Jellyfish - Keep farmland moisten
+         int moistureValue = state.getValue(MOISTURE);
+         if (moistureValue > 0 && level.paperConfig().tickRates.wetFarmland != 1 && (level.paperConfig().tickRates.wetFarmland < 1 || (net.minecraft.server.MinecraftServer.currentTick + pos.hashCode()) % level.paperConfig().tickRates.wetFarmland != 0)) { return; } // Paper - Configurable random tick rates for blocks
+         if (moistureValue == 0 && level.paperConfig().tickRates.dryFarmland != 1 && (level.paperConfig().tickRates.dryFarmland < 1 || (net.minecraft.server.MinecraftServer.currentTick + pos.hashCode()) % level.paperConfig().tickRates.dryFarmland != 0)) { return; } // Paper - Configurable random tick rates for blocks
+diff --git a/net/minecraft/world/level/block/GrassBlock.java b/net/minecraft/world/level/block/GrassBlock.java
+index 368f60ecce691ea161120743150e87b32efc3ca4..5fd3216343bcdd59350b1831a6521c3a42e5bf96 100644
+--- a/net/minecraft/world/level/block/GrassBlock.java
++++ b/net/minecraft/world/level/block/GrassBlock.java
+@@ -41,6 +41,7 @@ public class GrassBlock extends SpreadingSnowyDirtBlock implements BonemealableB
+ 
+     @Override
+     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.PREVENT_GRASS_TICKS) return; // Jellyfish - Prevent grass ticks
+         BlockPos blockPos = pos.above();
+         BlockState blockState = Blocks.SHORT_GRASS.defaultBlockState();
+         Optional<Holder.Reference<PlacedFeature>> optional = level.registryAccess()
+diff --git a/net/minecraft/world/level/block/IceBlock.java b/net/minecraft/world/level/block/IceBlock.java
+index be7141a4009036bcf3f92bba5d0ad74459e99bfa..6f6c02143dfcd6363b3739d8ae338742f11f4cb6 100644
+--- a/net/minecraft/world/level/block/IceBlock.java
++++ b/net/minecraft/world/level/block/IceBlock.java
+@@ -54,12 +54,14 @@ public class IceBlock extends HalfTransparentBlock {
+ 
+     @Override
+     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.PREVENT_ICE_MELT) return; // Jellyfish - Prevent ice melt
+         if (level.getBrightness(LightLayer.BLOCK, pos) > 11 - state.getLightBlock()) {
+             this.melt(state, level, pos);
+         }
+     }
+ 
+     protected void melt(BlockState state, Level level, BlockPos pos) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.PREVENT_ICE_MELT) return; // Jellyfish - Prevent ice melt
+         // CraftBukkit start
+         if (org.bukkit.craftbukkit.event.CraftEventFactory.callBlockFadeEvent(level, pos, level.dimensionType().ultraWarm() ? Blocks.AIR.defaultBlockState() : Blocks.WATER.defaultBlockState()).isCancelled()) {
+             return;
+diff --git a/net/minecraft/world/level/block/LeavesBlock.java b/net/minecraft/world/level/block/LeavesBlock.java
+index 010e9814490ffaa153df5b7865da17e2a84c7e82..1eec9c03f701fe8074498f6310806c4f900a6aff 100644
+--- a/net/minecraft/world/level/block/LeavesBlock.java
++++ b/net/minecraft/world/level/block/LeavesBlock.java
+@@ -55,6 +55,7 @@ public abstract class LeavesBlock extends Block implements SimpleWaterloggedBloc
+ 
+     @Override
+     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.PREVENT_LEAVES_DECAY) return; // Jellyfish - Prevent leaves decay
+         if (this.decaying(state)) {
+             // CraftBukkit start
+             org.bukkit.event.block.LeavesDecayEvent event = new org.bukkit.event.block.LeavesDecayEvent(org.bukkit.craftbukkit.block.CraftBlock.at(level, pos));
+@@ -75,6 +76,7 @@ public abstract class LeavesBlock extends Block implements SimpleWaterloggedBloc
+ 
+     @Override
+     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.PREVENT_LEAVES_DECAY) return; // Jellyfish - Prevent leaves decay
+         level.setBlock(pos, updateDistance(state, level, pos), 3);
+     }
+ 
+diff --git a/net/minecraft/world/level/block/LiquidBlock.java b/net/minecraft/world/level/block/LiquidBlock.java
+index 7320b416e8d660419018b0699f49ab6f45a3373b..9e51149b618e416e98b0e57830f04051f7eb615e 100644
+--- a/net/minecraft/world/level/block/LiquidBlock.java
++++ b/net/minecraft/world/level/block/LiquidBlock.java
+@@ -184,6 +184,7 @@ public class LiquidBlock extends Block implements BucketPickup {
+     }
+ 
+     private boolean shouldSpreadLiquid(Level level, BlockPos pos, BlockState state) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.PREVENT_LIQUID_SPREAD) return false; // Jellyfish - Prevent liquid spread
+         if (this.fluid.is(FluidTags.LAVA)) {
+             boolean isSoulSoil = level.getBlockState(pos.below()).is(Blocks.SOUL_SOIL);
+ 
+diff --git a/net/minecraft/world/level/block/SnowLayerBlock.java b/net/minecraft/world/level/block/SnowLayerBlock.java
+index 9131098e3ae4e6ffdf1491eb62537e385f75b6b2..65b84ae7769be3c19a88ce5ecc5a7234183f893f 100644
+--- a/net/minecraft/world/level/block/SnowLayerBlock.java
++++ b/net/minecraft/world/level/block/SnowLayerBlock.java
+@@ -102,6 +102,7 @@ public class SnowLayerBlock extends Block {
+ 
+     @Override
+     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.PREVENT_SNOW_MELT) return; // Jellyfish - Prevent snow melt
+         if (level.getBrightness(LightLayer.BLOCK, pos) > 11) {
+             // CraftBukkit start
+             if (org.bukkit.craftbukkit.event.CraftEventFactory.callBlockFadeEvent(level, pos, Blocks.AIR.defaultBlockState()).isCancelled()) {
+diff --git a/net/minecraft/world/level/block/SugarCaneBlock.java b/net/minecraft/world/level/block/SugarCaneBlock.java
+index a8de37e173e244d7a16c19ac8805e0e4327c837a..feca0d0e54e7ecaccae167f47f20d3f34e0ffb06 100644
+--- a/net/minecraft/world/level/block/SugarCaneBlock.java
++++ b/net/minecraft/world/level/block/SugarCaneBlock.java
+@@ -88,6 +88,7 @@ public class SugarCaneBlock extends Block {
+ 
+     @Override
+     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
++        if (net.serlith.jellyfish.JellyfishConfig.TICKING.BLOCKS.PREVENT_SUGAR_CANE_BREAK) return true; // Jellyfish - Prevent sugar cane from braking
+         BlockState blockState = level.getBlockState(pos.below());
+         if (blockState.is(this)) {
+             return true;
+diff --git a/net/minecraft/world/level/block/state/BlockBehaviour.java b/net/minecraft/world/level/block/state/BlockBehaviour.java
+index 8db95b74f88f8096de93115ae8d3fb2e6184ad3b..5f9443acbd9c52753caf22457dccfe676ff95669 100644
+--- a/net/minecraft/world/level/block/state/BlockBehaviour.java
++++ b/net/minecraft/world/level/block/state/BlockBehaviour.java
+@@ -983,6 +983,7 @@ public abstract class BlockBehaviour implements FeatureElement {
+ 
+         @Nullable
+         public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockEntityType<T> blockEntityType) {
++            if (blockEntityType.noTick) return null; // Jellyfish - Toggle tile entity ticking
+             return this.getBlock() instanceof EntityBlock ? ((EntityBlock)this.getBlock()).getTicker(level, this.asState(), blockEntityType) : null;
+         }
+ 

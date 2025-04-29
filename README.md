@@ -12,7 +12,7 @@ Jellyfish is a [Paper](https://github.com/PaperMC/Paper)/[Pufferfish](https://gi
 
 <div align="center">
 
-### This project is in very EARLY stages of development, no builds will be provided.
+### This project is in very EARLY stages of development (slow and experimental), no builds will be provided.
 ### If you use it anyway feedback will be appreciated.
 
 </div>

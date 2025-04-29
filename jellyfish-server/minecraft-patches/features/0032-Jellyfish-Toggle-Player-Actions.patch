@@ -1,0 +1,201 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Mon, 28 Apr 2025 17:10:18 -0500
+Subject: [PATCH] Jellyfish Toggle Player Actions
+
+
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index 568b6e60482c61363b6052c73fbc26a2ba19d5df..84f6aa1f9adc786643e213a8fe9dae3095dbb6c5 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -824,6 +824,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+                 }
+             }
+ 
++            if (net.serlith.jellyfish.JellyfishConfig.PLAYERS.TAKE_DAMAGE) { // Jellyfish - Toggle regeneration
+             if (this.getHealth() != this.lastSentHealth
+                 || this.lastSentFood != this.foodData.getFoodLevel()
+                 || this.foodData.getSaturationLevel() == 0.0F != this.lastFoodSaturationZero) {
+@@ -837,26 +838,35 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+                 this.lastRecordedHealthAndAbsorption = this.getHealth() + this.getAbsorptionAmount();
+                 this.updateScoreForCriteria(ObjectiveCriteria.HEALTH, Mth.ceil(this.lastRecordedHealthAndAbsorption));
+             }
++            } // Jellyfish - Toggle regeneration
+ 
++            if (net.serlith.jellyfish.JellyfishConfig.PLAYERS.GET_HUNGRY) { // Jellyfish - Toggle hunger
+             if (this.foodData.getFoodLevel() != this.lastRecordedFoodLevel) {
+                 this.lastRecordedFoodLevel = this.foodData.getFoodLevel();
+                 this.updateScoreForCriteria(ObjectiveCriteria.FOOD, Mth.ceil((float)this.lastRecordedFoodLevel));
+             }
++            } // Jellyfish - Toggle hunger
+ 
++            if (net.serlith.jellyfish.JellyfishConfig.PLAYERS.DROWN) { // Jellyfish - Toggle breathing
+             if (this.getAirSupply() != this.lastRecordedAirLevel) {
+                 this.lastRecordedAirLevel = this.getAirSupply();
+                 this.updateScoreForCriteria(ObjectiveCriteria.AIR, Mth.ceil((float)this.lastRecordedAirLevel));
+             }
++            } // Jellyfish - Toggle breathing
+ 
++            if (net.serlith.jellyfish.JellyfishConfig.PLAYERS.GET_ARMOR) { // Jellyfish - Toggle armor
+             if (this.getArmorValue() != this.lastRecordedArmor) {
+                 this.lastRecordedArmor = this.getArmorValue();
+                 this.updateScoreForCriteria(ObjectiveCriteria.ARMOR, Mth.ceil((float)this.lastRecordedArmor));
+             }
++            } // Jellyfish - Toggle armor
+ 
++            if (net.serlith.jellyfish.JellyfishConfig.PLAYERS.GAIN_EXPERIENCE) { // Jellyfish - Toggle experience gain
+             if (this.totalExperience != this.lastRecordedExperience) {
+                 this.lastRecordedExperience = this.totalExperience;
+                 this.updateScoreForCriteria(ObjectiveCriteria.EXPERIENCE, Mth.ceil((float)this.lastRecordedExperience));
+             }
++            } // Jellyfish - Toggle experience gain
+ 
+             // CraftBukkit start - Force max health updates
+             if (this.maxHealthCache != this.getMaxHealth()) {
+@@ -864,6 +874,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+             }
+             // CraftBukkit end
+ 
++            if (net.serlith.jellyfish.JellyfishConfig.PLAYERS.GAIN_EXPERIENCE) { // Jellyfish - Toggle experience gain
+             if (this.experienceLevel != this.lastRecordedLevel) {
+                 this.lastRecordedLevel = this.experienceLevel;
+                 this.updateScoreForCriteria(ObjectiveCriteria.LEVEL, Mth.ceil((float)this.lastRecordedLevel));
+@@ -873,11 +884,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+                 this.lastSentExp = this.totalExperience;
+                 this.connection.send(new ClientboundSetExperiencePacket(this.experienceProgress, this.totalExperience, this.experienceLevel));
+             }
++            } // Jellyfish - Toggle experience gain
+ 
+             if (this.tickCount % 20 == 0) {
+                 CriteriaTriggers.LOCATION.trigger(this);
+             }
+ 
++            if (net.serlith.jellyfish.JellyfishConfig.PLAYERS.GAIN_EXPERIENCE) { // Jellyfish - Toggle experience gain
+             // CraftBukkit start - initialize oldLevel, fire PlayerLevelChangeEvent, and tick client-sided world border
+             if (this.oldLevel == -1) {
+                 this.oldLevel = this.experienceLevel;
+@@ -887,6 +900,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+                 org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerLevelChangeEvent(this.getBukkitEntity(), this.oldLevel, this.experienceLevel);
+                 this.oldLevel = this.experienceLevel;
+             }
++            } // Jellyfish - Toggle experience gain
+ 
+             if (this.getBukkitEntity().hasClientWorldBorder()) {
+                 ((org.bukkit.craftbukkit.CraftWorldBorder) this.getBukkitEntity().getWorldBorder()).getHandle().tick();
+@@ -913,6 +927,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+ 
+     @Override
+     protected void tickRegeneration() {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.GET_HUNGRY) return; // Jellyfish - Toggle food exhaustion
+         if (this.level().getDifficulty() == Difficulty.PEACEFUL && this.serverLevel().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
+             if (this.tickCount % 20 == 0) {
+                 if (this.getHealth() < this.getMaxHealth()) {
+@@ -1798,6 +1813,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+     }
+ 
+     public void checkMovementStatistics(double dx, double dy, double dz) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.GET_HUNGRY) return; // Jellyfish - Toggle food exhaustion
+         if (!this.isPassenger() && !didNotMove(dx, dy, dz)) {
+             if (this.isSwimming()) {
+                 int rounded = Math.round((float)Math.sqrt(dx * dx + dy * dy + dz * dz) * 100.0F);
+diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
+index 248ee263a853d1d3148746a63ba422115853f6a1..03458636bbd090b3c19a5ce5aaba97af8e281800 100644
+--- a/net/minecraft/world/entity/player/Player.java
++++ b/net/minecraft/world/entity/player/Player.java
+@@ -855,6 +855,7 @@ public abstract class Player extends LivingEntity {
+ 
+     @Override
+     public boolean isInvulnerableTo(ServerLevel level, DamageSource damageSource) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TAKE_DAMAGE) return true; // Jellyfish - Toggle take damage
+         if (super.isInvulnerableTo(level, damageSource)) {
+             return true;
+         } else if (damageSource.is(DamageTypeTags.IS_DROWNING)) {
+@@ -870,6 +871,7 @@ public abstract class Player extends LivingEntity {
+ 
+     @Override
+     public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TAKE_DAMAGE) return false; // Jellyfish - Toggle take damage
+         if (this.isInvulnerableTo(level, damageSource)) {
+             return false;
+         } else if (this.abilities.invulnerable && !damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+@@ -919,10 +921,12 @@ public abstract class Player extends LivingEntity {
+ 
+     @Override
+     public boolean canBeSeenAsEnemy() {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TAKE_DAMAGE) return false; // Jellyfish - Toggle take damage
+         return !this.getAbilities().invulnerable && super.canBeSeenAsEnemy();
+     }
+ 
+     public boolean canHarmPlayer(Player other) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TAKE_DAMAGE) return false; // Jellyfish - Toggle take damage
+         // CraftBukkit start - Change to check OTHER player's scoreboard team according to API
+         // To summarize this method's logic, it's "Can parameter hurt this"
+         org.bukkit.scoreboard.Team team;
+@@ -950,17 +954,20 @@ public abstract class Player extends LivingEntity {
+ 
+     @Override
+     protected void hurtArmor(DamageSource damageSource, float damage) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.GET_ARMOR) return; // Jellyfish - Toggle armor damage
+         this.doHurtEquipment(damageSource, damage, new EquipmentSlot[]{EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD});
+     }
+ 
+     @Override
+     protected void hurtHelmet(DamageSource damageSource, float damageAmount) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.GET_ARMOR) return; // Jellyfish - Toggle armor damage
+         this.doHurtEquipment(damageSource, damageAmount, new EquipmentSlot[]{EquipmentSlot.HEAD});
+     }
+ 
+     @Override
+     // CraftBukkit start
+     protected boolean actuallyHurt(ServerLevel level, DamageSource damageSource, float amount, org.bukkit.event.entity.EntityDamageEvent event) { // void -> boolean
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TAKE_DAMAGE) return false; // Jellyfish - Toggle take damage
+         if (true) {
+             return super.actuallyHurt(level, damageSource, amount, event);
+         }
+@@ -1591,6 +1598,7 @@ public abstract class Player extends LivingEntity {
+ 
+     @Override
+     public boolean causeFallDamage(double fallDistance, float damageMultiplier, DamageSource damageSource) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TAKE_DAMAGE) return false; // Jellyfish - Toggle take damage
+         if (this.abilities.mayfly && !this.flyingFallDamage.toBooleanOrElse(false)) { // Paper - flying fall damage
+             return false;
+         } else {
+@@ -1729,6 +1737,7 @@ public abstract class Player extends LivingEntity {
+     }
+ 
+     public void giveExperienceLevels(int levels) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.GAIN_EXPERIENCE) return; // Jellyfish - Toggle experience gain
+         this.experienceLevel = IntMath.saturatedAdd(this.experienceLevel, levels);
+         if (this.experienceLevel < 0) {
+             this.experienceLevel = 0;
+@@ -1761,11 +1770,13 @@ public abstract class Player extends LivingEntity {
+     // Paper end - send while respecting visibility
+ 
+     public void causeFoodExhaustion(float exhaustion) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.GET_HUNGRY) return; // Jellyfish - Toggle food exhaustion
+         // CraftBukkit start
+         this.causeFoodExhaustion(exhaustion, org.bukkit.event.entity.EntityExhaustionEvent.ExhaustionReason.UNKNOWN);
+     }
+ 
+     public void causeFoodExhaustion(float exhaustion, org.bukkit.event.entity.EntityExhaustionEvent.ExhaustionReason reason) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.GET_HUNGRY) return; // Jellyfish - Toggle food exhaustion
+         // CraftBukkit end
+         if (!this.abilities.invulnerable) {
+             if (!this.level().isClientSide) {
+@@ -1792,6 +1803,7 @@ public abstract class Player extends LivingEntity {
+     }
+ 
+     public boolean isHurt() {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TAKE_DAMAGE) return false; // Jellyfish - Toggle take damage
+         return this.getHealth() > 0.0F && this.getHealth() < this.getMaxHealth();
+     }
+ 
+@@ -1941,7 +1953,7 @@ public abstract class Player extends LivingEntity {
+ 
+     @Override
+     public boolean isPushedByFluid() {
+-        return !this.abilities.flying;
++        return net.serlith.jellyfish.JellyfishConfig.PLAYERS.BE_DRAGGED_BY_FLUIDS && !this.abilities.flying; // Jellyfish - Toggle push by fluid
+     }
+ 
+     public Scoreboard getScoreboard() {

@@ -1,0 +1,152 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Mon, 28 Apr 2025 23:04:49 -0500
+Subject: [PATCH] Jellyfish Toggle Particles
+
+
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index 84f6aa1f9adc786643e213a8fe9dae3095dbb6c5..83b8b0e761d339b4599c8da3b4257dbf953af863 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -1634,6 +1634,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+         if (this.spawnExtraParticlesOnFall && onGround && this.fallDistance > 0.0) {
+             Vec3 vec3 = pos.getCenter().add(0.0, 0.5, 0.0);
+             int i = (int)Mth.clamp(50.0 * this.fallDistance, 0.0, 200.0);
++            if (net.serlith.jellyfish.JellyfishConfig.PARTICLES.FALL_IMPACT) // Jellyfish - Toggle fall impact particles
+             this.serverLevel().sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), vec3.x, vec3.y, vec3.z, i, 0.3F, 0.3F, 0.3F, 0.15F);
+             this.spawnExtraParticlesOnFall = false;
+         }
+diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
+index eeaa81e026ff628504203976cb87e15f9adf3078..53c503e0e87e4c2b8a613770c399e0626c168924 100644
+--- a/net/minecraft/world/entity/Entity.java
++++ b/net/minecraft/world/entity/Entity.java
+@@ -3498,9 +3498,11 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+     protected static void sendBubbleColumnParticles(Level level, BlockPos pos) {
+         if (level instanceof ServerLevel serverLevel) {
+             for (int i = 0; i < 2; i++) {
++                if (net.serlith.jellyfish.JellyfishConfig.PARTICLES.WATER_SPLASH) // Jellyfish - Toggle water splash particles
+                 serverLevel.sendParticles(
+                     ParticleTypes.SPLASH, pos.getX() + level.random.nextDouble(), pos.getY() + 1, pos.getZ() + level.random.nextDouble(), 1, 0.0, 0.0, 0.0, 1.0
+                 );
++                if (net.serlith.jellyfish.JellyfishConfig.PARTICLES.WATER_BUBBLES) // Jellyfish - Toggle water bubbles particles
+                 serverLevel.sendParticles(
+                     ParticleTypes.BUBBLE,
+                     pos.getX() + level.random.nextDouble(),
+diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
+index 03458636bbd090b3c19a5ce5aaba97af8e281800..67203e0100e4f625fc691d1cd62d24455dc16d15 100644
+--- a/net/minecraft/world/entity/player/Player.java
++++ b/net/minecraft/world/entity/player/Player.java
+@@ -1372,6 +1372,7 @@ public abstract class Player extends LivingEntity {
+                                 this.awardStat(Stats.DAMAGE_DEALT, Math.round(f7 * 10.0F));
+                                 if (this.level() instanceof ServerLevel && f7 > 2.0F) {
+                                     int i = (int)(f7 * 0.5);
++                                    if (net.serlith.jellyfish.JellyfishConfig.PARTICLES.DEAL_DAMAGE) // Jellyfish - Toggle deal damage particles
+                                     ((ServerLevel)this.level())
+                                         .sendParticles(ParticleTypes.DAMAGE_INDICATOR, target.getX(), target.getY(0.5), target.getZ(), i, 0.1, 0.0, 0.1, 0.2);
+                                 }
+@@ -1408,6 +1409,7 @@ public abstract class Player extends LivingEntity {
+         double d = -Mth.sin(this.getYRot() * (float) (Math.PI / 180.0));
+         double d1 = Mth.cos(this.getYRot() * (float) (Math.PI / 180.0));
+         if (this.level() instanceof ServerLevel) {
++            if (net.serlith.jellyfish.JellyfishConfig.PARTICLES.DEAL_DAMAGE) // Jellyfish - Toggle deal damage particles
+             ((ServerLevel)this.level()).sendParticles(ParticleTypes.SWEEP_ATTACK, this.getX() + d, this.getY(0.5), this.getZ() + d1, 0, d, 0.0, d1, 0.0);
+         }
+     }
+diff --git a/net/minecraft/world/level/block/BeehiveBlock.java b/net/minecraft/world/level/block/BeehiveBlock.java
+index 3cec4c5a40c569d848bbf503501d8c8d38ecf3ce..09f3913afab0f5ae3a2c851870d584466499e39e 100644
+--- a/net/minecraft/world/level/block/BeehiveBlock.java
++++ b/net/minecraft/world/level/block/BeehiveBlock.java
+@@ -208,6 +208,7 @@ public class BeehiveBlock extends BaseEntityBlock {
+ 
+     @Override
+     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PARTICLES.DRIPPING_HONEY) return; // Jellyfish - Toggle dripping honey particles
+         if (state.getValue(HONEY_LEVEL) >= 5) {
+             for (int i = 0; i < random.nextInt(1) + 1; i++) {
+                 this.trySpawnDripParticles(level, pos, state);
+@@ -216,6 +217,7 @@ public class BeehiveBlock extends BaseEntityBlock {
+     }
+ 
+     private void trySpawnDripParticles(Level level, BlockPos pos, BlockState state) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PARTICLES.DRIPPING_HONEY) return; // Jellyfish - Toggle dripping honey particles
+         if (state.getFluidState().isEmpty() && !(level.random.nextFloat() < 0.3F)) {
+             VoxelShape collisionShape = state.getCollisionShape(level, pos);
+             double d = collisionShape.max(Direction.Axis.Y);
+diff --git a/net/minecraft/world/level/block/LeavesBlock.java b/net/minecraft/world/level/block/LeavesBlock.java
+index 1eec9c03f701fe8074498f6310806c4f900a6aff..e4c59ac00c41b9cf71b6e690ac69c5f8cc74d032 100644
+--- a/net/minecraft/world/level/block/LeavesBlock.java
++++ b/net/minecraft/world/level/block/LeavesBlock.java
+@@ -150,6 +150,7 @@ public abstract class LeavesBlock extends Block implements SimpleWaterloggedBloc
+     }
+ 
+     private static void makeDrippingWaterParticles(Level level, BlockPos pos, RandomSource random, BlockState blockBelow, BlockPos belowPos) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PARTICLES.WET_LEAVES) return; // Jellyfish - Toggle wet leaves particles
+         if (level.isRainingAt(pos.above())) {
+             if (random.nextInt(15) == 1) {
+                 if (!blockBelow.canOcclude() || !blockBelow.isFaceSturdy(level, belowPos, Direction.UP)) {
+@@ -160,6 +161,7 @@ public abstract class LeavesBlock extends Block implements SimpleWaterloggedBloc
+     }
+ 
+     private void makeFallingLeavesParticles(Level level, BlockPos pos, RandomSource random, BlockState blockBelow, BlockPos belowPos) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PARTICLES.FALLING_LEAVES) return; // Jellyfish - Toggle falling leaves particles
+         if (!(random.nextFloat() >= this.leafParticleChance)) {
+             if (!isFaceFull(blockBelow.getCollisionShape(level, belowPos), Direction.UP)) {
+                 this.spawnFallingLeavesParticle(level, pos, random);
+diff --git a/net/minecraft/world/level/block/PointedDripstoneBlock.java b/net/minecraft/world/level/block/PointedDripstoneBlock.java
+index ef164fb4f24412e506b8abce74d509e8be6c4676..8737a6534e3e98fed8f907b0c951c0dad7314dd5 100644
+--- a/net/minecraft/world/level/block/PointedDripstoneBlock.java
++++ b/net/minecraft/world/level/block/PointedDripstoneBlock.java
+@@ -403,6 +403,7 @@ public class PointedDripstoneBlock extends Block implements Fallable, SimpleWate
+     }
+ 
+     private static void spawnDripParticle(Level level, BlockPos pos, BlockState state, Fluid fluid) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PARTICLES.DRIPSTONE_DRIPPING) return; // Jellyfish - Toggle dripstone dripping particles
+         Vec3 offset = state.getOffset(pos);
+         double d = 0.0625;
+         double d1 = pos.getX() + 0.5 + offset.x;
+diff --git a/net/minecraft/world/level/block/WetSpongeBlock.java b/net/minecraft/world/level/block/WetSpongeBlock.java
+index 3a24eed10a5da13628fe19c0b26399ee60ebd03d..7aff993608626f61c049784f9b8e87e4cbe054a3 100644
+--- a/net/minecraft/world/level/block/WetSpongeBlock.java
++++ b/net/minecraft/world/level/block/WetSpongeBlock.java
+@@ -65,6 +65,7 @@ public class WetSpongeBlock extends Block {
+                     }
+                 }
+ 
++                if (net.serlith.jellyfish.JellyfishConfig.PARTICLES.WET_SPONGE) // Jellyfish - Toggle wet sponge particles
+                 level.addParticle(ParticleTypes.DRIPPING_WATER, d, d1, d2, 0.0, 0.0, 0.0);
+             }
+         }
+diff --git a/net/minecraft/world/level/material/LavaFluid.java b/net/minecraft/world/level/material/LavaFluid.java
+index 033f252248b671e35135269dd2df6e7ca4585604..0c19e47b2d0d280b3ec2899d5a2bd4983a4ecb5f 100644
+--- a/net/minecraft/world/level/material/LavaFluid.java
++++ b/net/minecraft/world/level/material/LavaFluid.java
+@@ -154,7 +154,7 @@ public abstract class LavaFluid extends FlowingFluid {
+     @Nullable
+     @Override
+     public ParticleOptions getDripParticle() {
+-        return ParticleTypes.DRIPPING_LAVA;
++        return net.serlith.jellyfish.JellyfishConfig.PARTICLES.DRIPPING_LAVA ? ParticleTypes.DRIPPING_LAVA : null;
+     }
+ 
+     @Override
+diff --git a/net/minecraft/world/level/material/WaterFluid.java b/net/minecraft/world/level/material/WaterFluid.java
+index 10e3c644e31650b0e1aad6349a83a763cf744ec8..a7d7cb44c475bafcb51231529186261f3331704d 100644
+--- a/net/minecraft/world/level/material/WaterFluid.java
++++ b/net/minecraft/world/level/material/WaterFluid.java
+@@ -61,6 +61,7 @@ public abstract class WaterFluid extends FlowingFluid {
+                 );
+             }
+         } else if (random.nextInt(10) == 0) {
++            if (net.serlith.jellyfish.JellyfishConfig.PARTICLES.UNDERWATER) // Jellyfish - Toggle underwater particles
+             level.addParticle(
+                 ParticleTypes.UNDERWATER, pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0.0, 0.0, 0.0
+             );
+@@ -70,7 +71,7 @@ public abstract class WaterFluid extends FlowingFluid {
+     @Nullable
+     @Override
+     public ParticleOptions getDripParticle() {
+-        return ParticleTypes.DRIPPING_WATER;
++        return net.serlith.jellyfish.JellyfishConfig.PARTICLES.DRIPPING_WATER ? ParticleTypes.DRIPPING_WATER : null;
+     }
+ 
+     @Override

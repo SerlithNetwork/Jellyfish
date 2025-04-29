@@ -1,0 +1,522 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Mon, 28 Apr 2025 18:44:13 -0500
+Subject: [PATCH] Jellyfish Toggle Advancement Trigger
+
+
+diff --git a/net/minecraft/advancements/critereon/AnyBlockInteractionTrigger.java b/net/minecraft/advancements/critereon/AnyBlockInteractionTrigger.java
+index 3e75c257d5dc30953bc262c67b4bc3a5c7fcf5ff..66a169f66ee374e25f33c6a7a6a4cb0caacc9697 100644
+--- a/net/minecraft/advancements/critereon/AnyBlockInteractionTrigger.java
++++ b/net/minecraft/advancements/critereon/AnyBlockInteractionTrigger.java
+@@ -20,6 +20,7 @@ public class AnyBlockInteractionTrigger extends SimpleCriterionTrigger<AnyBlockI
+     }
+ 
+     public void trigger(ServerPlayer player, BlockPos pos, ItemStack stack) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         ServerLevel serverLevel = player.serverLevel();
+         BlockState blockState = serverLevel.getBlockState(pos);
+         LootParams lootParams = new LootParams.Builder(serverLevel)
+diff --git a/net/minecraft/advancements/critereon/BeeNestDestroyedTrigger.java b/net/minecraft/advancements/critereon/BeeNestDestroyedTrigger.java
+index b08e8ba83e9193f1e1c8dc5e18066bf4eab7e5ee..7aa457c1ba1673c359e3685d906e75ea93e69dc9 100644
+--- a/net/minecraft/advancements/critereon/BeeNestDestroyedTrigger.java
++++ b/net/minecraft/advancements/critereon/BeeNestDestroyedTrigger.java
+@@ -19,6 +19,7 @@ public class BeeNestDestroyedTrigger extends SimpleCriterionTrigger<BeeNestDestr
+     }
+ 
+     public void trigger(ServerPlayer player, BlockState state, ItemStack stack, int numBees) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(state, stack, numBees));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/BredAnimalsTrigger.java b/net/minecraft/advancements/critereon/BredAnimalsTrigger.java
+index 3fecb1caa70145222702aa2e04fddb83386e03ba..a48f4194e8becbc5d2c3cd6a722c4de86aca4de3 100644
+--- a/net/minecraft/advancements/critereon/BredAnimalsTrigger.java
++++ b/net/minecraft/advancements/critereon/BredAnimalsTrigger.java
+@@ -18,6 +18,7 @@ public class BredAnimalsTrigger extends SimpleCriterionTrigger<BredAnimalsTrigge
+     }
+ 
+     public void trigger(ServerPlayer player, Animal parent, Animal partner, @Nullable AgeableMob child) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, parent);
+         LootContext lootContext1 = EntityPredicate.createContext(player, partner);
+         LootContext lootContext2 = child != null ? EntityPredicate.createContext(player, child) : null;
+diff --git a/net/minecraft/advancements/critereon/BrewedPotionTrigger.java b/net/minecraft/advancements/critereon/BrewedPotionTrigger.java
+index 5741d8e3c3a3fc234a9ee1668e82f4a21d8a998a..36324b86976bb70e2376947805d875f88c8001a5 100644
+--- a/net/minecraft/advancements/critereon/BrewedPotionTrigger.java
++++ b/net/minecraft/advancements/critereon/BrewedPotionTrigger.java
+@@ -16,6 +16,7 @@ public class BrewedPotionTrigger extends SimpleCriterionTrigger<BrewedPotionTrig
+     }
+ 
+     public void trigger(ServerPlayer player, Holder<Potion> potion) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, trigger -> trigger.matches(potion));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/ChangeDimensionTrigger.java b/net/minecraft/advancements/critereon/ChangeDimensionTrigger.java
+index 4ac8911c23afd09c821c4d4547e6d98d8cacab0c..d8163db05f6ebc183a6ae3d2911c7ffcc95ede7a 100644
+--- a/net/minecraft/advancements/critereon/ChangeDimensionTrigger.java
++++ b/net/minecraft/advancements/critereon/ChangeDimensionTrigger.java
+@@ -17,6 +17,7 @@ public class ChangeDimensionTrigger extends SimpleCriterionTrigger<ChangeDimensi
+     }
+ 
+     public void trigger(ServerPlayer player, ResourceKey<Level> fromLevel, ResourceKey<Level> toLevel) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(fromLevel, toLevel));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/ChanneledLightningTrigger.java b/net/minecraft/advancements/critereon/ChanneledLightningTrigger.java
+index aa6d96808de410d3d23bef7af4d5ca9f6f5bf667..aacda9bfecdb31e883374de8cded9a2933415357 100644
+--- a/net/minecraft/advancements/critereon/ChanneledLightningTrigger.java
++++ b/net/minecraft/advancements/critereon/ChanneledLightningTrigger.java
+@@ -19,6 +19,7 @@ public class ChanneledLightningTrigger extends SimpleCriterionTrigger<ChanneledL
+     }
+ 
+     public void trigger(ServerPlayer player, Collection<? extends Entity> entityTriggered) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         List<LootContext> list = entityTriggered.stream().map(entity -> EntityPredicate.createContext(player, entity)).collect(Collectors.toList());
+         this.trigger(player, instance -> instance.matches(list));
+     }
+diff --git a/net/minecraft/advancements/critereon/ConstructBeaconTrigger.java b/net/minecraft/advancements/critereon/ConstructBeaconTrigger.java
+index a703aa7cb5a727db324e984c72ffb6c5b54e6195..1b72cec39a6ab2cf07670c1d4fafb38f6e9e4695 100644
+--- a/net/minecraft/advancements/critereon/ConstructBeaconTrigger.java
++++ b/net/minecraft/advancements/critereon/ConstructBeaconTrigger.java
+@@ -14,6 +14,7 @@ public class ConstructBeaconTrigger extends SimpleCriterionTrigger<ConstructBeac
+     }
+ 
+     public void trigger(ServerPlayer player, int level) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(level));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/ConsumeItemTrigger.java b/net/minecraft/advancements/critereon/ConsumeItemTrigger.java
+index 987a1e32a9601d9481e7be2fcb55b4f194e94ae4..261bd546abc67b190c067ef119011a2fab6bf6d1 100644
+--- a/net/minecraft/advancements/critereon/ConsumeItemTrigger.java
++++ b/net/minecraft/advancements/critereon/ConsumeItemTrigger.java
+@@ -18,6 +18,7 @@ public class ConsumeItemTrigger extends SimpleCriterionTrigger<ConsumeItemTrigge
+     }
+ 
+     public void trigger(ServerPlayer player, ItemStack item) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(item));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/CuredZombieVillagerTrigger.java b/net/minecraft/advancements/critereon/CuredZombieVillagerTrigger.java
+index b018b1fd915448a3406a4c900516d6ede1a2dc2c..6a08ef098d2601a340ddee7ed9aa35d226e66894 100644
+--- a/net/minecraft/advancements/critereon/CuredZombieVillagerTrigger.java
++++ b/net/minecraft/advancements/critereon/CuredZombieVillagerTrigger.java
+@@ -17,6 +17,7 @@ public class CuredZombieVillagerTrigger extends SimpleCriterionTrigger<CuredZomb
+     }
+ 
+     public void trigger(ServerPlayer player, Zombie zombie, Villager villager) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, zombie);
+         LootContext lootContext1 = EntityPredicate.createContext(player, villager);
+         this.trigger(player, instance -> instance.matches(lootContext, lootContext1));
+diff --git a/net/minecraft/advancements/critereon/DefaultBlockInteractionTrigger.java b/net/minecraft/advancements/critereon/DefaultBlockInteractionTrigger.java
+index 9767482ef13e3f04c442fffaf1a1fc2cd811870e..5a1a04bf980e616c7a17816c115623f2eb5f6d83 100644
+--- a/net/minecraft/advancements/critereon/DefaultBlockInteractionTrigger.java
++++ b/net/minecraft/advancements/critereon/DefaultBlockInteractionTrigger.java
+@@ -19,6 +19,7 @@ public class DefaultBlockInteractionTrigger extends SimpleCriterionTrigger<Defau
+     }
+ 
+     public void trigger(ServerPlayer player, BlockPos pos) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         ServerLevel serverLevel = player.serverLevel();
+         BlockState blockState = serverLevel.getBlockState(pos);
+         LootParams lootParams = new LootParams.Builder(serverLevel)
+diff --git a/net/minecraft/advancements/critereon/DistanceTrigger.java b/net/minecraft/advancements/critereon/DistanceTrigger.java
+index ec02674642d67ca0a998495eb8670b8b421a4435..d3705c22249872ba9cdd47aeee14927398f5fa3b 100644
+--- a/net/minecraft/advancements/critereon/DistanceTrigger.java
++++ b/net/minecraft/advancements/critereon/DistanceTrigger.java
+@@ -16,6 +16,7 @@ public class DistanceTrigger extends SimpleCriterionTrigger<DistanceTrigger.Trig
+     }
+ 
+     public void trigger(ServerPlayer player, Vec3 position) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         Vec3 vec3 = player.position();
+         this.trigger(player, instance -> instance.matches(player.serverLevel(), position, vec3));
+     }
+diff --git a/net/minecraft/advancements/critereon/EffectsChangedTrigger.java b/net/minecraft/advancements/critereon/EffectsChangedTrigger.java
+index 2fd58c1a0cb838c6da2c157c45b6d2b058f288fd..ba3ffbe120ce45a20610d11e737c712874a29a30 100644
+--- a/net/minecraft/advancements/critereon/EffectsChangedTrigger.java
++++ b/net/minecraft/advancements/critereon/EffectsChangedTrigger.java
+@@ -18,6 +18,7 @@ public class EffectsChangedTrigger extends SimpleCriterionTrigger<EffectsChanged
+     }
+ 
+     public void trigger(ServerPlayer player, @Nullable Entity source) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = source != null ? EntityPredicate.createContext(player, source) : null;
+         this.trigger(player, instance -> instance.matches(player, lootContext));
+     }
+diff --git a/net/minecraft/advancements/critereon/EnchantedItemTrigger.java b/net/minecraft/advancements/critereon/EnchantedItemTrigger.java
+index e274e1d09ed9bb81a6c29f2ce75b1f34d80f4ae5..21a245f36f2b4dd56feac0846a0ea164ba2cd3a0 100644
+--- a/net/minecraft/advancements/critereon/EnchantedItemTrigger.java
++++ b/net/minecraft/advancements/critereon/EnchantedItemTrigger.java
+@@ -15,6 +15,7 @@ public class EnchantedItemTrigger extends SimpleCriterionTrigger<EnchantedItemTr
+     }
+ 
+     public void trigger(ServerPlayer player, ItemStack item, int levelsSpent) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(item, levelsSpent));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/EnterBlockTrigger.java b/net/minecraft/advancements/critereon/EnterBlockTrigger.java
+index da37967ff602e58889720817f2a3a111a9bf7d64..dcf7537504c3b8abed3505bf195a7586e9d5c18c 100644
+--- a/net/minecraft/advancements/critereon/EnterBlockTrigger.java
++++ b/net/minecraft/advancements/critereon/EnterBlockTrigger.java
+@@ -19,6 +19,7 @@ public class EnterBlockTrigger extends SimpleCriterionTrigger<EnterBlockTrigger.
+     }
+ 
+     public void trigger(ServerPlayer player, BlockState state) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, trigger -> trigger.matches(state));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/EntityHurtPlayerTrigger.java b/net/minecraft/advancements/critereon/EntityHurtPlayerTrigger.java
+index dcce00b58f837067f70afbffb47f5690be6da6e6..86f801e5d87cac1dcf8fa295f8be501fc5f17526 100644
+--- a/net/minecraft/advancements/critereon/EntityHurtPlayerTrigger.java
++++ b/net/minecraft/advancements/critereon/EntityHurtPlayerTrigger.java
+@@ -15,6 +15,7 @@ public class EntityHurtPlayerTrigger extends SimpleCriterionTrigger<EntityHurtPl
+     }
+ 
+     public void trigger(ServerPlayer player, DamageSource source, float dealtDamage, float takenDamage, boolean blocked) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(player, source, dealtDamage, takenDamage, blocked));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/FallAfterExplosionTrigger.java b/net/minecraft/advancements/critereon/FallAfterExplosionTrigger.java
+index 64392e1f0d74bbbf717df9ca4aa066b87b584d08..33b2c7f3ed110202f42fcdc5d9dcb1eefbe7df52 100644
+--- a/net/minecraft/advancements/critereon/FallAfterExplosionTrigger.java
++++ b/net/minecraft/advancements/critereon/FallAfterExplosionTrigger.java
+@@ -19,6 +19,7 @@ public class FallAfterExplosionTrigger extends SimpleCriterionTrigger<FallAfterE
+     }
+ 
+     public void trigger(ServerPlayer player, Vec3 pos, @Nullable Entity entity) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         Vec3 vec3 = player.position();
+         LootContext lootContext = entity != null ? EntityPredicate.createContext(player, entity) : null;
+         this.trigger(player, triggerInstance -> triggerInstance.matches(player.serverLevel(), pos, vec3, lootContext));
+diff --git a/net/minecraft/advancements/critereon/FilledBucketTrigger.java b/net/minecraft/advancements/critereon/FilledBucketTrigger.java
+index 265fb4ab353ab9b0f7f5a8009df32093d7f77dea..33c5e4faffce94f882b756709796db3adb0bbeec 100644
+--- a/net/minecraft/advancements/critereon/FilledBucketTrigger.java
++++ b/net/minecraft/advancements/critereon/FilledBucketTrigger.java
+@@ -15,6 +15,7 @@ public class FilledBucketTrigger extends SimpleCriterionTrigger<FilledBucketTrig
+     }
+ 
+     public void trigger(ServerPlayer player, ItemStack stack) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(stack));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/FishingRodHookedTrigger.java b/net/minecraft/advancements/critereon/FishingRodHookedTrigger.java
+index ec1a2474d9fc388d6eefed18e8fd476efb47da56..9e91e25b9a28c6991dde1ff0b11eb91d7908e430 100644
+--- a/net/minecraft/advancements/critereon/FishingRodHookedTrigger.java
++++ b/net/minecraft/advancements/critereon/FishingRodHookedTrigger.java
+@@ -21,6 +21,7 @@ public class FishingRodHookedTrigger extends SimpleCriterionTrigger<FishingRodHo
+     }
+ 
+     public void trigger(ServerPlayer player, ItemStack rod, FishingHook entity, Collection<ItemStack> stacks) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, (Entity)(entity.getHookedIn() != null ? entity.getHookedIn() : entity));
+         this.trigger(player, instance -> instance.matches(rod, lootContext, stacks));
+     }
+diff --git a/net/minecraft/advancements/critereon/InventoryChangeTrigger.java b/net/minecraft/advancements/critereon/InventoryChangeTrigger.java
+index 3ff3186954a96127eb81236ab40154e75a9a9325..9729e8c1d2a65dc265414613f75e45d8ce605447 100644
+--- a/net/minecraft/advancements/critereon/InventoryChangeTrigger.java
++++ b/net/minecraft/advancements/critereon/InventoryChangeTrigger.java
+@@ -21,6 +21,7 @@ public class InventoryChangeTrigger extends SimpleCriterionTrigger<InventoryChan
+     }
+ 
+     public void trigger(ServerPlayer player, Inventory inventory, ItemStack stack) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         int i = 0;
+         int i1 = 0;
+         int i2 = 0;
+diff --git a/net/minecraft/advancements/critereon/ItemDurabilityTrigger.java b/net/minecraft/advancements/critereon/ItemDurabilityTrigger.java
+index 4b41cf906d1c6c3924d70252369d0b2a3fbe1dad..20d36772ce01226680560992f5ad824894f4223c 100644
+--- a/net/minecraft/advancements/critereon/ItemDurabilityTrigger.java
++++ b/net/minecraft/advancements/critereon/ItemDurabilityTrigger.java
+@@ -15,6 +15,7 @@ public class ItemDurabilityTrigger extends SimpleCriterionTrigger<ItemDurability
+     }
+ 
+     public void trigger(ServerPlayer player, ItemStack item, int newDurability) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(item, newDurability));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/ItemUsedOnLocationTrigger.java b/net/minecraft/advancements/critereon/ItemUsedOnLocationTrigger.java
+index d6353ccd94f2bec0e4757beb6e2e53177361d6ae..d7ac5fd0901bcbda5bf7e76c1a5ca78d41befdb0 100644
+--- a/net/minecraft/advancements/critereon/ItemUsedOnLocationTrigger.java
++++ b/net/minecraft/advancements/critereon/ItemUsedOnLocationTrigger.java
+@@ -28,6 +28,7 @@ public class ItemUsedOnLocationTrigger extends SimpleCriterionTrigger<ItemUsedOn
+     }
+ 
+     public void trigger(ServerPlayer player, BlockPos pos, ItemStack stack) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         ServerLevel serverLevel = player.serverLevel();
+         BlockState blockState = serverLevel.getBlockState(pos);
+         LootParams lootParams = new LootParams.Builder(serverLevel)
+diff --git a/net/minecraft/advancements/critereon/KilledByArrowTrigger.java b/net/minecraft/advancements/critereon/KilledByArrowTrigger.java
+index 46b61df57ec7b9495db42d79af7aecbc15c65147..a657e6ca5af4fb0144b73765ecc7cb885d69947a 100644
+--- a/net/minecraft/advancements/critereon/KilledByArrowTrigger.java
++++ b/net/minecraft/advancements/critereon/KilledByArrowTrigger.java
+@@ -28,6 +28,7 @@ public class KilledByArrowTrigger extends SimpleCriterionTrigger<KilledByArrowTr
+     }
+ 
+     public void trigger(ServerPlayer player, Collection<Entity> victims, @Nullable ItemStack firedFromWeapon) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         List<LootContext> list = Lists.newArrayList();
+         Set<EntityType<?>> set = Sets.newHashSet();
+ 
+diff --git a/net/minecraft/advancements/critereon/KilledTrigger.java b/net/minecraft/advancements/critereon/KilledTrigger.java
+index 1de8b29ffaa0a333b7ce3bf11b799d8fc3ddaec1..ea884668822667def7a265395419516d9b53b7d2 100644
+--- a/net/minecraft/advancements/critereon/KilledTrigger.java
++++ b/net/minecraft/advancements/critereon/KilledTrigger.java
+@@ -17,6 +17,7 @@ public class KilledTrigger extends SimpleCriterionTrigger<KilledTrigger.TriggerI
+     }
+ 
+     public void trigger(ServerPlayer player, Entity entity, DamageSource source) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, entity);
+         this.trigger(player, instance -> instance.matches(player, lootContext, source));
+     }
+diff --git a/net/minecraft/advancements/critereon/LevitationTrigger.java b/net/minecraft/advancements/critereon/LevitationTrigger.java
+index 8e6d8d7e67808bc3aad91686c04aea1bf5d4b7ba..576f021d62143df45ffb3edb09d80a50bc10d075 100644
+--- a/net/minecraft/advancements/critereon/LevitationTrigger.java
++++ b/net/minecraft/advancements/critereon/LevitationTrigger.java
+@@ -15,6 +15,7 @@ public class LevitationTrigger extends SimpleCriterionTrigger<LevitationTrigger.
+     }
+ 
+     public void trigger(ServerPlayer player, Vec3 startPos, int duration) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(player, startPos, duration));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/LightningStrikeTrigger.java b/net/minecraft/advancements/critereon/LightningStrikeTrigger.java
+index 79edafcc7413c2a0830c4c87e09f440ce3b49845..dff56036598ce35d416527da9ee233ca0930b825 100644
+--- a/net/minecraft/advancements/critereon/LightningStrikeTrigger.java
++++ b/net/minecraft/advancements/critereon/LightningStrikeTrigger.java
+@@ -19,6 +19,7 @@ public class LightningStrikeTrigger extends SimpleCriterionTrigger<LightningStri
+     }
+ 
+     public void trigger(ServerPlayer player, LightningBolt lightning, List<Entity> nearbyEntities) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         List<LootContext> list = nearbyEntities.stream().map(entity -> EntityPredicate.createContext(player, entity)).collect(Collectors.toList());
+         LootContext lootContext = EntityPredicate.createContext(player, lightning);
+         this.trigger(player, instance -> instance.matches(lootContext, list));
+diff --git a/net/minecraft/advancements/critereon/LootTableTrigger.java b/net/minecraft/advancements/critereon/LootTableTrigger.java
+index d01128696cfa288906f7059ce04c0881d84699e8..b99e1093400719c0f0e35cc4c6c9c9a1c9f42388 100644
+--- a/net/minecraft/advancements/critereon/LootTableTrigger.java
++++ b/net/minecraft/advancements/critereon/LootTableTrigger.java
+@@ -16,6 +16,7 @@ public class LootTableTrigger extends SimpleCriterionTrigger<LootTableTrigger.Tr
+     }
+ 
+     public void trigger(ServerPlayer player, ResourceKey<LootTable> lootTable) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, triggerInstance -> triggerInstance.matches(lootTable));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/PickedUpItemTrigger.java b/net/minecraft/advancements/critereon/PickedUpItemTrigger.java
+index f93c8a53c9ed927a6d9581dc3b5734f580135c04..fcff7259575342f28d6842d088ddd0d404dc9541 100644
+--- a/net/minecraft/advancements/critereon/PickedUpItemTrigger.java
++++ b/net/minecraft/advancements/critereon/PickedUpItemTrigger.java
+@@ -18,6 +18,7 @@ public class PickedUpItemTrigger extends SimpleCriterionTrigger<PickedUpItemTrig
+     }
+ 
+     public void trigger(ServerPlayer player, ItemStack stack, @Nullable Entity entity) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, entity);
+         this.trigger(player, instance -> instance.matches(player, stack, lootContext));
+     }
+diff --git a/net/minecraft/advancements/critereon/PlayerHurtEntityTrigger.java b/net/minecraft/advancements/critereon/PlayerHurtEntityTrigger.java
+index c7375238484c44852fc81f3acedf2f10a18b0a89..2e9930a1a4e317e00e10f7ab1721321b1452f1d3 100644
+--- a/net/minecraft/advancements/critereon/PlayerHurtEntityTrigger.java
++++ b/net/minecraft/advancements/critereon/PlayerHurtEntityTrigger.java
+@@ -17,6 +17,7 @@ public class PlayerHurtEntityTrigger extends SimpleCriterionTrigger<PlayerHurtEn
+     }
+ 
+     public void trigger(ServerPlayer player, Entity entity, DamageSource source, float amountDealt, float amountTaken, boolean blocked) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, entity);
+         this.trigger(player, instance -> instance.matches(player, lootContext, source, amountDealt, amountTaken, blocked));
+     }
+diff --git a/net/minecraft/advancements/critereon/PlayerInteractTrigger.java b/net/minecraft/advancements/critereon/PlayerInteractTrigger.java
+index 49169050c5ccdcff8ccfc54c4d9001015cc9a917..40b0b3b15769d6a6e5ac2269ea259b6a260045c4 100644
+--- a/net/minecraft/advancements/critereon/PlayerInteractTrigger.java
++++ b/net/minecraft/advancements/critereon/PlayerInteractTrigger.java
+@@ -17,6 +17,7 @@ public class PlayerInteractTrigger extends SimpleCriterionTrigger<PlayerInteract
+     }
+ 
+     public void trigger(ServerPlayer player, ItemStack item, Entity entity) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, entity);
+         this.trigger(player, instance -> instance.matches(item, lootContext));
+     }
+diff --git a/net/minecraft/advancements/critereon/PlayerTrigger.java b/net/minecraft/advancements/critereon/PlayerTrigger.java
+index b4e5d5bfc9daa124223d9f203661a5b96a445764..37f6c92130ac7dbc19f7b6b21f770ef01a999c7d 100644
+--- a/net/minecraft/advancements/critereon/PlayerTrigger.java
++++ b/net/minecraft/advancements/critereon/PlayerTrigger.java
+@@ -17,6 +17,7 @@ public class PlayerTrigger extends SimpleCriterionTrigger<PlayerTrigger.TriggerI
+     }
+ 
+     public void trigger(ServerPlayer player) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, trigger -> true);
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/RecipeCraftedTrigger.java b/net/minecraft/advancements/critereon/RecipeCraftedTrigger.java
+index eaeb3c395b5857ce7610514401ac30adf007fb02..55eee79756ff0f4f749f1b256414b383c8be8cb1 100644
+--- a/net/minecraft/advancements/critereon/RecipeCraftedTrigger.java
++++ b/net/minecraft/advancements/critereon/RecipeCraftedTrigger.java
+@@ -20,6 +20,7 @@ public class RecipeCraftedTrigger extends SimpleCriterionTrigger<RecipeCraftedTr
+     }
+ 
+     public void trigger(ServerPlayer player, ResourceKey<Recipe<?>> recipeId, List<ItemStack> ingredients) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, triggerInstance -> triggerInstance.matches(recipeId, ingredients));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/RecipeUnlockedTrigger.java b/net/minecraft/advancements/critereon/RecipeUnlockedTrigger.java
+index 30b5d2d6aa348cf0bf0e9c76004c3e6c600885a3..e88df357dcbdd4920ef7357a55065bef8fe1acf7 100644
+--- a/net/minecraft/advancements/critereon/RecipeUnlockedTrigger.java
++++ b/net/minecraft/advancements/critereon/RecipeUnlockedTrigger.java
+@@ -17,6 +17,7 @@ public class RecipeUnlockedTrigger extends SimpleCriterionTrigger<RecipeUnlocked
+     }
+ 
+     public void trigger(ServerPlayer player, RecipeHolder<?> recipe) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, trigger -> trigger.matches(recipe));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/ShotCrossbowTrigger.java b/net/minecraft/advancements/critereon/ShotCrossbowTrigger.java
+index 487901cfec32c46bfbaf4ef571a253bbb9692af6..a7e0525d43d28424f4099d48a4a13a260bc237eb 100644
+--- a/net/minecraft/advancements/critereon/ShotCrossbowTrigger.java
++++ b/net/minecraft/advancements/critereon/ShotCrossbowTrigger.java
+@@ -18,6 +18,7 @@ public class ShotCrossbowTrigger extends SimpleCriterionTrigger<ShotCrossbowTrig
+     }
+ 
+     public void trigger(ServerPlayer shooter, ItemStack stack) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(shooter, instance -> instance.matches(stack));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java b/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
+index 4b2ae046413146b11912e7aa4a9a3d643de6afd1..a854568983f95b8ab10bf0cc8b96d52a5c639122 100644
+--- a/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
++++ b/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
+@@ -39,6 +39,7 @@ public abstract class SimpleCriterionTrigger<T extends SimpleCriterionTrigger.Si
+     }
+ 
+     protected void trigger(ServerPlayer player, Predicate<T> testTrigger) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         PlayerAdvancements advancements = player.getAdvancements();
+         Set<CriterionTrigger.Listener<T>> set = (Set) advancements.criterionData.get(this); // Paper - fix PlayerAdvancements leak
+         if (set != null && !set.isEmpty()) {
+diff --git a/net/minecraft/advancements/critereon/SlideDownBlockTrigger.java b/net/minecraft/advancements/critereon/SlideDownBlockTrigger.java
+index 9985d2dc320553a9fd3ee3af4f175e04b9dfff8e..8f4d969e9b5645282768fb590325f7fd9457bfa6 100644
+--- a/net/minecraft/advancements/critereon/SlideDownBlockTrigger.java
++++ b/net/minecraft/advancements/critereon/SlideDownBlockTrigger.java
+@@ -19,6 +19,7 @@ public class SlideDownBlockTrigger extends SimpleCriterionTrigger<SlideDownBlock
+     }
+ 
+     public void trigger(ServerPlayer player, BlockState state) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, trigger -> trigger.matches(state));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/StartRidingTrigger.java b/net/minecraft/advancements/critereon/StartRidingTrigger.java
+index 631bafb90269ff7b12a995a153dccb71031d44c4..26595e9b296cc45a3303ad4d3e41549609557cd8 100644
+--- a/net/minecraft/advancements/critereon/StartRidingTrigger.java
++++ b/net/minecraft/advancements/critereon/StartRidingTrigger.java
+@@ -14,6 +14,7 @@ public class StartRidingTrigger extends SimpleCriterionTrigger<StartRidingTrigge
+     }
+ 
+     public void trigger(ServerPlayer player) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> true);
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/SummonedEntityTrigger.java b/net/minecraft/advancements/critereon/SummonedEntityTrigger.java
+index 0404eb256e912c77aeaaf03f6358cae612b7d673..e6c0a71f5824e55325ff49671fee2906cc359ab2 100644
+--- a/net/minecraft/advancements/critereon/SummonedEntityTrigger.java
++++ b/net/minecraft/advancements/critereon/SummonedEntityTrigger.java
+@@ -16,6 +16,7 @@ public class SummonedEntityTrigger extends SimpleCriterionTrigger<SummonedEntity
+     }
+ 
+     public void trigger(ServerPlayer player, Entity entity) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, entity);
+         this.trigger(player, instance -> instance.matches(lootContext));
+     }
+diff --git a/net/minecraft/advancements/critereon/TameAnimalTrigger.java b/net/minecraft/advancements/critereon/TameAnimalTrigger.java
+index b33e91c43add88650c0c6c92a02628a6326b5079..4cc5f42a8e22ff1be016a70ff62de4a832657b55 100644
+--- a/net/minecraft/advancements/critereon/TameAnimalTrigger.java
++++ b/net/minecraft/advancements/critereon/TameAnimalTrigger.java
+@@ -16,6 +16,7 @@ public class TameAnimalTrigger extends SimpleCriterionTrigger<TameAnimalTrigger.
+     }
+ 
+     public void trigger(ServerPlayer player, Animal entity) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, entity);
+         this.trigger(player, instance -> instance.matches(lootContext));
+     }
+diff --git a/net/minecraft/advancements/critereon/TargetBlockTrigger.java b/net/minecraft/advancements/critereon/TargetBlockTrigger.java
+index 04fbd03c7d5319be443258f05257bcfc1fc8aa50..61d2c5d67242641f98cc2accf3de457b6ef61498 100644
+--- a/net/minecraft/advancements/critereon/TargetBlockTrigger.java
++++ b/net/minecraft/advancements/critereon/TargetBlockTrigger.java
+@@ -17,6 +17,7 @@ public class TargetBlockTrigger extends SimpleCriterionTrigger<TargetBlockTrigge
+     }
+ 
+     public void trigger(ServerPlayer player, Entity projectile, Vec3 vector, int signalStrength) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, projectile);
+         this.trigger(player, instance -> instance.matches(lootContext, vector, signalStrength));
+     }
+diff --git a/net/minecraft/advancements/critereon/TradeTrigger.java b/net/minecraft/advancements/critereon/TradeTrigger.java
+index 8aa5165e9152fdcecc354a32e3a4112db8875738..0b42a20e8eb36bd2125574191036a0c8f5511d55 100644
+--- a/net/minecraft/advancements/critereon/TradeTrigger.java
++++ b/net/minecraft/advancements/critereon/TradeTrigger.java
+@@ -17,6 +17,7 @@ public class TradeTrigger extends SimpleCriterionTrigger<TradeTrigger.TriggerIns
+     }
+ 
+     public void trigger(ServerPlayer player, AbstractVillager villager, ItemStack stack) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         LootContext lootContext = EntityPredicate.createContext(player, villager);
+         this.trigger(player, instance -> instance.matches(lootContext, stack));
+     }
+diff --git a/net/minecraft/advancements/critereon/UsedEnderEyeTrigger.java b/net/minecraft/advancements/critereon/UsedEnderEyeTrigger.java
+index a6202974bea119189e8ded219648614b358e5cc2..7619c1cadacfb595cba12f72cae93aac84750ac5 100644
+--- a/net/minecraft/advancements/critereon/UsedEnderEyeTrigger.java
++++ b/net/minecraft/advancements/critereon/UsedEnderEyeTrigger.java
+@@ -13,6 +13,7 @@ public class UsedEnderEyeTrigger extends SimpleCriterionTrigger<UsedEnderEyeTrig
+     }
+ 
+     public void trigger(ServerPlayer player, BlockPos pos) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         double d = player.getX() - pos.getX();
+         double d1 = player.getZ() - pos.getZ();
+         double d2 = d * d + d1 * d1;
+diff --git a/net/minecraft/advancements/critereon/UsedTotemTrigger.java b/net/minecraft/advancements/critereon/UsedTotemTrigger.java
+index d6035967350b59f9339e981c23dafa693d552217..80d67461ab11c8bf5c9e15d1890fe04349073207 100644
+--- a/net/minecraft/advancements/critereon/UsedTotemTrigger.java
++++ b/net/minecraft/advancements/critereon/UsedTotemTrigger.java
+@@ -18,6 +18,7 @@ public class UsedTotemTrigger extends SimpleCriterionTrigger<UsedTotemTrigger.Tr
+     }
+ 
+     public void trigger(ServerPlayer player, ItemStack item) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(item));
+     }
+ 
+diff --git a/net/minecraft/advancements/critereon/UsingItemTrigger.java b/net/minecraft/advancements/critereon/UsingItemTrigger.java
+index eaf1c32e8b09be08729a13701d1668054dab65a4..b4f2beb4be95adcbeb3702e36945d0dfec72c3b4 100644
+--- a/net/minecraft/advancements/critereon/UsingItemTrigger.java
++++ b/net/minecraft/advancements/critereon/UsingItemTrigger.java
+@@ -15,6 +15,7 @@ public class UsingItemTrigger extends SimpleCriterionTrigger<UsingItemTrigger.Tr
+     }
+ 
+     public void trigger(ServerPlayer player, ItemStack item) {
++        if (!net.serlith.jellyfish.JellyfishConfig.PLAYERS.TRIGGER_ADVANCEMENTS) return; // Jellyfish - Disable advancement triggers
+         this.trigger(player, instance -> instance.matches(item));
+     }
+ 
