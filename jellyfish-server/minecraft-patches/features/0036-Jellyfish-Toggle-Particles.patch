@@ -5,10 +5,10 @@ Subject: [PATCH] Jellyfish Toggle Particles
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 84f6aa1f9adc786643e213a8fe9dae3095dbb6c5..83b8b0e761d339b4599c8da3b4257dbf953af863 100644
+index bd976df792e0ac9aaacd0632dd37cf6d8a8284bc..4e4ba4977951d63f46451a116617cdd922d95316 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1634,6 +1634,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1629,6 +1629,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          if (this.spawnExtraParticlesOnFall && onGround && this.fallDistance > 0.0) {
              Vec3 vec3 = pos.getCenter().add(0.0, 0.5, 0.0);
              int i = (int)Mth.clamp(50.0 * this.fallDistance, 0.0, 200.0);
@@ -17,10 +17,10 @@ index 84f6aa1f9adc786643e213a8fe9dae3095dbb6c5..83b8b0e761d339b4599c8da3b4257dbf
              this.spawnExtraParticlesOnFall = false;
          }
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index eeaa81e026ff628504203976cb87e15f9adf3078..53c503e0e87e4c2b8a613770c399e0626c168924 100644
+index 374e870d3d07f447b281e7992a6c95f447ce55e8..cd144b12a195c84816d245b61dd1c17cccfe6907 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -3498,9 +3498,11 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -3499,9 +3499,11 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
      protected static void sendBubbleColumnParticles(Level level, BlockPos pos) {
          if (level instanceof ServerLevel serverLevel) {
              for (int i = 0; i < 2; i++) {

@@ -5,7 +5,7 @@ Subject: [PATCH] Jellyfish Toggle Player Actions
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 568b6e60482c61363b6052c73fbc26a2ba19d5df..84f6aa1f9adc786643e213a8fe9dae3095dbb6c5 100644
+index ee6ad1474510b15eaa9a67d29ab8267ff43e0410..bd976df792e0ac9aaacd0632dd37cf6d8a8284bc 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -824,6 +824,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -90,7 +90,7 @@ index 568b6e60482c61363b6052c73fbc26a2ba19d5df..84f6aa1f9adc786643e213a8fe9dae30
          if (this.level().getDifficulty() == Difficulty.PEACEFUL && this.serverLevel().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
              if (this.tickCount % 20 == 0) {
                  if (this.getHealth() < this.getMaxHealth()) {
-@@ -1798,6 +1813,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1793,6 +1808,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      }
  
      public void checkMovementStatistics(double dx, double dy, double dz) {
