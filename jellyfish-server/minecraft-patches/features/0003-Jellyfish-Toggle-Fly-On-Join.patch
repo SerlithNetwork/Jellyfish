@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 24 Apr 2025 18:22:51 -0500
+Subject: [PATCH] Jellyfish Toggle Fly On Join
+
+
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index c9b71e761e9eb662191a2e1efcfa63b7902ada37..478b2fbc0c764a940e5e1274b975ad46bdd96778 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -192,7 +192,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         // Jellyfish end - Jellyfish config and command
+ 
+         this.setPvpAllowed(properties.pvp);
+-        this.setFlightAllowed(properties.allowFlight);
++        this.setFlightAllowed(properties.allowFlight || net.serlith.jellyfish.JellyfishConfig.DEVELOPMENT.FLY_ON_JOIN); // Jellyfish - Fly on Join
+         this.setMotd(properties.motd);
+         super.setPlayerIdleTimeout(properties.playerIdleTimeout.get());
+         this.setEnforceWhitelist(properties.enforceWhitelist);
+diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
+index b1524279c02cd3be82338a6bd0320cb125a134d5..44c300ada14307bb507d5554eeaa9cb3274c9094 100644
+--- a/net/minecraft/server/players/PlayerList.java
++++ b/net/minecraft/server/players/PlayerList.java
+@@ -328,6 +328,13 @@ public abstract class PlayerList {
+             // Ensure that player inventory is populated with its viewer
+             player.containerMenu.transferTo(player.containerMenu, bukkitPlayer);
+ 
++        // Jellyfish start - Enable flight during development
++        if (net.serlith.jellyfish.JellyfishConfig.DEVELOPMENT.FLY_ON_JOIN) {
++            player.getAbilities().flying = true;
++            player.onUpdateAbilities();
++        }
++        // Jellyfish end - Enable flight during development
++
+             org.bukkit.event.player.PlayerJoinEvent playerJoinEvent = new org.bukkit.event.player.PlayerJoinEvent(bukkitPlayer, io.papermc.paper.adventure.PaperAdventure.asAdventure(mutableComponent)); // Paper - Adventure
+             this.cserver.getPluginManager().callEvent(playerJoinEvent);
+ 

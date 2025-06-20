@@ -1,0 +1,126 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Fri, 20 Jun 2025 15:43:43 -0500
+Subject: [PATCH] Jellyfish Configurable Dimensions
+
+
+diff --git a/net/minecraft/data/worldgen/DimensionTypes.java b/net/minecraft/data/worldgen/DimensionTypes.java
+index 7ede85c9fff844ea99986f8ac5075babb173af19..ed7eb4e9784415b20b6e7233bfc52fe90596fc3a 100644
+--- a/net/minecraft/data/worldgen/DimensionTypes.java
++++ b/net/minecraft/data/worldgen/DimensionTypes.java
+@@ -16,19 +16,19 @@ public class DimensionTypes {
+                 OptionalLong.empty(),
+                 true,
+                 false,
+-                false,
++                !net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.PLACE_WATER, // Jellyfish - Dimensions configurable
+                 true,
+                 1.0,
+-                true,
+-                false,
+-                -64,
+-                384,
+-                384,
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.BED_WORKS, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.RESPAWN_ANCHOR_WORKS, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.MIN_HEIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.MAX_HEIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.MAX_HEIGHT_LOGICAL, // Jellyfish - Dimensions configurable
+                 BlockTags.INFINIBURN_OVERWORLD,
+                 BuiltinDimensionTypes.OVERWORLD_EFFECTS,
+-                0.0F,
+-                Optional.of(192),
+-                new DimensionType.MonsterSettings(false, true, UniformInt.of(0, 7), 0)
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.AMBIENT_LIGHT, // Jellyfish - Dimensions configurable
++                Optional.of(net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.CLOUD_HEIGHT), // Jellyfish - Dimensions configurable
++                new DimensionType.MonsterSettings(net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD.PIGLIN_SAFE, false, UniformInt.of(0, 7), 0) // Jellyfish - Dimensions configurable
+             )
+         );
+         context.register(
+@@ -37,19 +37,19 @@ public class DimensionTypes {
+                 OptionalLong.of(18000L),
+                 false,
+                 true,
+-                true,
++                !net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.PLACE_WATER, // Jellyfish - Dimensions configurable
+                 false,
+                 8.0,
+-                false,
+-                true,
+-                0,
+-                256,
+-                128,
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.BED_WORKS, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.RESPAWN_ANCHOR_WORKS, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.MIN_HEIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.MAX_HEIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.MAX_HEIGHT_LOGICAL, // Jellyfish - Dimensions configurable
+                 BlockTags.INFINIBURN_NETHER,
+                 BuiltinDimensionTypes.NETHER_EFFECTS,
+-                0.1F,
+-                Optional.empty(),
+-                new DimensionType.MonsterSettings(true, false, ConstantInt.of(7), 15)
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.AMBIENT_LIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.CLOUD_HEIGHT < 0 ? Optional.empty() : Optional.of(net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.CLOUD_HEIGHT), // Jellyfish - Dimensions configurable
++                new DimensionType.MonsterSettings(net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.NETHER.PIGLIN_SAFE, false, ConstantInt.of(7), 15) // Jellyfish - Dimensions configurable
+             )
+         );
+         context.register(
+@@ -58,19 +58,19 @@ public class DimensionTypes {
+                 OptionalLong.of(6000L),
+                 false,
+                 false,
+-                false,
++                !net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.PLACE_WATER, // Jellyfish - Dimensions configurable
+                 false,
+                 1.0,
+-                false,
+-                false,
+-                0,
+-                256,
+-                256,
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.BED_WORKS, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.RESPAWN_ANCHOR_WORKS, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.MIN_HEIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.MAX_HEIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.MAX_HEIGHT_LOGICAL, // Jellyfish - Dimensions configurable
+                 BlockTags.INFINIBURN_END,
+                 BuiltinDimensionTypes.END_EFFECTS,
+-                0.0F,
+-                Optional.empty(),
+-                new DimensionType.MonsterSettings(false, true, UniformInt.of(0, 7), 0)
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.AMBIENT_LIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.CLOUD_HEIGHT < 0 ? Optional.empty() : Optional.of(net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.CLOUD_HEIGHT), // Jellyfish - Dimensions configurable
++                new DimensionType.MonsterSettings(net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.THE_END.PIGLIN_SAFE, false, UniformInt.of(0, 7), 0) // Jellyfish - Dimensions configurable
+             )
+         );
+         context.register(
+@@ -79,19 +79,19 @@ public class DimensionTypes {
+                 OptionalLong.empty(),
+                 true,
+                 true,
+-                false,
++                !net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.PLACE_WATER, // Jellyfish - Dimensions configurable
+                 true,
+                 1.0,
+-                true,
+-                false,
+-                -64,
+-                384,
+-                384,
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.BED_WORKS, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.RESPAWN_ANCHOR_WORKS, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.MIN_HEIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.MAX_HEIGHT, // Jellyfish - Dimensions configurable
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.MAX_HEIGHT_LOGICAL, // Jellyfish - Dimensions configurable
+                 BlockTags.INFINIBURN_OVERWORLD,
+                 BuiltinDimensionTypes.OVERWORLD_EFFECTS,
+-                0.0F,
+-                Optional.of(192),
+-                new DimensionType.MonsterSettings(false, true, UniformInt.of(0, 7), 0)
++                net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.AMBIENT_LIGHT, // Jellyfish - Dimensions configurable
++                Optional.of(net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.CLOUD_HEIGHT), // Jellyfish - Dimensions configurable
++                new DimensionType.MonsterSettings(net.serlith.jellyfish.JellyfishConfig.DIMENSIONS.OVERWORLD_CAVES.PIGLIN_SAFE, false, UniformInt.of(0, 7), 0) // Jellyfish - Dimensions configurable
+             )
+         );
+     }

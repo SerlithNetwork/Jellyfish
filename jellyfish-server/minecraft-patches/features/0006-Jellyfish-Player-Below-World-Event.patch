@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 24 Apr 2025 19:07:53 -0500
+Subject: [PATCH] Jellyfish Player Below World Event
+
+
+diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
+index cbd1cfcd46c5929bbaaee9b84b543c6afb482950..304211f0f8b230e2322dc77d11c75e2756cba21a 100644
+--- a/net/minecraft/world/entity/LivingEntity.java
++++ b/net/minecraft/world/entity/LivingEntity.java
+@@ -2721,6 +2721,11 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+     @Override
+     protected void onBelowWorld() {
+         this.hurt(this.damageSources().fellOutOfWorld(), this.level().getWorld().getVoidDamageAmount()); // Paper - use configured void damage amount
++        // Jellyfish start - call PlayerBelowWorldEvent
++        if (!net.serlith.jellyfish.JellyfishConfig.EVENTS.DISABLE.PLAYER_BELOW_WORLD_EVENT && (this instanceof ServerPlayer player)) {
++            new net.serlith.jellyfish.event.player.PlayerBelowWorldEvent(player.getBukkitEntity()).callEvent();
++        }
++        // Jellyfish end - call PlayerBelowWorldEvent
+     }
+ 
+     protected void updateSwingTime() {

@@ -1,0 +1,249 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 24 Apr 2025 19:30:48 -0500
+Subject: [PATCH] Jellyfish Default Game Configurations
+
+
+diff --git a/net/minecraft/server/dedicated/DedicatedServerProperties.java b/net/minecraft/server/dedicated/DedicatedServerProperties.java
+index 4a01088da91fc6d620cb804a9ab6d6eb1630b473..905f42d02aa2dfd05b2527d92a2d76f96a211de9 100644
+--- a/net/minecraft/server/dedicated/DedicatedServerProperties.java
++++ b/net/minecraft/server/dedicated/DedicatedServerProperties.java
+@@ -51,16 +51,16 @@ public class DedicatedServerProperties extends Settings<DedicatedServerPropertie
+     public final boolean onlineMode = this.get("online-mode", true);
+     public final boolean preventProxyConnections = this.get("prevent-proxy-connections", false);
+     public final String serverIp = this.get("server-ip", "");
+-    public final boolean pvp = this.get("pvp", true);
++    public final boolean pvp = this.get("pvp", false); // Jellyfish - Default Configs
+     public final boolean allowFlight = this.get("allow-flight", false);
+-    public final String motd = this.get("motd", "A Minecraft Server");
++    public final String motd = this.get("motd", "A Minecraft Lobby"); // Jellyfish - Default Configs
+     public final String bugReportLink = this.get("bug-report-link", "");
+     public final boolean forceGameMode = this.get("force-gamemode", false);
+     public final boolean enforceWhitelist = this.get("enforce-whitelist", false);
+     public final Difficulty difficulty = this.get(
+         "difficulty", dispatchNumberOrString(Difficulty::byId, Difficulty::byName), Difficulty::getKey, Difficulty.EASY
+     );
+-    public final GameType gamemode = this.get("gamemode", dispatchNumberOrString(GameType::byId, GameType::byName), GameType::getName, GameType.SURVIVAL);
++    public final GameType gamemode = this.get("gamemode", dispatchNumberOrString(GameType::byId, GameType::byName), GameType::getName, GameType.ADVENTURE);  // Jellyfish - Default Configs
+     public final String levelName = this.get("level-name", "world");
+     public final int serverPort = this.get("server-port", 25565);
+     @Nullable
+@@ -71,8 +71,8 @@ public class DedicatedServerProperties extends Settings<DedicatedServerPropertie
+     public final int rconPort = this.get("rcon.port", 25575);
+     public final String rconPassword = this.get("rcon.password", "");
+     public final boolean hardcore = this.get("hardcore", false);
+-    public final boolean allowNether = this.get("allow-nether", true);
+-    public final boolean spawnMonsters = this.get("spawn-monsters", true);
++    public final boolean allowNether = this.get("allow-nether", false); // Jellyfish - Default Configs
++    public final boolean spawnMonsters = this.get("spawn-monsters", false); // Jellyfish - Default Configs
+     public final boolean useNativeTransport = this.get("use-native-transport", true);
+     public final boolean enableCommandBlock = this.get("enable-command-block", false);
+     public final int spawnProtection = this.get("spawn-protection", 16);
+@@ -101,7 +101,7 @@ public class DedicatedServerProperties extends Settings<DedicatedServerPropertie
+     public final Settings<DedicatedServerProperties>.MutableValue<Integer> playerIdleTimeout = this.getMutable("player-idle-timeout", 0);
+     public final Settings<DedicatedServerProperties>.MutableValue<Boolean> whiteList = this.getMutable("white-list", false);
+     public final boolean enforceSecureProfile = this.get("enforce-secure-profile", true);
+-    public final boolean logIPs = this.get("log-ips", true);
++    public final boolean logIPs = this.get("log-ips", false); // Jellyfish - Default Configs
+     public int pauseWhenEmptySeconds = this.get("pause-when-empty-seconds", -1); // Paper - disable tick sleeping by default 
+     private final DedicatedServerProperties.WorldDimensionData worldDimensionData;
+     public final WorldOptions worldOptions;
+@@ -113,12 +113,22 @@ public class DedicatedServerProperties extends Settings<DedicatedServerPropertie
+         super(properties, optionset);
+         // CraftBukkit end
+         String string = this.get("level-seed", "");
+-        boolean flag = this.get("generate-structures", true);
++        boolean flag = this.get("generate-structures", false); // Jellyfish - Default Configs
+         long l = WorldOptions.parseSeed(string).orElse(WorldOptions.randomSeed());
++        // Jellyfish start - Void world generation
++        JsonObject layer = new JsonObject();
++        layer.addProperty("block", "minecraft:air");
++        layer.addProperty("height", 1);
++        com.google.gson.JsonArray layers = new com.google.gson.JsonArray();
++        layers.add(layer);
++        JsonObject generator = new JsonObject();
++        generator.addProperty("biome", "minecraft:the_void");
++        generator.add("layers", layers);
++        // Jellyfish end - Void world generation
+         this.worldOptions = new WorldOptions(l, flag, false);
+         this.worldDimensionData = new DedicatedServerProperties.WorldDimensionData(
+-            this.get("generator-settings", property -> GsonHelper.parse(!property.isEmpty() ? property : "{}"), new JsonObject()),
+-            this.get("level-type", property -> property.toLowerCase(Locale.ROOT), WorldPresets.NORMAL.location().toString())
++            this.get("generator-settings", property -> GsonHelper.parse(!property.isEmpty() ? property : "{}"), generator), // Jellyfish - Void world generation
++            this.get("level-type", property -> property.toLowerCase(Locale.ROOT), WorldPresets.FLAT.location().toString()) // Jellyfish - Void world generation
+         );
+         this.serverResourcePackInfo = getServerPackInfo(
+             this.get("resource-pack-id", ""),
+diff --git a/net/minecraft/world/level/GameRules.java b/net/minecraft/world/level/GameRules.java
+index d5536dd40a1e9a2e05967652f690abbbca287852..6e8530f638175593aae3c85bc9bfd65bcd3aa923 100644
+--- a/net/minecraft/world/level/GameRules.java
++++ b/net/minecraft/world/level/GameRules.java
+@@ -47,31 +47,31 @@ public class GameRules {
+     static final Logger LOGGER = LogUtils.getLogger();
+     public static final Map<GameRules.Key<?>, GameRules.Type<?>> GAME_RULE_TYPES = Maps.newTreeMap(Comparator.comparing(entry -> entry.id));
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DOFIRETICK = register(
+-        "doFireTick", GameRules.Category.UPDATES, GameRules.BooleanValue.create(true)
++        "doFireTick", GameRules.Category.UPDATES, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_ALLOWFIRETICKAWAYFROMPLAYERS = register(
+         "allowFireTicksAwayFromPlayer", GameRules.Category.UPDATES, GameRules.BooleanValue.create(false)
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_MOBGRIEFING = register(
+-        "mobGriefing", GameRules.Category.MOBS, GameRules.BooleanValue.create(true)
++        "mobGriefing", GameRules.Category.MOBS, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_KEEPINVENTORY = register(
+-        "keepInventory", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false)
++        "keepInventory", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DOMOBSPAWNING = register(
+-        "doMobSpawning", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(true)
++        "doMobSpawning", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DOMOBLOOT = register(
+-        "doMobLoot", GameRules.Category.DROPS, GameRules.BooleanValue.create(true)
++        "doMobLoot", GameRules.Category.DROPS, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_PROJECTILESCANBREAKBLOCKS = register(
+-        "projectilesCanBreakBlocks", GameRules.Category.DROPS, GameRules.BooleanValue.create(true)
++        "projectilesCanBreakBlocks", GameRules.Category.DROPS, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DOBLOCKDROPS = register(
+-        "doTileDrops", GameRules.Category.DROPS, GameRules.BooleanValue.create(true)
++        "doTileDrops", GameRules.Category.DROPS, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DOENTITYDROPS = register(
+-        "doEntityDrops", GameRules.Category.DROPS, GameRules.BooleanValue.create(true)
++        "doEntityDrops", GameRules.Category.DROPS, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_COMMANDBLOCKOUTPUT = register(
+         "commandBlockOutput", GameRules.Category.CHAT, GameRules.BooleanValue.create(true)
+@@ -80,16 +80,16 @@ public class GameRules {
+         "naturalRegeneration", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true)
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DAYLIGHT = register(
+-        "doDaylightCycle", GameRules.Category.UPDATES, GameRules.BooleanValue.create(true)
++        "doDaylightCycle", GameRules.Category.UPDATES, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_LOGADMINCOMMANDS = register(
+         "logAdminCommands", GameRules.Category.CHAT, GameRules.BooleanValue.create(true)
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_SHOWDEATHMESSAGES = register(
+-        "showDeathMessages", GameRules.Category.CHAT, GameRules.BooleanValue.create(true)
++        "showDeathMessages", GameRules.Category.CHAT, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.IntegerValue> RULE_RANDOMTICKING = register(
+-        "randomTickSpeed", GameRules.Category.UPDATES, GameRules.IntegerValue.create(3)
++        "randomTickSpeed", GameRules.Category.UPDATES, GameRules.IntegerValue.create(0) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_SENDCOMMANDFEEDBACK = register(
+         "sendCommandFeedback", GameRules.Category.CHAT, GameRules.BooleanValue.create(true)
+@@ -104,7 +104,7 @@ public class GameRules {
+         })
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_SPECTATORSGENERATECHUNKS = register(
+-        "spectatorsGenerateChunks", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true)
++        "spectatorsGenerateChunks", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.IntegerValue> RULE_SPAWN_RADIUS = register(
+         "spawnRadius", GameRules.Category.PLAYER, GameRules.IntegerValue.create(10)
+@@ -119,7 +119,7 @@ public class GameRules {
+         "maxEntityCramming", GameRules.Category.MOBS, GameRules.IntegerValue.create(24)
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_WEATHER_CYCLE = register(
+-        "doWeatherCycle", GameRules.Category.UPDATES, GameRules.BooleanValue.create(true)
++        "doWeatherCycle", GameRules.Category.UPDATES, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_LIMITED_CRAFTING = register(
+         "doLimitedCrafting", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false, (level, value) -> { // Paper - rename param to match changes
+@@ -138,13 +138,13 @@ public class GameRules {
+         "commandModificationBlockLimit", GameRules.Category.MISC, GameRules.IntegerValue.create(32768)
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_ANNOUNCE_ADVANCEMENTS = register(
+-        "announceAdvancements", GameRules.Category.CHAT, GameRules.BooleanValue.create(true)
++        "announceAdvancements", GameRules.Category.CHAT, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DISABLE_RAIDS = register(
+         "disableRaids", GameRules.Category.MOBS, GameRules.BooleanValue.create(false)
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DOINSOMNIA = register(
+-        "doInsomnia", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(true)
++        "doInsomnia", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DO_IMMEDIATE_RESPAWN = register(
+         "doImmediateRespawn", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false, (level, value) -> { // Paper - rename param to match changes
+@@ -160,25 +160,25 @@ public class GameRules {
+         "playersNetherPortalCreativeDelay", GameRules.Category.PLAYER, GameRules.IntegerValue.create(0)
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DROWNING_DAMAGE = register(
+-        "drowningDamage", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true)
++        "drowningDamage", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_FALL_DAMAGE = register(
+-        "fallDamage", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true)
++        "fallDamage", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_FIRE_DAMAGE = register(
+-        "fireDamage", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true)
++        "fireDamage", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_FREEZE_DAMAGE = register(
+-        "freezeDamage", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true)
++        "freezeDamage", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DO_PATROL_SPAWNING = register(
+-        "doPatrolSpawning", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(true)
++        "doPatrolSpawning", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DO_TRADER_SPAWNING = register(
+-        "doTraderSpawning", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(true)
++        "doTraderSpawning", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DO_WARDEN_SPAWNING = register(
+-        "doWardenSpawning", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(true)
++        "doWardenSpawning", GameRules.Category.SPAWNING, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_FORGIVE_DEAD_PLAYERS = register(
+         "forgiveDeadPlayers", GameRules.Category.MOBS, GameRules.BooleanValue.create(true)
+@@ -211,7 +211,7 @@ public class GameRules {
+         "globalSoundEvents", GameRules.Category.MISC, GameRules.BooleanValue.create(true)
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_DO_VINES_SPREAD = register(
+-        "doVinesSpread", GameRules.Category.UPDATES, GameRules.BooleanValue.create(true)
++        "doVinesSpread", GameRules.Category.UPDATES, GameRules.BooleanValue.create(false) // Jellyfish - Default Configuration
+     );
+     public static final GameRules.Key<GameRules.BooleanValue> RULE_ENDER_PEARLS_VANISH_ON_DEATH = register(
+         "enderPearlsVanishOnDeath", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true)
+@@ -222,7 +222,7 @@ public class GameRules {
+         GameRules.IntegerValue.create(8, 1, limit(1000, Integer.MAX_VALUE), FeatureFlagSet.of(FeatureFlags.MINECART_IMPROVEMENTS), (server, value) -> {}) // Paper - allow disabling gamerule limits
+     );
+     public static final GameRules.Key<GameRules.IntegerValue> RULE_SPAWN_CHUNK_RADIUS = register(
+-        "spawnChunkRadius", GameRules.Category.MISC, GameRules.IntegerValue.create(2, 0, limit(32, Integer.MAX_VALUE), FeatureFlagSet.of(), (level, value) -> { // Paper - allow disabling gamerule limits - also, rename param
++        "spawnChunkRadius", GameRules.Category.MISC, GameRules.IntegerValue.create(0, 0, limit(32, Integer.MAX_VALUE), FeatureFlagSet.of(), (level, value) -> { // Paper - allow disabling gamerule limits - also, rename param // Jellyfish - Default Configuration
+             ServerLevel serverLevel = level; // CraftBukkit - per-world
+             serverLevel.setDefaultSpawnPos(serverLevel.getSharedSpawnPos(), serverLevel.getSharedSpawnAngle());
+         })
+diff --git a/net/minecraft/world/level/storage/PrimaryLevelData.java b/net/minecraft/world/level/storage/PrimaryLevelData.java
+index d83ef97f6dc71e85c853699e65ad2e76c9c69661..396be01da83f6e32917f1d7eacbb19ba1339edda 100644
+--- a/net/minecraft/world/level/storage/PrimaryLevelData.java
++++ b/net/minecraft/world/level/storage/PrimaryLevelData.java
+@@ -155,8 +155,8 @@ public class PrimaryLevelData implements ServerLevelData, WorldData {
+             false,
+             BlockPos.ZERO,
+             0.0F,
+-            0L,
+-            0L,
++            6000L, // Jellyfish - Start with the sun on top
++            6000L, // Jellyfish - Start with the sun on top
+             19133,
+             0,
+             0,
+@@ -188,7 +188,7 @@ public class PrimaryLevelData implements ServerLevelData, WorldData {
+         WorldOptions worldOptions,
+         Lifecycle worldGenSettingsLifecycle
+     ) {
+-        long _long = tag.get("Time").asLong(0L);
++        long _long = tag.get("Time").asLong(6000L); // Jellyfish - Start with the sun on top
+         return new PrimaryLevelData(
+             tag.get("Player").flatMap(CompoundTag.CODEC::parse).result().orElse(null),
+             tag.get("WasModded").asBoolean(false),

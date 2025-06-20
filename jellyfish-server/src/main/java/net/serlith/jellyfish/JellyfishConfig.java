@@ -178,6 +178,9 @@ public class JellyfishConfig extends StaticConfig {
             @Comment("Default minimum ambient light")
             public static float AMBIENT_LIGHT = 0.1F;
 
+            @Comment("Default cloud height")
+            public static int CLOUD_HEIGHT = 192;
+
             @Comment("Should be able to place water")
             public static boolean PLACE_WATER = true;
 
@@ -206,6 +209,9 @@ public class JellyfishConfig extends StaticConfig {
 
             @Comment("Default minimum ambient light")
             public static float AMBIENT_LIGHT = 0.1F;
+
+            @Comment("Default cloud height")
+            public static int CLOUD_HEIGHT = -1;
 
             @Comment("Should be able to place water")
             public static boolean PLACE_WATER = false;
@@ -236,6 +242,9 @@ public class JellyfishConfig extends StaticConfig {
             @Comment("Default minimum ambient light")
             public static float AMBIENT_LIGHT = 0.1F;
 
+            @Comment("Default cloud height")
+            public static int CLOUD_HEIGHT = -1;
+
             @Comment("Should be able to place water")
             public static boolean PLACE_WATER = true;
 
@@ -264,6 +273,9 @@ public class JellyfishConfig extends StaticConfig {
 
             @Comment("Default minimum ambient light")
             public static float AMBIENT_LIGHT = 0.1F;
+
+            @Comment("Default cloud height")
+            public static int CLOUD_HEIGHT = 192;
 
             @Comment("Should be able to place water")
             public static boolean PLACE_WATER = true;
@@ -392,7 +404,7 @@ public class JellyfishConfig extends StaticConfig {
         })
         public static Provider PROVIDER = Provider.HANGAR;
         @Ignore
-        public enum Provider { HANGAR, MODRINTH };
+        public enum Provider { HANGAR, MODRINTH }
 
         @Comment({
             "Recommended value: RELEASE",
@@ -401,7 +413,7 @@ public class JellyfishConfig extends StaticConfig {
         })
         public static Channel CHANNEL = Channel.RELEASE;
         @Ignore
-        public enum Channel { ALPHA, BETA, SNAPSHOT, RELEASE };
+        public enum Channel { ALPHA, BETA, SNAPSHOT, RELEASE }
 
         @Comment({
             "What to do if reading the local version fails", // Will this be used?
@@ -410,7 +422,7 @@ public class JellyfishConfig extends StaticConfig {
         })
         public static FailPolicy FAIL_POLICY = FailPolicy.DOWNLOAD;
         @Ignore
-        public enum FailPolicy { DOWNLOAD, IGNORE };
+        public enum FailPolicy { DOWNLOAD, IGNORE }
 
         @Comment("ViaVersion: Allow players to join using newer versions of Minecraft")
         public static class VIA_VERSION {

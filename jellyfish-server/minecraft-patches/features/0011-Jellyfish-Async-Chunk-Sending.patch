@@ -1,0 +1,50 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Fri, 25 Apr 2025 15:58:21 -0500
+Subject: [PATCH] Jellyfish Async Chunk Sending
+
+
+diff --git a/ca/spottedleaf/moonrise/patches/chunk_system/player/RegionizedPlayerChunkLoader.java b/ca/spottedleaf/moonrise/patches/chunk_system/player/RegionizedPlayerChunkLoader.java
+index f3bac0906d8a1c5dea7b0dee13c5cd6fdbbcae49..3a0265bdfdd6787ba264a0d9f76ad2a1ab3bcc3f 100644
+--- a/ca/spottedleaf/moonrise/patches/chunk_system/player/RegionizedPlayerChunkLoader.java
++++ b/ca/spottedleaf/moonrise/patches/chunk_system/player/RegionizedPlayerChunkLoader.java
+@@ -417,6 +417,7 @@ public final class RegionizedPlayerChunkLoader {
+                 final LevelChunk chunk = ((ChunkSystemLevel)this.world).moonrise$getFullChunkIfLoaded(chunkX, chunkZ);
+ 
+                 PlatformHooks.get().onChunkWatch(this.world, chunk, this.player);
++                if (net.serlith.jellyfish.JellyfishConfig.ASYNC.CHUNK_SENDING.ENABLED) PlayerChunkSender.sendChunkAsync(this.player.connection, this.world, chunk); else // Jellyfish - Async Chunk Sending
+                 PlayerChunkSender.sendChunk(this.player.connection, this.world, chunk);
+                 return;
+             }
+diff --git a/net/minecraft/server/network/PlayerChunkSender.java b/net/minecraft/server/network/PlayerChunkSender.java
+index 0376a10ee0544b13e8fd629a7b13f78811e57a30..d4b26367725f7eb3cf61fbae89c0494e93d6892f 100644
+--- a/net/minecraft/server/network/PlayerChunkSender.java
++++ b/net/minecraft/server/network/PlayerChunkSender.java
+@@ -78,8 +78,26 @@ public class PlayerChunkSender {
+         }
+     }
+ 
++    // Jellyfish start - Async Chunk Sending
++    public static void sendChunkAsync(ServerGamePacketListenerImpl packetListener, ServerLevel level, LevelChunk chunk) {
++        net.serlith.jellyfish.async.AsyncChunkSender.INSTANCE.queue(() -> {
++            final boolean shouldModify = level.chunkPacketBlockController.shouldModify(packetListener.player, chunk);
++            packetListener.send(new ClientboundLevelChunkWithLightPacket(chunk, level.getLightEngine(), null, null, shouldModify));
++
++            level.getServer().execute(() -> {
++                if (io.papermc.paper.event.packet.PlayerChunkLoadEvent.getHandlerList().getRegisteredListeners().length > 0) {
++                    new io.papermc.paper.event.packet.PlayerChunkLoadEvent(new org.bukkit.craftbukkit.CraftChunk(chunk), packetListener.getPlayer().getBukkitEntity()).callEvent();
++                }
++            });
++
++            ChunkPos pos = chunk.getPos();
++            DebugPackets.sendPoiPacketsForChunk(level, pos);
++        });
++    }
++    // Jellyfish end - Async Chunk Sending
++
+     // Paper start - Anti-Xray
+-    public static void sendChunk(ServerGamePacketListenerImpl packetListener, ServerLevel level, LevelChunk chunk) {
++    public static void sendChunk(ServerGamePacketListenerImpl packetListener, ServerLevel level, LevelChunk chunk) { // Jellyfish - (diff) for async
+         final boolean shouldModify = level.chunkPacketBlockController.shouldModify(packetListener.player, chunk);
+         packetListener.send(new ClientboundLevelChunkWithLightPacket(chunk, level.getLightEngine(), null, null, shouldModify));
+         // Paper end - Anti-Xray

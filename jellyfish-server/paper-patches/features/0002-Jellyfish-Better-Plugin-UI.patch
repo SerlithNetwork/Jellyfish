@@ -1,0 +1,88 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Sat, 19 Apr 2025 19:17:59 -0500
+Subject: [PATCH] Jellyfish Better Plugin UI
+
+
+diff --git a/src/main/java/io/papermc/paper/command/PaperPluginsCommand.java b/src/main/java/io/papermc/paper/command/PaperPluginsCommand.java
+index 41c95f00b4b2bea6d31f85e268c33d7f6184823e..033f63918606b566c11b038337ba3e58da67530e 100644
+--- a/src/main/java/io/papermc/paper/command/PaperPluginsCommand.java
++++ b/src/main/java/io/papermc/paper/command/PaperPluginsCommand.java
+@@ -55,7 +55,7 @@ public class PaperPluginsCommand extends BukkitCommand {
+ 
+     private static final Component LEGACY_PLUGIN_STAR = Component.text('*', TextColor.color(255, 212, 42)).hoverEvent(LEGACY_PLUGIN_INFO);
+     private static final Component INFO_ICON_START = Component.text("ℹ ", INFO_COLOR);
+-    private static final Component PLUGIN_TICK = Component.text("- ", NamedTextColor.DARK_GRAY);
++    private static final Component PLUGIN_TICK = Component.text("► ", NamedTextColor.DARK_GRAY); // Jellyfish - Better plugin UI
+     private static final Component PLUGIN_TICK_EMPTY = Component.text(" ");
+ 
+     private static final Component INFO_ICON_SERVER_PLUGIN = INFO_ICON_START.hoverEvent(SERVER_PLUGIN_INFO).clickEvent(ClickEvent.openUrl("https://docs.papermc.io/paper/adding-plugins"));
+@@ -126,6 +126,24 @@ public class PaperPluginsCommand extends BukkitCommand {
+         return componentHeader.append(Component.text(":")).build();
+     }
+ 
++    // Jellyfish start - Better plugin UI
++    private static Component headerWithIcon(final String icon, final String header, final int color, final int count, final boolean showSize) {
++        final TextComponent.Builder componentIcon = Component.text().color(TextColor.color(color))
++            .append(Component.text(icon));
++        final TextComponent.Builder componentHeader = Component.text().color(TextColor.color(0xffffff))
++            .append(Component.text(header));
++
++        if (showSize) {
++            final Component p1 = Component.text("(", TextColor.color(color));
++            final Component p2 = Component.text(")", TextColor.color(color));
++            final Component c = Component.text(count, TextColor.color(0xffffff));
++            componentHeader.appendSpace().append(p1.append(c).append(p2));
++        }
++
++        return componentIcon.appendSpace().append(componentHeader).build();
++    }
++    // Jellyfish stop - Better plugin UI
++
+     private static Component asPlainComponents(final String strings) {
+         final net.kyori.adventure.text.TextComponent.Builder builder = Component.text();
+         for (final String string : strings.split("\n")) {
+@@ -166,6 +184,11 @@ public class PaperPluginsCommand extends BukkitCommand {
+         }
+     }
+ 
++    // Jellyfish start - Better plugin UI
++    private final Component paperSeparator = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize("<st><gradient:#6500ff:#00adff>                                        </gradient><gradient:#00adff:#6500ff>                                        </gradient></st>");
++    private final Component bukkitSeparator = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize("<st><gradient:#ff5300:#ffcb00>                                        </gradient><gradient:#ffcb00:#ff5300>                                        </gradient></st>");
++    // Jellyfish end - Better plugin UI
++
+     @Override
+     public boolean execute(final CommandSender sender, final String currentAlias, final String[] args) {
+         if (!this.testPermission(sender)) return true;
+@@ -188,12 +211,16 @@ public class PaperPluginsCommand extends BukkitCommand {
+         final int sizePlugins = sizePaperPlugins + sizeSpigotPlugins;
+         final boolean hasAllPluginTypes = (sizePaperPlugins > 0 && sizeSpigotPlugins > 0);
+ 
+-        final Component infoMessage = Component.text().append(INFO_ICON_SERVER_PLUGIN).append(Component.text("Server Plugins (%s):".formatted(sizePlugins), NamedTextColor.WHITE)).build();
++        final Component infoMessage = Component.text().append(INFO_ICON_SERVER_PLUGIN).append(Component.text("Server Plugins (%s):".formatted(sizePlugins), NamedTextColor.AQUA)).build(); // Jellyfish - Better plugin UI
+ 
+         sender.sendMessage(infoMessage);
+ 
+         if (!paperPlugins.isEmpty()) {
+-            sender.sendMessage(header("Paper Plugins", 0x0288D1, sizePaperPlugins, hasAllPluginTypes));
++            // Jellyfish start - Better plugin UI
++            sender.sendMessage(this.paperSeparator);
++            sender.sendMessage(headerWithIcon(" ➤", "Paper Plugins", 0x0288D1, sizePaperPlugins, hasAllPluginTypes));
++            sender.sendMessage(this.paperSeparator);
++            // Jellyfish end - Better plugin UI
+         }
+ 
+         for (final Component component : formatProviders(paperPlugins)) {
+@@ -201,7 +228,11 @@ public class PaperPluginsCommand extends BukkitCommand {
+         }
+ 
+         if (!spigotPlugins.isEmpty()) {
+-            sender.sendMessage(header("Bukkit Plugins", 0xED8106, sizeSpigotPlugins, hasAllPluginTypes));
++            // Jellyfish start - Better plugin UI
++            sender.sendMessage(this.bukkitSeparator);
++            sender.sendMessage(headerWithIcon(" 🪣", "Bukkit Plugins", 0xED8106, sizeSpigotPlugins, hasAllPluginTypes));
++            sender.sendMessage(this.bukkitSeparator);
++            // Jellyfish end - Better plugin UI
+         }
+ 
+         for (final Component component : formatProviders(spigotPlugins)) {

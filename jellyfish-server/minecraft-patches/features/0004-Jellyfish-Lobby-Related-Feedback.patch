@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 24 Apr 2025 18:38:56 -0500
+Subject: [PATCH] Jellyfish Lobby Related Feedback
+
+
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 478b2fbc0c764a940e5e1274b975ad46bdd96778..6144cee56a930f181ab3a7c20d82ff20d0a6e32f 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -243,25 +243,23 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         // CraftBukkit end
+ 
+         // Paper start - Add Velocity IP Forwarding Support
+-        boolean usingProxy = org.spigotmc.SpigotConfig.bungee || io.papermc.paper.configuration.GlobalConfiguration.get().proxies.velocity.enabled;
++        boolean proxyOnlineMode = (org.spigotmc.SpigotConfig.bungee && io.papermc.paper.configuration.GlobalConfiguration.get().proxies.bungeeCord.onlineMode) || (io.papermc.paper.configuration.GlobalConfiguration.get().proxies.velocity.enabled && io.papermc.paper.configuration.GlobalConfiguration.get().proxies.velocity.onlineMode); // Jellyfish - Will always be running behind a proxy (offline-mode)
+         String proxyFlavor = (io.papermc.paper.configuration.GlobalConfiguration.get().proxies.velocity.enabled) ? "Velocity" : "BungeeCord";
+         String proxyLink = (io.papermc.paper.configuration.GlobalConfiguration.get().proxies.velocity.enabled) ? "https://docs.papermc.io/velocity/security" : "http://www.spigotmc.org/wiki/firewall-guide/";
+         // Paper end - Add Velocity IP Forwarding Support
+-        if (!this.usesAuthentication()) {
++        // Jellyfish start - Will always be running behind a proxy (offline-mode)
++        if (!this.usesAuthentication() && !proxyOnlineMode) {
+             LOGGER.warn("**** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
+             LOGGER.warn("The server will make no attempt to authenticate usernames. Beware.");
+             // Spigot start
+             // Paper start - Add Velocity IP Forwarding Support
+-            if (usingProxy) {
+-                LOGGER.warn("Whilst this makes it possible to use {}, unless access to your server is properly restricted, it also opens up the ability for hackers to connect with any username they choose.", proxyFlavor);
+-                LOGGER.warn("Please see {} for further information.", proxyLink);
+-                // Paper end - Add Velocity IP Forwarding Support
+-            } else {
+-                LOGGER.warn("While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.");
+-            }
++            // Jellyfish start - Lobby focused online-mode feedback
++            LOGGER.warn("While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.");
+             // Spigot end
+-            LOGGER.warn("To change this, set \"online-mode\" to \"true\" in the server.properties file.");
++            LOGGER.warn("To change this, set \"online-mode\" to \"true\" in the proxy section of the config/paper-global.yml file.");
++            LOGGER.warn("If your lobby is on development without a proxy yet, you can enable it in the server.properties file.");
+         }
++        // Jellyfish end - Lobby focused online-mode feedback
+ 
+         // CraftBukkit start
+         /*

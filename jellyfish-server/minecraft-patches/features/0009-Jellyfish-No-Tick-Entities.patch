@@ -1,0 +1,30 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 24 Apr 2025 19:48:27 -0500
+Subject: [PATCH] Jellyfish No Tick Entities
+
+
+diff --git a/io/papermc/paper/entity/activation/ActivationRange.java b/io/papermc/paper/entity/activation/ActivationRange.java
+index 9c9368e7303a96923f5d6c7e33a18e0300ec11e8..3c2ed00bdca5ec2ee3487da95d1f186c2e1784dc 100644
+--- a/io/papermc/paper/entity/activation/ActivationRange.java
++++ b/io/papermc/paper/entity/activation/ActivationRange.java
+@@ -306,6 +306,7 @@ public final class ActivationRange {
+      * @return
+      */
+     public static boolean checkIfActive(final Entity entity) {
++        if (entity.getType().noTick) return false; // Jellyfish - Do not tick entities
+         // Never safe to skip fireworks or item gravity
+         if (entity instanceof FireworkRocketEntity || (entity instanceof ItemEntity && (entity.tickCount + entity.getId()) % 4 == 0)) { // Needed for item gravity, see ItemEntity tick
+             return true;
+diff --git a/net/minecraft/world/entity/EntityType.java b/net/minecraft/world/entity/EntityType.java
+index 922a033629b51f3e16b75f9486c15b26d4e2e5cb..4413eb13e47845a19dbb9b2cd30b21ae43e7bdca 100644
+--- a/net/minecraft/world/entity/EntityType.java
++++ b/net/minecraft/world/entity/EntityType.java
+@@ -1087,6 +1087,7 @@ public class EntityType<T extends Entity> implements FeatureElement, EntityTypeT
+     private final int updateInterval;
+     private final String descriptionId;
+     public boolean dabEnabled = false; // Pufferfish - DAB
++    public boolean noTick = false; // Jellyfish - No tick entities
+     @Nullable
+     private Component description;
+     private final Optional<ResourceKey<LootTable>> lootTable;
