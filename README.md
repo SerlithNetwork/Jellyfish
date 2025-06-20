@@ -101,5 +101,4 @@ This project is designed for Serlith Network, so support is currently not guaran
 1. PaperMC Team
 2. Pufferfish Host
 3. PurpurMC Team, even if this is not a direct Purpur fork, we do use their paperweight project setup.
-4. Winds-Studio - [(Cache player profile patch)](jellyfish-server/minecraft-patches/features/0031-Leaf-Cache-Player-Profiles.patch)
 
