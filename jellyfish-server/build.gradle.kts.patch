@@ -60,10 +60,10 @@
      implementation("io.papermc:reflection-rewriter-proxy-generator:$reflectionRewriterVersion")
  
      // Spark
--    implementation("com.github.Biquaternions.spark:spark-api:1.0-pufferfish")
--    implementation("com.github.Biquaternions.spark:spark-paper:1.0-pufferfish")
-+    implementation("net.serlith.spark:spark-api:1.10.3") // Jellyfish - Custom spark
-+    implementation("net.serlith.spark:spark-paper:1.10.3") // Jellyfish - Custom spark
+-    implementation("com.github.Biquaternions.spark:spark-api:1.1-pufferfish")
+-    implementation("com.github.Biquaternions.spark:spark-paper:1.1-pufferfish")
++    implementation("net.serlith.spark:spark-api:1.10.4") // Jellyfish - Custom spark
++    implementation("net.serlith.spark:spark-paper:1.10.4") // Jellyfish - Custom spark
  }
  
  tasks.jar {
